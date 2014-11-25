@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+var debug = require('debug')('kraken');
+var app = require('../app');
+
+var server = app.listen(3000, function() {
+  debug('Express server listening on port ' + server.address().port);
+});
