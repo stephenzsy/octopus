@@ -3,7 +3,6 @@
 
     var app = angular.module('hydra', ['ngRoute', 'krakenClient']);
     app.controller('MainController', function () {
-        console.log("MainController Ready")
     });
 
     // configure route
