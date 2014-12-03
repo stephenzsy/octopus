@@ -12,12 +12,7 @@ module.exports = thrift.createWebServer({
     services: {
         '/': {
             processor: KrakenService,
-            handler: {
-                ping: function (result) {
-                    console.log("ping()");
-                    result(null);
-                }
-            },
+            handler: require('./lib/kraken/handler'),
             protocol: thrift.TJSONProtocol
         }
     }

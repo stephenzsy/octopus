@@ -8,7 +8,7 @@
             $scope.krakenServiceUrl = SERVICE_URL;
             KrakenService.ping(function () {
             }).done(function () {
-                console.log("OK");
+                $scope.pingStatus = 'ok';
             }).fail(function (xhr, status, err) {
                 console.error(xhr);
                 console.error(status);
