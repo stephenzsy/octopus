@@ -94,3 +94,220 @@ Kraken.ArticleSource.prototype.write = function(output) {
   return;
 };
 
+Kraken.ImportedDocument = module.exports.ImportedDocument = function(args) {
+  this.ArticleSourceId = null;
+  this.Type = null;
+  this.Id = null;
+  this.SourceUrl = null;
+  this.ImportDateTime = null;
+  this.DocumentContent = null;
+  if (args) {
+    if (args.ArticleSourceId !== undefined) {
+      this.ArticleSourceId = args.ArticleSourceId;
+    }
+    if (args.Type !== undefined) {
+      this.Type = args.Type;
+    }
+    if (args.Id !== undefined) {
+      this.Id = args.Id;
+    }
+    if (args.SourceUrl !== undefined) {
+      this.SourceUrl = args.SourceUrl;
+    }
+    if (args.ImportDateTime !== undefined) {
+      this.ImportDateTime = args.ImportDateTime;
+    }
+    if (args.DocumentContent !== undefined) {
+      this.DocumentContent = args.DocumentContent;
+    }
+  }
+};
+Kraken.ImportedDocument.prototype = {};
+Kraken.ImportedDocument.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.ArticleSourceId = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.Type = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.Id = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.SourceUrl = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.STRING) {
+        this.ImportDateTime = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.DocumentContent = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.ImportedDocument.prototype.write = function(output) {
+  output.writeStructBegin('ImportedDocument');
+  if (this.ArticleSourceId !== null && this.ArticleSourceId !== undefined) {
+    output.writeFieldBegin('ArticleSourceId', Thrift.Type.STRING, 1);
+    output.writeString(this.ArticleSourceId);
+    output.writeFieldEnd();
+  }
+  if (this.Type !== null && this.Type !== undefined) {
+    output.writeFieldBegin('Type', Thrift.Type.STRING, 2);
+    output.writeString(this.Type);
+    output.writeFieldEnd();
+  }
+  if (this.Id !== null && this.Id !== undefined) {
+    output.writeFieldBegin('Id', Thrift.Type.STRING, 3);
+    output.writeString(this.Id);
+    output.writeFieldEnd();
+  }
+  if (this.SourceUrl !== null && this.SourceUrl !== undefined) {
+    output.writeFieldBegin('SourceUrl', Thrift.Type.STRING, 4);
+    output.writeString(this.SourceUrl);
+    output.writeFieldEnd();
+  }
+  if (this.ImportDateTime !== null && this.ImportDateTime !== undefined) {
+    output.writeFieldBegin('ImportDateTime', Thrift.Type.STRING, 5);
+    output.writeString(this.ImportDateTime);
+    output.writeFieldEnd();
+  }
+  if (this.DocumentContent !== null && this.DocumentContent !== undefined) {
+    output.writeFieldBegin('DocumentContent', Thrift.Type.STRING, 6);
+    output.writeString(this.DocumentContent);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.InvalidArticleSourceIdNotFound = module.exports.InvalidArticleSourceIdNotFound = function(args) {
+  Thrift.TException.call(this, "Kraken.InvalidArticleSourceIdNotFound")
+  this.name = "Kraken.InvalidArticleSourceIdNotFound"
+  this.errorCode = null;
+  this.message = null;
+  this.ArticleSourceId = null;
+  if (args) {
+    if (args.errorCode !== undefined) {
+      this.errorCode = args.errorCode;
+    }
+    if (args.message !== undefined) {
+      this.message = args.message;
+    }
+    if (args.ArticleSourceId !== undefined) {
+      this.ArticleSourceId = args.ArticleSourceId;
+    }
+  }
+};
+Thrift.inherits(Kraken.InvalidArticleSourceIdNotFound, Thrift.TException);
+Kraken.InvalidArticleSourceIdNotFound.prototype.name = 'InvalidArticleSourceIdNotFound';
+Kraken.InvalidArticleSourceIdNotFound.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.errorCode = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.message = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.ArticleSourceId = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.InvalidArticleSourceIdNotFound.prototype.write = function(output) {
+  output.writeStructBegin('InvalidArticleSourceIdNotFound');
+  if (this.errorCode !== null && this.errorCode !== undefined) {
+    output.writeFieldBegin('errorCode', Thrift.Type.STRING, 1);
+    output.writeString(this.errorCode);
+    output.writeFieldEnd();
+  }
+  if (this.message !== null && this.message !== undefined) {
+    output.writeFieldBegin('message', Thrift.Type.STRING, 2);
+    output.writeString(this.message);
+    output.writeFieldEnd();
+  }
+  if (this.ArticleSourceId !== null && this.ArticleSourceId !== undefined) {
+    output.writeFieldBegin('ArticleSourceId', Thrift.Type.STRING, 3);
+    output.writeString(this.ArticleSourceId);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+ttypes.TYPE_DAILY_INDEX = 'daily_index';
+ttypes.TYPE_ARTICLE = 'article';
