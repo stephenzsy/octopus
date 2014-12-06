@@ -11,7 +11,7 @@ var Kraken = require('../../../model/gen-nodejs/kraken_types');
 
     var ARTICLE_SOURCES_LIST = [
         new Kraken.ArticleSource({
-            Id: 'business_insider',
+            Id: 'businessinsider',
             Name: 'Business Insider',
             Url: 'http://www.businessinsider.com'
         }),
