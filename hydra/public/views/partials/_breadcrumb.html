@@ -1,0 +1,7 @@
+<ol class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li ng-repeat="element in hydraBreadcrumb" ng-class="{active: element.active}">
+        <a ng-if="element.url">{{element.display}}</a>
+        <span ng-if="!element.url">{{element.display}}</span>
+    </li>
+</ol>

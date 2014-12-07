@@ -2,6 +2,17 @@
     'use strict';
 
     var app = angular.module('hydra', ['ngRoute', 'krakenClient']);
+
+    app.directive('hydraBreadcrumb', function () {
+        return {
+            restrict: 'A',
+            scope: {
+                hydraBreadcrumb: '='
+            },
+            templateUrl: '/views/partials/_breadcrumb.html'
+        };
+    });
+
     app.controller('MainController', function () {
     });
 

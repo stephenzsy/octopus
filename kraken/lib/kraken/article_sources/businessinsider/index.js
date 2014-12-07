@@ -15,7 +15,7 @@ var ArticleSource = require('../article_source');
         return 'businessinsider'
     };
     BusinessInsider.prototype.getName = function () {
-        return 'Buainess Insider'
+        return 'Business Insider'
     };
     BusinessInsider.prototype.getUrl = function () {
         return 'http://www.businessinsider.com'
