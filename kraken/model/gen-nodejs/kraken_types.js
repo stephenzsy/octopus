@@ -12,6 +12,75 @@ var ttypes = module.exports = {};
 if (typeof Kraken === 'undefined') {
   Kraken = {};
 }
+Kraken.ValidationError = module.exports.ValidationError = function(args) {
+  Thrift.TException.call(this, "Kraken.ValidationError")
+  this.name = "Kraken.ValidationError"
+  this.errorCode = null;
+  this.message = null;
+  if (args) {
+    if (args.errorCode !== undefined) {
+      this.errorCode = args.errorCode;
+    }
+    if (args.message !== undefined) {
+      this.message = args.message;
+    }
+  }
+};
+Thrift.inherits(Kraken.ValidationError, Thrift.TException);
+Kraken.ValidationError.prototype.name = 'ValidationError';
+Kraken.ValidationError.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.errorCode = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.message = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.ValidationError.prototype.write = function(output) {
+  output.writeStructBegin('ValidationError');
+  if (this.errorCode !== null && this.errorCode !== undefined) {
+    output.writeFieldBegin('errorCode', Thrift.Type.STRING, 1);
+    output.writeString(this.errorCode);
+    output.writeFieldEnd();
+  }
+  if (this.message !== null && this.message !== undefined) {
+    output.writeFieldBegin('message', Thrift.Type.STRING, 2);
+    output.writeString(this.message);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 Kraken.ArticleSource = module.exports.ArticleSource = function(args) {
   this.Id = null;
   this.Name = null;
@@ -311,6 +380,7 @@ Kraken.InvalidArticleSourceIdNotFound.prototype.write = function(output) {
 
 Kraken.ArchiveDailyIndex = module.exports.ArchiveDailyIndex = function(args) {
   this.ArticleSourceId = null;
+  this.ArchiveDailyIndexId = null;
   this.LocalDate = null;
   this.Status = null;
   this.SourceUrl = null;
@@ -318,6 +388,9 @@ Kraken.ArchiveDailyIndex = module.exports.ArchiveDailyIndex = function(args) {
   if (args) {
     if (args.ArticleSourceId !== undefined) {
       this.ArticleSourceId = args.ArticleSourceId;
+    }
+    if (args.ArchiveDailyIndexId !== undefined) {
+      this.ArchiveDailyIndexId = args.ArchiveDailyIndexId;
     }
     if (args.LocalDate !== undefined) {
       this.LocalDate = args.LocalDate;
@@ -356,26 +429,33 @@ Kraken.ArchiveDailyIndex.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.LocalDate = input.readString();
+        this.ArchiveDailyIndexId = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.Status = input.readString();
+        this.LocalDate = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.SourceUrl = input.readString();
+        this.Status = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
+      if (ftype == Thrift.Type.STRING) {
+        this.SourceUrl = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
       if (ftype == Thrift.Type.STRING) {
         this.ImportedDocumentId = input.readString();
       } else {
@@ -398,23 +478,28 @@ Kraken.ArchiveDailyIndex.prototype.write = function(output) {
     output.writeString(this.ArticleSourceId);
     output.writeFieldEnd();
   }
+  if (this.ArchiveDailyIndexId !== null && this.ArchiveDailyIndexId !== undefined) {
+    output.writeFieldBegin('ArchiveDailyIndexId', Thrift.Type.STRING, 2);
+    output.writeString(this.ArchiveDailyIndexId);
+    output.writeFieldEnd();
+  }
   if (this.LocalDate !== null && this.LocalDate !== undefined) {
-    output.writeFieldBegin('LocalDate', Thrift.Type.STRING, 2);
+    output.writeFieldBegin('LocalDate', Thrift.Type.STRING, 3);
     output.writeString(this.LocalDate);
     output.writeFieldEnd();
   }
   if (this.Status !== null && this.Status !== undefined) {
-    output.writeFieldBegin('Status', Thrift.Type.STRING, 3);
+    output.writeFieldBegin('Status', Thrift.Type.STRING, 4);
     output.writeString(this.Status);
     output.writeFieldEnd();
   }
   if (this.SourceUrl !== null && this.SourceUrl !== undefined) {
-    output.writeFieldBegin('SourceUrl', Thrift.Type.STRING, 4);
+    output.writeFieldBegin('SourceUrl', Thrift.Type.STRING, 5);
     output.writeString(this.SourceUrl);
     output.writeFieldEnd();
   }
   if (this.ImportedDocumentId !== null && this.ImportedDocumentId !== undefined) {
-    output.writeFieldBegin('ImportedDocumentId', Thrift.Type.STRING, 5);
+    output.writeFieldBegin('ImportedDocumentId', Thrift.Type.STRING, 6);
     output.writeString(this.ImportedDocumentId);
     output.writeFieldEnd();
   }
@@ -425,13 +510,13 @@ Kraken.ArchiveDailyIndex.prototype.write = function(output) {
 
 Kraken.GetArchiveDailyIndexRequest = module.exports.GetArchiveDailyIndexRequest = function(args) {
   this.ArticleSourceId = null;
-  this.DateTimestamp = null;
+  this.ArchiveDailyIndexId = null;
   if (args) {
     if (args.ArticleSourceId !== undefined) {
       this.ArticleSourceId = args.ArticleSourceId;
     }
-    if (args.DateTimestamp !== undefined) {
-      this.DateTimestamp = args.DateTimestamp;
+    if (args.ArchiveDailyIndexId !== undefined) {
+      this.ArchiveDailyIndexId = args.ArchiveDailyIndexId;
     }
   }
 };
@@ -458,7 +543,7 @@ Kraken.GetArchiveDailyIndexRequest.prototype.read = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.DateTimestamp = input.readString();
+        this.ArchiveDailyIndexId = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -479,9 +564,91 @@ Kraken.GetArchiveDailyIndexRequest.prototype.write = function(output) {
     output.writeString(this.ArticleSourceId);
     output.writeFieldEnd();
   }
-  if (this.DateTimestamp !== null && this.DateTimestamp !== undefined) {
-    output.writeFieldBegin('DateTimestamp', Thrift.Type.STRING, 2);
-    output.writeString(this.DateTimestamp);
+  if (this.ArchiveDailyIndexId !== null && this.ArchiveDailyIndexId !== undefined) {
+    output.writeFieldBegin('ArchiveDailyIndexId', Thrift.Type.STRING, 2);
+    output.writeString(this.ArchiveDailyIndexId);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.ListArchiveDailyIndicesRequest = module.exports.ListArchiveDailyIndicesRequest = function(args) {
+  this.ArticleSourceId = null;
+  this.LatestLocalDate = null;
+  this.Limit = null;
+  if (args) {
+    if (args.ArticleSourceId !== undefined) {
+      this.ArticleSourceId = args.ArticleSourceId;
+    }
+    if (args.LatestLocalDate !== undefined) {
+      this.LatestLocalDate = args.LatestLocalDate;
+    }
+    if (args.Limit !== undefined) {
+      this.Limit = args.Limit;
+    }
+  }
+};
+Kraken.ListArchiveDailyIndicesRequest.prototype = {};
+Kraken.ListArchiveDailyIndicesRequest.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.ArticleSourceId = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.LatestLocalDate = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I32) {
+        this.Limit = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.ListArchiveDailyIndicesRequest.prototype.write = function(output) {
+  output.writeStructBegin('ListArchiveDailyIndicesRequest');
+  if (this.ArticleSourceId !== null && this.ArticleSourceId !== undefined) {
+    output.writeFieldBegin('ArticleSourceId', Thrift.Type.STRING, 1);
+    output.writeString(this.ArticleSourceId);
+    output.writeFieldEnd();
+  }
+  if (this.LatestLocalDate !== null && this.LatestLocalDate !== undefined) {
+    output.writeFieldBegin('LatestLocalDate', Thrift.Type.STRING, 2);
+    output.writeString(this.LatestLocalDate);
+    output.writeFieldEnd();
+  }
+  if (this.Limit !== null && this.Limit !== undefined) {
+    output.writeFieldBegin('Limit', Thrift.Type.I32, 3);
+    output.writeI32(this.Limit);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

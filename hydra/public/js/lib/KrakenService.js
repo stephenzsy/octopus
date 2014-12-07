@@ -641,9 +641,13 @@ Kraken.KrakenServiceClient = function(input, output) {
 };
 Kraken.KrakenServiceClient.prototype = {};
 Kraken.KrakenServiceClient.prototype.ping = function(callback) {
-  this.send_ping(callback); 
-  if (!callback) {
-  this.recv_ping();
+  if (callback === undefined) {
+    this.send_ping();
+    this.recv_ping();
+  } else {
+    var postData = this.send_ping(true);
+    return this.output.getTransport()
+      .jqRequest(this, postData, arguments, this.recv_ping);
   }
 };
 
@@ -652,20 +656,7 @@ Kraken.KrakenServiceClient.prototype.send_ping = function(callback) {
   var args = new Kraken.KrakenService_ping_args();
   args.write(this.output);
   this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_ping();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
+  return this.output.getTransport().flush(callback);
 };
 
 Kraken.KrakenServiceClient.prototype.recv_ping = function() {
@@ -686,9 +677,13 @@ Kraken.KrakenServiceClient.prototype.recv_ping = function() {
   return;
 };
 Kraken.KrakenServiceClient.prototype.ListArticleSources = function(callback) {
-  this.send_ListArticleSources(callback); 
-  if (!callback) {
+  if (callback === undefined) {
+    this.send_ListArticleSources();
     return this.recv_ListArticleSources();
+  } else {
+    var postData = this.send_ListArticleSources(true);
+    return this.output.getTransport()
+      .jqRequest(this, postData, arguments, this.recv_ListArticleSources);
   }
 };
 
@@ -697,20 +692,7 @@ Kraken.KrakenServiceClient.prototype.send_ListArticleSources = function(callback
   var args = new Kraken.KrakenService_ListArticleSources_args();
   args.write(this.output);
   this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_ListArticleSources();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
+  return this.output.getTransport().flush(callback);
 };
 
 Kraken.KrakenServiceClient.prototype.recv_ListArticleSources = function() {
@@ -734,9 +716,13 @@ Kraken.KrakenServiceClient.prototype.recv_ListArticleSources = function() {
   throw 'ListArticleSources failed: unknown result';
 };
 Kraken.KrakenServiceClient.prototype.GetArticleSource = function(request, callback) {
-  this.send_GetArticleSource(request, callback); 
-  if (!callback) {
+  if (callback === undefined) {
+    this.send_GetArticleSource(request);
     return this.recv_GetArticleSource();
+  } else {
+    var postData = this.send_GetArticleSource(request, true);
+    return this.output.getTransport()
+      .jqRequest(this, postData, arguments, this.recv_GetArticleSource);
   }
 };
 
@@ -746,20 +732,7 @@ Kraken.KrakenServiceClient.prototype.send_GetArticleSource = function(request, c
   args.request = request;
   args.write(this.output);
   this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_GetArticleSource();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
+  return this.output.getTransport().flush(callback);
 };
 
 Kraken.KrakenServiceClient.prototype.recv_GetArticleSource = function() {
@@ -789,9 +762,13 @@ Kraken.KrakenServiceClient.prototype.recv_GetArticleSource = function() {
   throw 'GetArticleSource failed: unknown result';
 };
 Kraken.KrakenServiceClient.prototype.ListArchiveDailyIndices = function(request, callback) {
-  this.send_ListArchiveDailyIndices(request, callback); 
-  if (!callback) {
+  if (callback === undefined) {
+    this.send_ListArchiveDailyIndices(request);
     return this.recv_ListArchiveDailyIndices();
+  } else {
+    var postData = this.send_ListArchiveDailyIndices(request, true);
+    return this.output.getTransport()
+      .jqRequest(this, postData, arguments, this.recv_ListArchiveDailyIndices);
   }
 };
 
@@ -801,20 +778,7 @@ Kraken.KrakenServiceClient.prototype.send_ListArchiveDailyIndices = function(req
   args.request = request;
   args.write(this.output);
   this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_ListArchiveDailyIndices();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
+  return this.output.getTransport().flush(callback);
 };
 
 Kraken.KrakenServiceClient.prototype.recv_ListArchiveDailyIndices = function() {
@@ -844,9 +808,13 @@ Kraken.KrakenServiceClient.prototype.recv_ListArchiveDailyIndices = function() {
   throw 'ListArchiveDailyIndices failed: unknown result';
 };
 Kraken.KrakenServiceClient.prototype.GetArchiveDailyIndex = function(request, callback) {
-  this.send_GetArchiveDailyIndex(request, callback); 
-  if (!callback) {
+  if (callback === undefined) {
+    this.send_GetArchiveDailyIndex(request);
     return this.recv_GetArchiveDailyIndex();
+  } else {
+    var postData = this.send_GetArchiveDailyIndex(request, true);
+    return this.output.getTransport()
+      .jqRequest(this, postData, arguments, this.recv_GetArchiveDailyIndex);
   }
 };
 
@@ -856,20 +824,7 @@ Kraken.KrakenServiceClient.prototype.send_GetArchiveDailyIndex = function(reques
   args.request = request;
   args.write(this.output);
   this.output.writeMessageEnd();
-  if (callback) {
-    var self = this;
-    this.output.getTransport().flush(true, function() {
-      var result = null;
-      try {
-        result = self.recv_GetArchiveDailyIndex();
-      } catch (e) {
-        result = e;
-      }
-      callback(result);
-    });
-  } else {
-    return this.output.getTransport().flush();
-  }
+  return this.output.getTransport().flush(callback);
 };
 
 Kraken.KrakenServiceClient.prototype.recv_GetArchiveDailyIndex = function() {

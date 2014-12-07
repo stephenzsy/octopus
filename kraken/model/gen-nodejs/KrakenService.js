@@ -227,17 +227,25 @@ Kraken.KrakenService_GetArticleSource_args.prototype.write = function(output) {
 
 Kraken.KrakenService_GetArticleSource_result = function(args) {
   this.success = null;
-  this.e = null;
+  this.validationError = null;
+  this.invalidArticleSourceIdNotFound = null;
+  if (args instanceof ttypes.ValidationError) {
+    this.validationError = args;
+    return;
+  }
   if (args instanceof ttypes.InvalidArticleSourceIdNotFound) {
-    this.e = args;
+    this.invalidArticleSourceIdNotFound = args;
     return;
   }
   if (args) {
     if (args.success !== undefined) {
       this.success = args.success;
     }
-    if (args.e !== undefined) {
-      this.e = args.e;
+    if (args.validationError !== undefined) {
+      this.validationError = args.validationError;
+    }
+    if (args.invalidArticleSourceIdNotFound !== undefined) {
+      this.invalidArticleSourceIdNotFound = args.invalidArticleSourceIdNotFound;
     }
   }
 };
@@ -265,8 +273,16 @@ Kraken.KrakenService_GetArticleSource_result.prototype.read = function(input) {
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new ttypes.InvalidArticleSourceIdNotFound();
-        this.e.read(input);
+        this.validationError = new ttypes.ValidationError();
+        this.validationError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.invalidArticleSourceIdNotFound = new ttypes.InvalidArticleSourceIdNotFound();
+        this.invalidArticleSourceIdNotFound.read(input);
       } else {
         input.skip(ftype);
       }
@@ -287,9 +303,185 @@ Kraken.KrakenService_GetArticleSource_result.prototype.write = function(output) 
     this.success.write(output);
     output.writeFieldEnd();
   }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
+  if (this.validationError !== null && this.validationError !== undefined) {
+    output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
+    this.validationError.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.invalidArticleSourceIdNotFound !== null && this.invalidArticleSourceIdNotFound !== undefined) {
+    output.writeFieldBegin('invalidArticleSourceIdNotFound', Thrift.Type.STRUCT, 2);
+    this.invalidArticleSourceIdNotFound.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.KrakenService_ListArchiveDailyIndices_args = function(args) {
+  this.request = null;
+  if (args) {
+    if (args.request !== undefined) {
+      this.request = args.request;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field request is unset!');
+    }
+  }
+};
+Kraken.KrakenService_ListArchiveDailyIndices_args.prototype = {};
+Kraken.KrakenService_ListArchiveDailyIndices_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.request = new ttypes.ListArchiveDailyIndicesRequest();
+        this.request.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.KrakenService_ListArchiveDailyIndices_args.prototype.write = function(output) {
+  output.writeStructBegin('KrakenService_ListArchiveDailyIndices_args');
+  if (this.request !== null && this.request !== undefined) {
+    output.writeFieldBegin('request', Thrift.Type.STRUCT, 1);
+    this.request.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.KrakenService_ListArchiveDailyIndices_result = function(args) {
+  this.success = null;
+  this.validationError = null;
+  this.invalidArticleSourceIdNotFound = null;
+  if (args instanceof ttypes.ValidationError) {
+    this.validationError = args;
+    return;
+  }
+  if (args instanceof ttypes.InvalidArticleSourceIdNotFound) {
+    this.invalidArticleSourceIdNotFound = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined) {
+      this.success = args.success;
+    }
+    if (args.validationError !== undefined) {
+      this.validationError = args.validationError;
+    }
+    if (args.invalidArticleSourceIdNotFound !== undefined) {
+      this.invalidArticleSourceIdNotFound = args.invalidArticleSourceIdNotFound;
+    }
+  }
+};
+Kraken.KrakenService_ListArchiveDailyIndices_result.prototype = {};
+Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.LIST) {
+        var _size8 = 0;
+        var _rtmp312;
+        this.success = [];
+        var _etype11 = 0;
+        _rtmp312 = input.readListBegin();
+        _etype11 = _rtmp312.etype;
+        _size8 = _rtmp312.size;
+        for (var _i13 = 0; _i13 < _size8; ++_i13)
+        {
+          var elem14 = null;
+          elem14 = new ttypes.ArchiveDailyIndex();
+          elem14.read(input);
+          this.success.push(elem14);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.validationError = new ttypes.ValidationError();
+        this.validationError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.invalidArticleSourceIdNotFound = new ttypes.InvalidArticleSourceIdNotFound();
+        this.invalidArticleSourceIdNotFound.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.write = function(output) {
+  output.writeStructBegin('KrakenService_ListArchiveDailyIndices_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.LIST, 0);
+    output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
+    for (var iter15 in this.success)
+    {
+      if (this.success.hasOwnProperty(iter15))
+      {
+        iter15 = this.success[iter15];
+        iter15.write(output);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.validationError !== null && this.validationError !== undefined) {
+    output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
+    this.validationError.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.invalidArticleSourceIdNotFound !== null && this.invalidArticleSourceIdNotFound !== undefined) {
+    output.writeFieldBegin('invalidArticleSourceIdNotFound', Thrift.Type.STRUCT, 2);
+    this.invalidArticleSourceIdNotFound.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -302,6 +494,8 @@ Kraken.KrakenService_GetArchiveDailyIndex_args = function(args) {
   if (args) {
     if (args.request !== undefined) {
       this.request = args.request;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field request is unset!');
     }
   }
 };
@@ -353,17 +547,25 @@ Kraken.KrakenService_GetArchiveDailyIndex_args.prototype.write = function(output
 
 Kraken.KrakenService_GetArchiveDailyIndex_result = function(args) {
   this.success = null;
-  this.e = null;
+  this.validationError = null;
+  this.invalidArticleSourceIdNotFound = null;
+  if (args instanceof ttypes.ValidationError) {
+    this.validationError = args;
+    return;
+  }
   if (args instanceof ttypes.InvalidArticleSourceIdNotFound) {
-    this.e = args;
+    this.invalidArticleSourceIdNotFound = args;
     return;
   }
   if (args) {
     if (args.success !== undefined) {
       this.success = args.success;
     }
-    if (args.e !== undefined) {
-      this.e = args.e;
+    if (args.validationError !== undefined) {
+      this.validationError = args.validationError;
+    }
+    if (args.invalidArticleSourceIdNotFound !== undefined) {
+      this.invalidArticleSourceIdNotFound = args.invalidArticleSourceIdNotFound;
     }
   }
 };
@@ -391,8 +593,16 @@ Kraken.KrakenService_GetArchiveDailyIndex_result.prototype.read = function(input
       break;
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.e = new ttypes.InvalidArticleSourceIdNotFound();
-        this.e.read(input);
+        this.validationError = new ttypes.ValidationError();
+        this.validationError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.invalidArticleSourceIdNotFound = new ttypes.InvalidArticleSourceIdNotFound();
+        this.invalidArticleSourceIdNotFound.read(input);
       } else {
         input.skip(ftype);
       }
@@ -413,163 +623,14 @@ Kraken.KrakenService_GetArchiveDailyIndex_result.prototype.write = function(outp
     this.success.write(output);
     output.writeFieldEnd();
   }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
+  if (this.validationError !== null && this.validationError !== undefined) {
+    output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
+    this.validationError.write(output);
     output.writeFieldEnd();
   }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-Kraken.KrakenService_ImportDocument_args = function(args) {
-  this.articleSourceId = null;
-  this.type = null;
-  this.localDate = null;
-  if (args) {
-    if (args.articleSourceId !== undefined) {
-      this.articleSourceId = args.articleSourceId;
-    }
-    if (args.type !== undefined) {
-      this.type = args.type;
-    }
-    if (args.localDate !== undefined) {
-      this.localDate = args.localDate;
-    }
-  }
-};
-Kraken.KrakenService_ImportDocument_args.prototype = {};
-Kraken.KrakenService_ImportDocument_args.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.articleSourceId = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.type = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRING) {
-        this.localDate = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Kraken.KrakenService_ImportDocument_args.prototype.write = function(output) {
-  output.writeStructBegin('KrakenService_ImportDocument_args');
-  if (this.articleSourceId !== null && this.articleSourceId !== undefined) {
-    output.writeFieldBegin('articleSourceId', Thrift.Type.STRING, 1);
-    output.writeString(this.articleSourceId);
-    output.writeFieldEnd();
-  }
-  if (this.type !== null && this.type !== undefined) {
-    output.writeFieldBegin('type', Thrift.Type.STRING, 2);
-    output.writeString(this.type);
-    output.writeFieldEnd();
-  }
-  if (this.localDate !== null && this.localDate !== undefined) {
-    output.writeFieldBegin('localDate', Thrift.Type.STRING, 3);
-    output.writeString(this.localDate);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-Kraken.KrakenService_ImportDocument_result = function(args) {
-  this.success = null;
-  this.e = null;
-  if (args instanceof ttypes.InvalidArticleSourceIdNotFound) {
-    this.e = args;
-    return;
-  }
-  if (args) {
-    if (args.success !== undefined) {
-      this.success = args.success;
-    }
-    if (args.e !== undefined) {
-      this.e = args.e;
-    }
-  }
-};
-Kraken.KrakenService_ImportDocument_result.prototype = {};
-Kraken.KrakenService_ImportDocument_result.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 0:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.success = new ttypes.ImportedDocument();
-        this.success.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.e = new ttypes.InvalidArticleSourceIdNotFound();
-        this.e.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Kraken.KrakenService_ImportDocument_result.prototype.write = function(output) {
-  output.writeStructBegin('KrakenService_ImportDocument_result');
-  if (this.success !== null && this.success !== undefined) {
-    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
-    this.success.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.e !== null && this.e !== undefined) {
-    output.writeFieldBegin('e', Thrift.Type.STRUCT, 1);
-    this.e.write(output);
+  if (this.invalidArticleSourceIdNotFound !== null && this.invalidArticleSourceIdNotFound !== undefined) {
+    output.writeFieldBegin('invalidArticleSourceIdNotFound', Thrift.Type.STRUCT, 2);
+    this.invalidArticleSourceIdNotFound.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -717,13 +778,69 @@ Kraken.KrakenServiceClient.prototype.recv_GetArticleSource = function(input,mtyp
   result.read(input);
   input.readMessageEnd();
 
-  if (null !== result.e) {
-    return callback(result.e);
+  if (null !== result.validationError) {
+    return callback(result.validationError);
+  }
+  if (null !== result.invalidArticleSourceIdNotFound) {
+    return callback(result.invalidArticleSourceIdNotFound);
   }
   if (null !== result.success) {
     return callback(null, result.success);
   }
   return callback('GetArticleSource failed: unknown result');
+};
+Kraken.KrakenServiceClient.prototype.ListArchiveDailyIndices = function(request, callback) {
+  this._seqid = this.new_seqid();
+  if (callback === undefined) {
+    var _defer = Q.defer();
+    this._reqs[this.seqid()] = function(error, result) {
+      if (error) {
+        _defer.reject(error);
+      } else {
+        _defer.resolve(result);
+      }
+    };
+    this.send_ListArchiveDailyIndices(request);
+    return _defer.promise;
+  } else {
+    this._reqs[this.seqid()] = callback;
+    this.send_ListArchiveDailyIndices(request);
+  }
+};
+
+Kraken.KrakenServiceClient.prototype.send_ListArchiveDailyIndices = function(request) {
+  var output = new this.pClass(this.output);
+  output.writeMessageBegin('ListArchiveDailyIndices', Thrift.MessageType.CALL, this.seqid());
+  var args = new Kraken.KrakenService_ListArchiveDailyIndices_args();
+  args.request = request;
+  args.write(output);
+  output.writeMessageEnd();
+  return this.output.flush();
+};
+
+Kraken.KrakenServiceClient.prototype.recv_ListArchiveDailyIndices = function(input,mtype,rseqid) {
+  var callback = this._reqs[rseqid] || function() {};
+  delete this._reqs[rseqid];
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(input);
+    input.readMessageEnd();
+    return callback(x);
+  }
+  var result = new Kraken.KrakenService_ListArchiveDailyIndices_result();
+  result.read(input);
+  input.readMessageEnd();
+
+  if (null !== result.validationError) {
+    return callback(result.validationError);
+  }
+  if (null !== result.invalidArticleSourceIdNotFound) {
+    return callback(result.invalidArticleSourceIdNotFound);
+  }
+  if (null !== result.success) {
+    return callback(null, result.success);
+  }
+  return callback('ListArchiveDailyIndices failed: unknown result');
 };
 Kraken.KrakenServiceClient.prototype.GetArchiveDailyIndex = function(request, callback) {
   this._seqid = this.new_seqid();
@@ -767,65 +884,16 @@ Kraken.KrakenServiceClient.prototype.recv_GetArchiveDailyIndex = function(input,
   result.read(input);
   input.readMessageEnd();
 
-  if (null !== result.e) {
-    return callback(result.e);
+  if (null !== result.validationError) {
+    return callback(result.validationError);
+  }
+  if (null !== result.invalidArticleSourceIdNotFound) {
+    return callback(result.invalidArticleSourceIdNotFound);
   }
   if (null !== result.success) {
     return callback(null, result.success);
   }
   return callback('GetArchiveDailyIndex failed: unknown result');
-};
-Kraken.KrakenServiceClient.prototype.ImportDocument = function(articleSourceId, type, localDate, callback) {
-  this._seqid = this.new_seqid();
-  if (callback === undefined) {
-    var _defer = Q.defer();
-    this._reqs[this.seqid()] = function(error, result) {
-      if (error) {
-        _defer.reject(error);
-      } else {
-        _defer.resolve(result);
-      }
-    };
-    this.send_ImportDocument(articleSourceId, type, localDate);
-    return _defer.promise;
-  } else {
-    this._reqs[this.seqid()] = callback;
-    this.send_ImportDocument(articleSourceId, type, localDate);
-  }
-};
-
-Kraken.KrakenServiceClient.prototype.send_ImportDocument = function(articleSourceId, type, localDate) {
-  var output = new this.pClass(this.output);
-  output.writeMessageBegin('ImportDocument', Thrift.MessageType.CALL, this.seqid());
-  var args = new Kraken.KrakenService_ImportDocument_args();
-  args.articleSourceId = articleSourceId;
-  args.type = type;
-  args.localDate = localDate;
-  args.write(output);
-  output.writeMessageEnd();
-  return this.output.flush();
-};
-
-Kraken.KrakenServiceClient.prototype.recv_ImportDocument = function(input,mtype,rseqid) {
-  var callback = this._reqs[rseqid] || function() {};
-  delete this._reqs[rseqid];
-  if (mtype == Thrift.MessageType.EXCEPTION) {
-    var x = new Thrift.TApplicationException();
-    x.read(input);
-    input.readMessageEnd();
-    return callback(x);
-  }
-  var result = new Kraken.KrakenService_ImportDocument_result();
-  result.read(input);
-  input.readMessageEnd();
-
-  if (null !== result.e) {
-    return callback(result.e);
-  }
-  if (null !== result.success) {
-    return callback(null, result.success);
-  }
-  return callback('ImportDocument failed: unknown result');
 };
 Kraken.KrakenServiceProcessor = exports.Processor = function(handler) {
   this._handler = handler
@@ -935,6 +1003,36 @@ Kraken.KrakenServiceProcessor.prototype.process_GetArticleSource = function(seqi
   }
 }
 
+Kraken.KrakenServiceProcessor.prototype.process_ListArchiveDailyIndices = function(seqid, input, output) {
+  var args = new Kraken.KrakenService_ListArchiveDailyIndices_args();
+  args.read(input);
+  input.readMessageEnd();
+  if (this._handler.ListArchiveDailyIndices.length === 1) {
+    Q.fcall(this._handler.ListArchiveDailyIndices, args.request)
+      .then(function(result) {
+        var result = new Kraken.KrakenService_ListArchiveDailyIndices_result({success: result});
+        output.writeMessageBegin("ListArchiveDailyIndices", Thrift.MessageType.REPLY, seqid);
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      }, function (err) {
+        var result = new Kraken.KrakenService_ListArchiveDailyIndices_result(err);
+        output.writeMessageBegin("ListArchiveDailyIndices", Thrift.MessageType.REPLY, seqid);
+        result.write(output);
+        output.writeMessageEnd();
+        output.flush();
+      });
+  } else {
+    this._handler.ListArchiveDailyIndices(args.request,  function (err, result) {
+      var result = new Kraken.KrakenService_ListArchiveDailyIndices_result((err != null ? err : {success: result}));
+      output.writeMessageBegin("ListArchiveDailyIndices", Thrift.MessageType.REPLY, seqid);
+      result.write(output);
+      output.writeMessageEnd();
+      output.flush();
+    });
+  }
+}
+
 Kraken.KrakenServiceProcessor.prototype.process_GetArchiveDailyIndex = function(seqid, input, output) {
   var args = new Kraken.KrakenService_GetArchiveDailyIndex_args();
   args.read(input);
@@ -958,36 +1056,6 @@ Kraken.KrakenServiceProcessor.prototype.process_GetArchiveDailyIndex = function(
     this._handler.GetArchiveDailyIndex(args.request,  function (err, result) {
       var result = new Kraken.KrakenService_GetArchiveDailyIndex_result((err != null ? err : {success: result}));
       output.writeMessageBegin("GetArchiveDailyIndex", Thrift.MessageType.REPLY, seqid);
-      result.write(output);
-      output.writeMessageEnd();
-      output.flush();
-    });
-  }
-}
-
-Kraken.KrakenServiceProcessor.prototype.process_ImportDocument = function(seqid, input, output) {
-  var args = new Kraken.KrakenService_ImportDocument_args();
-  args.read(input);
-  input.readMessageEnd();
-  if (this._handler.ImportDocument.length === 3) {
-    Q.fcall(this._handler.ImportDocument, args.articleSourceId, args.type, args.localDate)
-      .then(function(result) {
-        var result = new Kraken.KrakenService_ImportDocument_result({success: result});
-        output.writeMessageBegin("ImportDocument", Thrift.MessageType.REPLY, seqid);
-        result.write(output);
-        output.writeMessageEnd();
-        output.flush();
-      }, function (err) {
-        var result = new Kraken.KrakenService_ImportDocument_result(err);
-        output.writeMessageBegin("ImportDocument", Thrift.MessageType.REPLY, seqid);
-        result.write(output);
-        output.writeMessageEnd();
-        output.flush();
-      });
-  } else {
-    this._handler.ImportDocument(args.articleSourceId, args.type, args.localDate,  function (err, result) {
-      var result = new Kraken.KrakenService_ImportDocument_result((err != null ? err : {success: result}));
-      output.writeMessageBegin("ImportDocument", Thrift.MessageType.REPLY, seqid);
       result.write(output);
       output.writeMessageEnd();
       output.flush();
