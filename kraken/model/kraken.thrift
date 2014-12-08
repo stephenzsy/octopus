@@ -50,9 +50,9 @@ struct GetArchiveDailyIndexRequest {
 }
 
 struct ListArchiveDailyIndicesRequest {
-  1: string ArticleSourceId,
+  1: required string ArticleSourceId,
   2: string LatestLocalDate, // ISO 8601 formatted
-  3: i32 Limit, // limit on how many indices to fetch
+  3: i32 Limit = 10, // limit on how many indices to fetch
 }
 
 struct GetArticleSourceRequest {

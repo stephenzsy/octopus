@@ -11,8 +11,8 @@
 
             var request = new Kraken.GetArticleSourceRequest();
             request.ArticleSourceId = $scope.ArticleSource.id;
-            KrakenService.GetArticleSource(request, function () {
-            }).done(function (data) {
+            var x = KrakenService.GetArticleSource(request, function () {
+            }).then(function (data) {
                 $scope.ArticleSource.displayName = data.Name;
                 $scope.breadcrumb = [
                     {
@@ -23,7 +23,16 @@
                 $scope.ArticleSource.id = data.Id;
                 $scope.ArticleSource.url = data.Url;
                 $scope.$apply();
-            }).fail(function (xhr, status, err) {
+                var listArchiveDailyIndicesRequest = new Kraken.ListArchiveDailyIndicesRequest();
+                listArchiveDailyIndicesRequest.ArticleSourceId = data.Id;
+                return KrakenService.ListArchiveDailyIndices(listArchiveDailyIndicesRequest);
+            }, function (xhr, status, err) {
+                console.dir(xhr);
+                console.dir(status);
+                console.dir(err);
+            }).then(function (data) {
+                console.log(data);
+            }, function (xhr, status, err) {
                 console.dir(xhr);
                 console.dir(status);
                 console.dir(err);

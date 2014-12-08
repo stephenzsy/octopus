@@ -577,10 +577,12 @@ Kraken.GetArchiveDailyIndexRequest.prototype.write = function(output) {
 Kraken.ListArchiveDailyIndicesRequest = module.exports.ListArchiveDailyIndicesRequest = function(args) {
   this.ArticleSourceId = null;
   this.LatestLocalDate = null;
-  this.Limit = null;
+  this.Limit = 10;
   if (args) {
     if (args.ArticleSourceId !== undefined) {
       this.ArticleSourceId = args.ArticleSourceId;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field ArticleSourceId is unset!');
     }
     if (args.LatestLocalDate !== undefined) {
       this.LatestLocalDate = args.LatestLocalDate;
