@@ -16,14 +16,14 @@
                     r = _this.enact();
                 } else {
                     result = arg2;
-                    console.log(_this.getMethodName() + " Input: " + JSON.stringify(arg1));
+                    console.log(_this.getMethodName() + " Input: ", arg1);
                     r = _this.enact(arg1);
                 }
                 result(null, r);
-                console.log(_this.getMethodName() + " Output:" + JSON.stringify(r));
+                console.log(_this.getMethodName() + " Output:", r);
             } catch (e) {
                 result(e);
-                console.log(_this.getMethodName() + " Exception:" + JSON.stringify(e));
+                console.error(_this.getMethodName() + " Exception:", e);
             } finally {
             }
         };

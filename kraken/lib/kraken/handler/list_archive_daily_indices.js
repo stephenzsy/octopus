@@ -1,4 +1,7 @@
 var util = require('util');
+
+var moment = require('moment-timezone');
+
 var GenericHandler = require('./generic_handler');
 var Kraken = require('../../../model/gen-nodejs/kraken_types');
 
@@ -29,13 +32,23 @@ var ArticleSources = require('../article_sources');
 
         var latestLocalDate = null;
         if (request.LatestLocalDate) {
-            latestLocalDate = new Date(request.LatestLocalDate)
+            latestLocalDate = moment(request.LatestLocalDate).tz(articleSource.getTimezone());
         } else {
-            latestLocalDate = new Date();
+            latestLocalDate = moment().tz(articleSource.getTimezone());
         }
-        console.log(latestLocalDate);
-        var result = new Kraken.ArchiveDailyIndex();
-        return [result];
+        latestLocalDate = latestLocalDate.startOf('day');
+
+        var results = [];
+        if (request.Limit > 50 || request.Limit < 1) {
+            throw new Kraken.ValidationError("Request not in range between 1 and 50 ")
+        }
+        for (var i = 0; i < request.Limit; ++i) {
+            var dailyIndex = new Kraken.ArchiveDailyIndex();
+            dailyIndex.ArticleSourceId = request.ArticleSourceId;
+            dailyIndex.LocalDate = latestLocalDate.clone().subtract(i, 'days').format();
+            results.push(dailyIndex);
+        }
+        return results;
     };
 
     var handler = module.exports = new ListArchiveDailyIndices().handler;

@@ -31,7 +31,8 @@
                 console.dir(status);
                 console.dir(err);
             }).then(function (data) {
-                console.log(data);
+                $scope.dailyIndices = data;
+                $scope.$apply();
             }, function (xhr, status, err) {
                 console.dir(xhr);
                 console.dir(status);

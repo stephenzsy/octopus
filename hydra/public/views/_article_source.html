@@ -2,10 +2,18 @@
     <div hydra-breadcrumb="breadcrumb"></div>
     <div class="page-header">
         <h1>{{ArticleSource.displayName}}</h1>
+
         <div class="well">
             <b>Article Source Info</b><br>
             <b>ID:</b> {{ArticleSource.id}}</br>
             <b>External URL:</b> <a ng-href="{{ArticleSource.url}}">{{ArticleSource.url}}</a>
+        </div>
+    </div>
+    <div>
+        <h2>Daily Indices</h2>
+
+        <div ng-repeat="dailyIndex in dailyIndices">
+            {{dailyIndex.LocalDate | limitTo: 10}}
         </div>
     </div>
 
