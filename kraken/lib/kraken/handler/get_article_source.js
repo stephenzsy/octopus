@@ -1,6 +1,6 @@
 var util = require('util');
 var GenericHandler = require('./generic_handler');
-var Kraken = require('../../../model/gen-nodejs/kraken_types');
+var Kraken = require('kraken-model').Types;
 
 var ArticleSources = require('../article_sources');
 

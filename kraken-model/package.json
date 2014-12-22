@@ -1,0 +1,9 @@
+{
+  "name": "kraken-model",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "thrift": "0.9.2"
+  }
+}

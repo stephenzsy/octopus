@@ -3,18 +3,12 @@
 //
 // DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 //
-var thrift = require('thrift');
-var Thrift = thrift.Thrift;
-var Q = thrift.Q;
 
 
-var ttypes = module.exports = {};
 if (typeof Kraken === 'undefined') {
   Kraken = {};
 }
-Kraken.ValidationError = module.exports.ValidationError = function(args) {
-  Thrift.TException.call(this, "Kraken.ValidationError")
-  this.name = "Kraken.ValidationError"
+Kraken.ValidationError = function(args) {
   this.errorCode = null;
   this.message = null;
   if (args) {
@@ -43,14 +37,14 @@ Kraken.ValidationError.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.errorCode = input.readString();
+        this.errorCode = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.message = input.readString();
+        this.message = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -81,7 +75,7 @@ Kraken.ValidationError.prototype.write = function(output) {
   return;
 };
 
-Kraken.ArticleSource = module.exports.ArticleSource = function(args) {
+Kraken.ArticleSource = function(args) {
   this.Id = null;
   this.Name = null;
   this.Url = null;
@@ -113,21 +107,21 @@ Kraken.ArticleSource.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.Id = input.readString();
+        this.Id = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.Name = input.readString();
+        this.Name = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.Url = input.readString();
+        this.Url = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -163,7 +157,7 @@ Kraken.ArticleSource.prototype.write = function(output) {
   return;
 };
 
-Kraken.ImportedDocument = module.exports.ImportedDocument = function(args) {
+Kraken.ImportedDocument = function(args) {
   this.ArticleSourceId = null;
   this.Type = null;
   this.Id = null;
@@ -207,42 +201,42 @@ Kraken.ImportedDocument.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.ArticleSourceId = input.readString();
+        this.ArticleSourceId = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.Type = input.readString();
+        this.Type = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.Id = input.readString();
+        this.Id = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.SourceUrl = input.readString();
+        this.SourceUrl = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.ImportDateTime = input.readString();
+        this.ImportDateTime = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.STRING) {
-        this.DocumentContent = input.readString();
+        this.DocumentContent = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -293,9 +287,7 @@ Kraken.ImportedDocument.prototype.write = function(output) {
   return;
 };
 
-Kraken.InvalidArticleSourceIdNotFound = module.exports.InvalidArticleSourceIdNotFound = function(args) {
-  Thrift.TException.call(this, "Kraken.InvalidArticleSourceIdNotFound")
-  this.name = "Kraken.InvalidArticleSourceIdNotFound"
+Kraken.InvalidArticleSourceIdNotFound = function(args) {
   this.errorCode = null;
   this.message = null;
   this.ArticleSourceId = null;
@@ -328,21 +320,21 @@ Kraken.InvalidArticleSourceIdNotFound.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.errorCode = input.readString();
+        this.errorCode = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.message = input.readString();
+        this.message = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.ArticleSourceId = input.readString();
+        this.ArticleSourceId = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -378,7 +370,7 @@ Kraken.InvalidArticleSourceIdNotFound.prototype.write = function(output) {
   return;
 };
 
-Kraken.ArchiveDailyIndex = module.exports.ArchiveDailyIndex = function(args) {
+Kraken.ArchiveDailyIndex = function(args) {
   this.ArticleSourceId = null;
   this.ArchiveDailyIndexId = null;
   this.LocalDate = null;
@@ -422,42 +414,42 @@ Kraken.ArchiveDailyIndex.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.ArticleSourceId = input.readString();
+        this.ArticleSourceId = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.ArchiveDailyIndexId = input.readString();
+        this.ArchiveDailyIndexId = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.STRING) {
-        this.LocalDate = input.readString();
+        this.LocalDate = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 4:
       if (ftype == Thrift.Type.STRING) {
-        this.Status = input.readString();
+        this.Status = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 5:
       if (ftype == Thrift.Type.STRING) {
-        this.SourceUrl = input.readString();
+        this.SourceUrl = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 6:
       if (ftype == Thrift.Type.STRING) {
-        this.ImportedDocumentId = input.readString();
+        this.ImportedDocumentId = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -508,7 +500,7 @@ Kraken.ArchiveDailyIndex.prototype.write = function(output) {
   return;
 };
 
-Kraken.GetArchiveDailyIndexRequest = module.exports.GetArchiveDailyIndexRequest = function(args) {
+Kraken.GetArchiveDailyIndexRequest = function(args) {
   this.ArticleSourceId = null;
   this.ArchiveDailyIndexId = null;
   if (args) {
@@ -536,14 +528,14 @@ Kraken.GetArchiveDailyIndexRequest.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.ArticleSourceId = input.readString();
+        this.ArticleSourceId = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.ArchiveDailyIndexId = input.readString();
+        this.ArchiveDailyIndexId = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -574,7 +566,7 @@ Kraken.GetArchiveDailyIndexRequest.prototype.write = function(output) {
   return;
 };
 
-Kraken.ListArchiveDailyIndicesRequest = module.exports.ListArchiveDailyIndicesRequest = function(args) {
+Kraken.ListArchiveDailyIndicesRequest = function(args) {
   this.ArticleSourceId = null;
   this.LatestLocalDate = null;
   this.Limit = 10;
@@ -608,21 +600,21 @@ Kraken.ListArchiveDailyIndicesRequest.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.ArticleSourceId = input.readString();
+        this.ArticleSourceId = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.LatestLocalDate = input.readString();
+        this.LatestLocalDate = input.readString().value;
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
       if (ftype == Thrift.Type.I32) {
-        this.Limit = input.readI32();
+        this.Limit = input.readI32().value;
       } else {
         input.skip(ftype);
       }
@@ -658,7 +650,7 @@ Kraken.ListArchiveDailyIndicesRequest.prototype.write = function(output) {
   return;
 };
 
-Kraken.GetArticleSourceRequest = module.exports.GetArticleSourceRequest = function(args) {
+Kraken.GetArticleSourceRequest = function(args) {
   this.ArticleSourceId = null;
   if (args) {
     if (args.ArticleSourceId !== undefined) {
@@ -684,7 +676,7 @@ Kraken.GetArticleSourceRequest.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRING) {
-        this.ArticleSourceId = input.readString();
+        this.ArticleSourceId = input.readString().value;
       } else {
         input.skip(ftype);
       }
@@ -713,8 +705,125 @@ Kraken.GetArticleSourceRequest.prototype.write = function(output) {
   return;
 };
 
-ttypes.TYPE_DAILY_INDEX = 'ARCHIVE_DAILY_INDEX';
-ttypes.TYPE_ARTICLE = 'ARTICLE';
-ttypes.STATUS_NOT_FOUND = 'NOT_FOUND';
-ttypes.STATUS_IMPORTED = 'IMPORTED';
-ttypes.STATUS_READY = 'READY';
+Kraken.ImportDocumentRequest = function(args) {
+  this.ArticleSourceId = null;
+  this.DocumentType = null;
+  this.DocumentId = null;
+  if (args) {
+    if (args.ArticleSourceId !== undefined) {
+      this.ArticleSourceId = args.ArticleSourceId;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field ArticleSourceId is unset!');
+    }
+    if (args.DocumentType !== undefined) {
+      this.DocumentType = args.DocumentType;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field DocumentType is unset!');
+    }
+    if (args.DocumentId !== undefined) {
+      this.DocumentId = args.DocumentId;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field DocumentId is unset!');
+    }
+  }
+};
+Kraken.ImportDocumentRequest.prototype = {};
+Kraken.ImportDocumentRequest.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.ArticleSourceId = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.DocumentType = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.DocumentId = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.ImportDocumentRequest.prototype.write = function(output) {
+  output.writeStructBegin('ImportDocumentRequest');
+  if (this.ArticleSourceId !== null && this.ArticleSourceId !== undefined) {
+    output.writeFieldBegin('ArticleSourceId', Thrift.Type.STRING, 1);
+    output.writeString(this.ArticleSourceId);
+    output.writeFieldEnd();
+  }
+  if (this.DocumentType !== null && this.DocumentType !== undefined) {
+    output.writeFieldBegin('DocumentType', Thrift.Type.STRING, 2);
+    output.writeString(this.DocumentType);
+    output.writeFieldEnd();
+  }
+  if (this.DocumentId !== null && this.DocumentId !== undefined) {
+    output.writeFieldBegin('DocumentId', Thrift.Type.STRING, 3);
+    output.writeString(this.DocumentId);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.ImportDocumentResult = function(args) {
+};
+Kraken.ImportDocumentResult.prototype = {};
+Kraken.ImportDocumentResult.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.ImportDocumentResult.prototype.write = function(output) {
+  output.writeStructBegin('ImportDocumentResult');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.TYPE_DAILY_INDEX = 'ARCHIVE_DAILY_INDEX';
+Kraken.TYPE_ARTICLE = 'ARTICLE';
+Kraken.STATUS_UNKNOWN = 'UNKNOWN';
+Kraken.STATUS_NOT_FOUND = 'NOT_FOUND';
+Kraken.STATUS_IMPORTED = 'IMPORTED';
+Kraken.STATUS_READY = 'READY';

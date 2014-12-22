@@ -30,6 +30,7 @@ exception InvalidArticleSourceIdNotFound {
   3: string ArticleSourceId
 }
 
+const string STATUS_UNKNOWN = "UNKNOWN" // unknown
 const string STATUS_NOT_FOUND = "NOT_FOUND" // not imported yet
 const string STATUS_IMPORTED = "IMPORTED" // document imported
 const string STATUS_READY = "READY" // document parsed
@@ -59,6 +60,15 @@ struct GetArticleSourceRequest {
   1: required string ArticleSourceId
 }
 
+struct ImportDocumentRequest {
+  1: required string ArticleSourceId,
+  2: required string DocumentType,
+  3: required string DocumentId,
+}
+
+struct ImportDocumentResult {
+}
+
 service KrakenService {
   void ping(),
 
@@ -66,6 +76,13 @@ service KrakenService {
    * List Article Sources
    */
   list<ArticleSource> ListArticleSources(),
+
+  /**
+   * Import external document into repository
+   */
+  ImportDocumentResult ImportDocument(1: ImportDocumentRequest request) throws (
+    1: ValidationError validationError
+  ),
 
   /**
    * Get Article Source By ID

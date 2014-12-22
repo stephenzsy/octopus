@@ -3,7 +3,7 @@ var util = require('util');
 var moment = require('moment-timezone');
 
 var GenericHandler = require('./generic_handler');
-var Kraken = require('../../../model/gen-nodejs/kraken_types');
+var Kraken = require('kraken-model').Types;
 
 var ArticleSources = require('../article_sources');
 
@@ -21,12 +21,13 @@ var ArticleSources = require('../article_sources');
     };
 
     ListArchiveDailyIndices.prototype.enact = function (/*ListArchiveDailyIndicesRequest*/ request) {
-        var articleSource = ArticleSources[request.ArticleSourceId];
+        var articleSourceId = request.ArticleSourceId;
+        var articleSource = ArticleSources[articleSourceId];
         if (!articleSource) {
             var e = new Kraken.InvalidArticleSourceIdNotFound();
             e.ArticleSourceId = request.ArticleSourceId;
             e.errorCode = 'InvalidArticleSourceId.NotFound';
-            e.message = "Invalid article source ID provided: " + request.ArticleSourceId;
+            e.message = "Invalid article source ID provided: " + articleSourceId;
             throw e;
         }
 
@@ -43,9 +44,13 @@ var ArticleSources = require('../article_sources');
             throw new Kraken.ValidationError("Request not in range between 1 and 50 ")
         }
         for (var i = 0; i < request.Limit; ++i) {
+            var d = latestLocalDate.clone().subtract(i, 'days');
             var dailyIndex = new Kraken.ArchiveDailyIndex();
-            dailyIndex.ArticleSourceId = request.ArticleSourceId;
-            dailyIndex.LocalDate = latestLocalDate.clone().subtract(i, 'days').format();
+            dailyIndex.ArticleSourceId = articleSourceId;
+            dailyIndex.ArchiveDailyIndexId = d.format("YYYY-MM-DD");
+            dailyIndex.LocalDate = d.format();
+            dailyIndex.Status = Kraken.STATUS_UNKNOWN;
+            dailyIndex.SourceUrl = articleSource.getArchiveDailyIndexUrlForLocalDate(d);
             results.push(dailyIndex);
         }
         return results;

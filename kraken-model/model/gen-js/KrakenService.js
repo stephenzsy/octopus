@@ -167,6 +167,132 @@ Kraken.KrakenService_ListArticleSources_result.prototype.write = function(output
   return;
 };
 
+Kraken.KrakenService_ImportDocument_args = function(args) {
+  this.request = null;
+  if (args) {
+    if (args.request !== undefined) {
+      this.request = args.request;
+    }
+  }
+};
+Kraken.KrakenService_ImportDocument_args.prototype = {};
+Kraken.KrakenService_ImportDocument_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.request = new Kraken.ImportDocumentRequest();
+        this.request.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.KrakenService_ImportDocument_args.prototype.write = function(output) {
+  output.writeStructBegin('KrakenService_ImportDocument_args');
+  if (this.request !== null && this.request !== undefined) {
+    output.writeFieldBegin('request', Thrift.Type.STRUCT, 1);
+    this.request.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.KrakenService_ImportDocument_result = function(args) {
+  this.success = null;
+  this.validationError = null;
+  if (args instanceof Kraken.ValidationError) {
+    this.validationError = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined) {
+      this.success = args.success;
+    }
+    if (args.validationError !== undefined) {
+      this.validationError = args.validationError;
+    }
+  }
+};
+Kraken.KrakenService_ImportDocument_result.prototype = {};
+Kraken.KrakenService_ImportDocument_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new Kraken.ImportDocumentResult();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.validationError = new Kraken.ValidationError();
+        this.validationError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.KrakenService_ImportDocument_result.prototype.write = function(output) {
+  output.writeStructBegin('KrakenService_ImportDocument_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.validationError !== null && this.validationError !== undefined) {
+    output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
+    this.validationError.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 Kraken.KrakenService_GetArticleSource_args = function(args) {
   this.request = null;
   if (args) {
@@ -714,6 +840,49 @@ Kraken.KrakenServiceClient.prototype.recv_ListArticleSources = function() {
     return result.success;
   }
   throw 'ListArticleSources failed: unknown result';
+};
+Kraken.KrakenServiceClient.prototype.ImportDocument = function(request, callback) {
+  if (callback === undefined) {
+    this.send_ImportDocument(request);
+    return this.recv_ImportDocument();
+  } else {
+    var postData = this.send_ImportDocument(request, true);
+    return this.output.getTransport()
+      .jqRequest(this, postData, arguments, this.recv_ImportDocument);
+  }
+};
+
+Kraken.KrakenServiceClient.prototype.send_ImportDocument = function(request, callback) {
+  this.output.writeMessageBegin('ImportDocument', Thrift.MessageType.CALL, this.seqid);
+  var args = new Kraken.KrakenService_ImportDocument_args();
+  args.request = request;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  return this.output.getTransport().flush(callback);
+};
+
+Kraken.KrakenServiceClient.prototype.recv_ImportDocument = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new Kraken.KrakenService_ImportDocument_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.validationError) {
+    throw result.validationError;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'ImportDocument failed: unknown result';
 };
 Kraken.KrakenServiceClient.prototype.GetArticleSource = function(request, callback) {
   if (callback === undefined) {

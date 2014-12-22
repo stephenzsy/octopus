@@ -3,25 +3,13 @@
 
     angular.module('hydra')
         .controller('ArticleSourceController', function ($scope, $routeParams, KrakenService) {
-            $scope.ArticleSource = {
-                displayName: '',
-                id: $routeParams['article_source_id']
-            };
             $scope.breadcrumb = [];
 
             var request = new Kraken.GetArticleSourceRequest();
-            request.ArticleSourceId = $scope.ArticleSource.id;
+            request.ArticleSourceId = $routeParams['article_source_id'];
             var x = KrakenService.GetArticleSource(request, function () {
             }).then(function (data) {
-                $scope.ArticleSource.displayName = data.Name;
-                $scope.breadcrumb = [
-                    {
-                        display: $scope.ArticleSource.displayName,
-                        active: false
-                    }
-                ];
-                $scope.ArticleSource.id = data.Id;
-                $scope.ArticleSource.url = data.Url;
+                $scope.ArticleSource = data;
                 $scope.$apply();
                 var listArchiveDailyIndicesRequest = new Kraken.ListArchiveDailyIndicesRequest();
                 listArchiveDailyIndicesRequest.ArticleSourceId = data.Id;
@@ -38,5 +26,16 @@
                 console.dir(status);
                 console.dir(err);
             });
+
+            $scope.importDailyIndexDocument = function (dailyIndex) {
+                var request = new Kraken.ImportDocumentRequest();
+                request.ArticleSourceId = dailyIndex.ArticleSourceId;
+                request.DocumentType = Kraken.TYPE_DAILY_INDEX;
+                request.DocumentId = dailyIndex.ArchiveDailyIndexId;
+                KrakenService.ImportDocument(request, function () {
+                }).then(function (data) {
+                    console.log(data);
+                });
+            };
         });
 })();

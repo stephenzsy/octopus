@@ -1,19 +1,28 @@
 <div class="container">
     <div hydra-breadcrumb="breadcrumb"></div>
     <div class="page-header">
-        <h1>{{ArticleSource.displayName}}</h1>
+        <h1>{{ArticleSource.Name}}</h1>
 
         <div class="well">
             <b>Article Source Info</b><br>
-            <b>ID:</b> {{ArticleSource.id}}</br>
-            <b>External URL:</b> <a ng-href="{{ArticleSource.url}}">{{ArticleSource.url}}</a>
+            <b>ID:</b> {{ArticleSource.Id}}</br>
+            <b>External URL:</b> <a ng-href="{{ArticleSource.Url}}">{{ArticleSource.Url}}</a>
         </div>
     </div>
     <div>
         <h2>Daily Indices</h2>
 
         <div ng-repeat="dailyIndex in dailyIndices">
-            {{dailyIndex.LocalDate | limitTo: 10}}
+            <div>
+                <a ng-href="/daily_index/{{ArticleSource.Id}}/{{dailyIndex.ArchiveDailyIndexId}}">
+                    {{dailyIndex.LocalDate | limitTo: 10}}
+                </a>
+            </div>
+            <div>Status: {{dailyIndex.Status}}</div>
+            <div>External URL: <a ng-href="{{dailyIndex.SourceUrl}}">{{dailyIndex.SourceUrl}}</a></div>
+
+            <div class="btn btn-primary" ng-click="importDailyIndexDocument(dailyIndex)">Import</div>
+            <hr>
         </div>
     </div>
 

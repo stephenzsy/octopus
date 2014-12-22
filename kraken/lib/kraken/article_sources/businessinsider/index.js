@@ -24,6 +24,13 @@ var ArticleSource = require('../article_source');
         return 'America/New_York';
     };
 
+    /**
+     * @param date Moment.js local date
+     */
+    BusinessInsider.prototype.getArchiveDailyIndexUrlForLocalDate = function (date) {
+        return 'http://businessinsider.com/archives?date=' + date.format('YYYY-MM-DD');
+    };
+
 
     module.exports = BusinessInsider;
 })();

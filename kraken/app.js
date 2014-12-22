@@ -2,10 +2,7 @@
 
 var thrift = require('thrift');
 
-var KrakenService = require('./model/gen-nodejs/KrakenService');
-var ttypes = require('./model/gen-nodejs/kraken_types');
-
-var data = {};
+var KrakenService = require('kraken-model').Service;
 
 module.exports = thrift.createWebServer({
     cors: {'*': true},
