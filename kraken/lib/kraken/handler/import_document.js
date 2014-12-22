@@ -1,9 +1,14 @@
 var util = require('util');
-var GenericHandler = require('./generic_handler');
 var Kraken = require('kraken-model').Types;
+
+var GenericHandler = require('./generic_handler');
+var ArticleSources = require('../article_sources');
+var HttpExternalRepository = require("../document_repository/http_external_repository");
 
 (function () {
     "use strict";
+
+    var httpExternalRepository = new HttpExternalRepository();
 
     function ImportDocument() {
         GenericHandler.call(this);
@@ -16,6 +21,26 @@ var Kraken = require('kraken-model').Types;
     };
 
     ImportDocument.prototype.enact = function (/*ImportDocumentRequest*/ request) {
+        var articleSourceId = request.ArticleSourceId;
+        var articleSource = ArticleSources[articleSourceId];
+        if (!articleSource) {
+            var e = new Kraken.InvalidArticleSourceIdNotFound();
+            e.ArticleSourceId = request.ArticleSourceId;
+            e.errorCode = 'InvalidArticleSourceId.NotFound';
+            e.message = "Invalid article source ID provided: " + articleSourceId;
+            throw e;
+        }
+
+        // resolve url
+        var url = null;
+        if (request.DocumentType == Kraken.TYPE_DAILY_INDEX) {
+            url = articleSource.getArchiveDailyIndexUrlForId(request.DocumentId);
+        }
+
+        httpExternalRepository.retrieveDocument(url, function (data) {
+            console.log(data);
+        });
+
         var result = new Kraken.ImportDocumentResult();
         return result;
     };

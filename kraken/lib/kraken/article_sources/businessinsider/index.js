@@ -28,9 +28,12 @@ var ArticleSource = require('../article_source');
      * @param date Moment.js local date
      */
     BusinessInsider.prototype.getArchiveDailyIndexUrlForLocalDate = function (date) {
-        return 'http://businessinsider.com/archives?date=' + date.format('YYYY-MM-DD');
+        return 'http://www.businessinsider.com/archives?date=' + date.format('YYYY-MM-DD');
     };
 
+    BusinessInsider.prototype.getArchiveDailyIndexUrlForId = function (id) {
+        return 'http://www.businessinsider.com/archives?date=' + id;
+    };
 
     module.exports = BusinessInsider;
 })();
