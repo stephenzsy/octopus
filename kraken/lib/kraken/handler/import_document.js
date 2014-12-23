@@ -1,9 +1,10 @@
 var util = require('util');
 var Kraken = require('kraken-model').Types;
+var Q = require('q');
 
 var GenericHandler = require('./generic_handler');
-var ArticleSources = require('../article_sources');
 var HttpExternalRepository = require("../document_repository/http_external_repository");
+var InputValidators = require("./util/input_validators");
 
 (function () {
     "use strict";
@@ -20,29 +21,29 @@ var HttpExternalRepository = require("../document_repository/http_external_repos
         return 'ImportDocument';
     };
 
-    ImportDocument.prototype.enact = function (/*ImportDocumentRequest*/ request) {
-        var articleSourceId = request.ArticleSourceId;
-        var articleSource = ArticleSources[articleSourceId];
-        if (!articleSource) {
-            var e = new Kraken.InvalidArticleSourceIdNotFound();
-            e.ArticleSourceId = request.ArticleSourceId;
-            e.errorCode = 'InvalidArticleSourceId.NotFound';
-            e.message = "Invalid article source ID provided: " + articleSourceId;
-            throw e;
-        }
+    ImportDocument.prototype.enact = function (/*Kraken.ImportDocumentRequest*/ request) {
+        var validated = InputValidators.validateImportDocumentRequest(request);
 
         // resolve url
         var url = null;
         if (request.DocumentType == Kraken.TYPE_DAILY_INDEX) {
-            url = articleSource.getArchiveDailyIndexUrlForId(request.DocumentId);
+            url = validated.articleSource.getArchiveDailyIndexUrlForId(request.DocumentId);
         }
 
-        httpExternalRepository.retrieveDocument(url, function (data) {
-            console.log(data);
-        });
+        return httpExternalRepository.retrieveDocument(url)
+            .then(function (documentContent) {
+                var doc = new Kraken.ImportedDocument();
+                doc.ArticleSourceId = validated.articleSource.getId();
+                doc.ImportDateTime = new Date().toISOString();
+                doc.Id = request.DocumentId;
+                doc.SourceUrl = url;
+                doc.DocumentContent = documentContent;
+                return new Kraken.ImportDocumentResult({Status: Kraken.STATUS_IMPORTED, ImportedDocument: doc});
+            });
+    };
 
-        var result = new Kraken.ImportDocumentResult();
-        return result;
+    ImportDocument.prototype.isAsync = function () {
+        return true;
     };
 
     var handler = module.exports = new ImportDocument().handler;

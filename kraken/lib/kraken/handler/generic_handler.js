@@ -1,7 +1,9 @@
+var Q = require('q');
+
 (function () {
     'use strict';
 
-    module.exports = function GenericHandler() {
+    function GenericHandler() {
         var _this = this;
 
         this.handler = function (arg1, arg2) {
@@ -19,7 +21,14 @@
                     console.log(_this.getMethodName() + " Input: ", arg1);
                     r = _this.enact(arg1);
                 }
-                result(null, r);
+                if (_this.isAsync()) {
+                    console.log(r);
+                    r.done(function (rr) {
+                        result(null, rr);
+                    });
+                } else {
+                    result(null, r);
+                }
                 console.log(_this.getMethodName() + " Output:", r);
             } catch (e) {
                 result(e);
@@ -27,5 +36,11 @@
             } finally {
             }
         };
+    }
+
+    GenericHandler.prototype.isAsync = function () {
+        return false;
     };
+
+    module.exports = GenericHandler;
 })();

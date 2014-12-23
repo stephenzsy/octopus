@@ -21,13 +21,8 @@ struct ImportedDocument {
   3: string Id,
   4: string SourceUrl,
   5: string ImportDateTime,
-  6: string DocumentContent
-}
-
-exception InvalidArticleSourceIdNotFound {
-  1: string errorCode,
-  2: string message,
-  3: string ArticleSourceId
+  6: map<string, string> Metadata,
+  7: string DocumentContent
 }
 
 const string STATUS_UNKNOWN = "UNKNOWN" // unknown
@@ -67,6 +62,8 @@ struct ImportDocumentRequest {
 }
 
 struct ImportDocumentResult {
+  1: string Status,
+  2: ImportedDocument ImportedDocument,
 }
 
 service KrakenService {
@@ -81,7 +78,7 @@ service KrakenService {
    * Import external document into repository
    */
   ImportDocumentResult ImportDocument(1: ImportDocumentRequest request) throws (
-    1: ValidationError validationError
+    1: ValidationError validationError,
   ),
 
   /**
@@ -89,7 +86,6 @@ service KrakenService {
    */
   ArticleSource GetArticleSource(1: GetArticleSourceRequest request) throws (
     1: ValidationError validationError,
-    2: InvalidArticleSourceIdNotFound invalidArticleSourceIdNotFound
   ),
 
   /**
@@ -97,7 +93,6 @@ service KrakenService {
    **/
   list<ArchiveDailyIndex> ListArchiveDailyIndices(1: required ListArchiveDailyIndicesRequest request) throws (
     1: ValidationError validationError,
-    2: InvalidArticleSourceIdNotFound invalidArticleSourceIdNotFound,
   ),
 
   /**
@@ -105,6 +100,5 @@ service KrakenService {
    **/
   ArchiveDailyIndex GetArchiveDailyIndex(1: required GetArchiveDailyIndexRequest request) throws (
     1: ValidationError validationError,
-    2: InvalidArticleSourceIdNotFound invalidArticleSourceIdNotFound,
   ),
 }

@@ -115,19 +115,19 @@ Kraken.KrakenService_ListArticleSources_result.prototype.read = function(input) 
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size0 = 0;
-        var _rtmp34;
+        var _size10 = 0;
+        var _rtmp314;
         this.success = [];
-        var _etype3 = 0;
-        _rtmp34 = input.readListBegin();
-        _etype3 = _rtmp34.etype;
-        _size0 = _rtmp34.size;
-        for (var _i5 = 0; _i5 < _size0; ++_i5)
+        var _etype13 = 0;
+        _rtmp314 = input.readListBegin();
+        _etype13 = _rtmp314.etype;
+        _size10 = _rtmp314.size;
+        for (var _i15 = 0; _i15 < _size10; ++_i15)
         {
-          var elem6 = null;
-          elem6 = new Kraken.ArticleSource();
-          elem6.read(input);
-          this.success.push(elem6);
+          var elem16 = null;
+          elem16 = new Kraken.ArticleSource();
+          elem16.read(input);
+          this.success.push(elem16);
         }
         input.readListEnd();
       } else {
@@ -151,12 +151,12 @@ Kraken.KrakenService_ListArticleSources_result.prototype.write = function(output
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter7 in this.success)
+    for (var iter17 in this.success)
     {
-      if (this.success.hasOwnProperty(iter7))
+      if (this.success.hasOwnProperty(iter17))
       {
-        iter7 = this.success[iter7];
-        iter7.write(output);
+        iter17 = this.success[iter17];
+        iter17.write(output);
       }
     }
     output.writeListEnd();
@@ -350,13 +350,8 @@ Kraken.KrakenService_GetArticleSource_args.prototype.write = function(output) {
 Kraken.KrakenService_GetArticleSource_result = function(args) {
   this.success = null;
   this.validationError = null;
-  this.invalidArticleSourceIdNotFound = null;
   if (args instanceof Kraken.ValidationError) {
     this.validationError = args;
-    return;
-  }
-  if (args instanceof Kraken.InvalidArticleSourceIdNotFound) {
-    this.invalidArticleSourceIdNotFound = args;
     return;
   }
   if (args) {
@@ -365,9 +360,6 @@ Kraken.KrakenService_GetArticleSource_result = function(args) {
     }
     if (args.validationError !== undefined) {
       this.validationError = args.validationError;
-    }
-    if (args.invalidArticleSourceIdNotFound !== undefined) {
-      this.invalidArticleSourceIdNotFound = args.invalidArticleSourceIdNotFound;
     }
   }
 };
@@ -401,14 +393,6 @@ Kraken.KrakenService_GetArticleSource_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.invalidArticleSourceIdNotFound = new Kraken.InvalidArticleSourceIdNotFound();
-        this.invalidArticleSourceIdNotFound.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -428,11 +412,6 @@ Kraken.KrakenService_GetArticleSource_result.prototype.write = function(output) 
   if (this.validationError !== null && this.validationError !== undefined) {
     output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
     this.validationError.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.invalidArticleSourceIdNotFound !== null && this.invalidArticleSourceIdNotFound !== undefined) {
-    output.writeFieldBegin('invalidArticleSourceIdNotFound', Thrift.Type.STRUCT, 2);
-    this.invalidArticleSourceIdNotFound.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -499,13 +478,8 @@ Kraken.KrakenService_ListArchiveDailyIndices_args.prototype.write = function(out
 Kraken.KrakenService_ListArchiveDailyIndices_result = function(args) {
   this.success = null;
   this.validationError = null;
-  this.invalidArticleSourceIdNotFound = null;
   if (args instanceof Kraken.ValidationError) {
     this.validationError = args;
-    return;
-  }
-  if (args instanceof Kraken.InvalidArticleSourceIdNotFound) {
-    this.invalidArticleSourceIdNotFound = args;
     return;
   }
   if (args) {
@@ -514,9 +488,6 @@ Kraken.KrakenService_ListArchiveDailyIndices_result = function(args) {
     }
     if (args.validationError !== undefined) {
       this.validationError = args.validationError;
-    }
-    if (args.invalidArticleSourceIdNotFound !== undefined) {
-      this.invalidArticleSourceIdNotFound = args.invalidArticleSourceIdNotFound;
     }
   }
 };
@@ -536,19 +507,19 @@ Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.read = function(in
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size8 = 0;
-        var _rtmp312;
+        var _size18 = 0;
+        var _rtmp322;
         this.success = [];
-        var _etype11 = 0;
-        _rtmp312 = input.readListBegin();
-        _etype11 = _rtmp312.etype;
-        _size8 = _rtmp312.size;
-        for (var _i13 = 0; _i13 < _size8; ++_i13)
+        var _etype21 = 0;
+        _rtmp322 = input.readListBegin();
+        _etype21 = _rtmp322.etype;
+        _size18 = _rtmp322.size;
+        for (var _i23 = 0; _i23 < _size18; ++_i23)
         {
-          var elem14 = null;
-          elem14 = new Kraken.ArchiveDailyIndex();
-          elem14.read(input);
-          this.success.push(elem14);
+          var elem24 = null;
+          elem24 = new Kraken.ArchiveDailyIndex();
+          elem24.read(input);
+          this.success.push(elem24);
         }
         input.readListEnd();
       } else {
@@ -559,14 +530,6 @@ Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.read = function(in
       if (ftype == Thrift.Type.STRUCT) {
         this.validationError = new Kraken.ValidationError();
         this.validationError.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.invalidArticleSourceIdNotFound = new Kraken.InvalidArticleSourceIdNotFound();
-        this.invalidArticleSourceIdNotFound.read(input);
       } else {
         input.skip(ftype);
       }
@@ -585,12 +548,12 @@ Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.write = function(o
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter15 in this.success)
+    for (var iter25 in this.success)
     {
-      if (this.success.hasOwnProperty(iter15))
+      if (this.success.hasOwnProperty(iter25))
       {
-        iter15 = this.success[iter15];
-        iter15.write(output);
+        iter25 = this.success[iter25];
+        iter25.write(output);
       }
     }
     output.writeListEnd();
@@ -599,11 +562,6 @@ Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.write = function(o
   if (this.validationError !== null && this.validationError !== undefined) {
     output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
     this.validationError.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.invalidArticleSourceIdNotFound !== null && this.invalidArticleSourceIdNotFound !== undefined) {
-    output.writeFieldBegin('invalidArticleSourceIdNotFound', Thrift.Type.STRUCT, 2);
-    this.invalidArticleSourceIdNotFound.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -670,13 +628,8 @@ Kraken.KrakenService_GetArchiveDailyIndex_args.prototype.write = function(output
 Kraken.KrakenService_GetArchiveDailyIndex_result = function(args) {
   this.success = null;
   this.validationError = null;
-  this.invalidArticleSourceIdNotFound = null;
   if (args instanceof Kraken.ValidationError) {
     this.validationError = args;
-    return;
-  }
-  if (args instanceof Kraken.InvalidArticleSourceIdNotFound) {
-    this.invalidArticleSourceIdNotFound = args;
     return;
   }
   if (args) {
@@ -685,9 +638,6 @@ Kraken.KrakenService_GetArchiveDailyIndex_result = function(args) {
     }
     if (args.validationError !== undefined) {
       this.validationError = args.validationError;
-    }
-    if (args.invalidArticleSourceIdNotFound !== undefined) {
-      this.invalidArticleSourceIdNotFound = args.invalidArticleSourceIdNotFound;
     }
   }
 };
@@ -721,14 +671,6 @@ Kraken.KrakenService_GetArchiveDailyIndex_result.prototype.read = function(input
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.invalidArticleSourceIdNotFound = new Kraken.InvalidArticleSourceIdNotFound();
-        this.invalidArticleSourceIdNotFound.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -748,11 +690,6 @@ Kraken.KrakenService_GetArchiveDailyIndex_result.prototype.write = function(outp
   if (this.validationError !== null && this.validationError !== undefined) {
     output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
     this.validationError.write(output);
-    output.writeFieldEnd();
-  }
-  if (this.invalidArticleSourceIdNotFound !== null && this.invalidArticleSourceIdNotFound !== undefined) {
-    output.writeFieldBegin('invalidArticleSourceIdNotFound', Thrift.Type.STRUCT, 2);
-    this.invalidArticleSourceIdNotFound.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -922,9 +859,6 @@ Kraken.KrakenServiceClient.prototype.recv_GetArticleSource = function() {
   if (null !== result.validationError) {
     throw result.validationError;
   }
-  if (null !== result.invalidArticleSourceIdNotFound) {
-    throw result.invalidArticleSourceIdNotFound;
-  }
   if (null !== result.success) {
     return result.success;
   }
@@ -968,9 +902,6 @@ Kraken.KrakenServiceClient.prototype.recv_ListArchiveDailyIndices = function() {
   if (null !== result.validationError) {
     throw result.validationError;
   }
-  if (null !== result.invalidArticleSourceIdNotFound) {
-    throw result.invalidArticleSourceIdNotFound;
-  }
   if (null !== result.success) {
     return result.success;
   }
@@ -1013,9 +944,6 @@ Kraken.KrakenServiceClient.prototype.recv_GetArchiveDailyIndex = function() {
 
   if (null !== result.validationError) {
     throw result.validationError;
-  }
-  if (null !== result.invalidArticleSourceIdNotFound) {
-    throw result.invalidArticleSourceIdNotFound;
   }
   if (null !== result.success) {
     return result.success;

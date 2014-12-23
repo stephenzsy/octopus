@@ -163,6 +163,7 @@ Kraken.ImportedDocument = function(args) {
   this.Id = null;
   this.SourceUrl = null;
   this.ImportDateTime = null;
+  this.Metadata = null;
   this.DocumentContent = null;
   if (args) {
     if (args.ArticleSourceId !== undefined) {
@@ -179,6 +180,9 @@ Kraken.ImportedDocument = function(args) {
     }
     if (args.ImportDateTime !== undefined) {
       this.ImportDateTime = args.ImportDateTime;
+    }
+    if (args.Metadata !== undefined) {
+      this.Metadata = args.Metadata;
     }
     if (args.DocumentContent !== undefined) {
       this.DocumentContent = args.DocumentContent;
@@ -235,6 +239,35 @@ Kraken.ImportedDocument.prototype.read = function(input) {
       }
       break;
       case 6:
+      if (ftype == Thrift.Type.MAP) {
+        var _size0 = 0;
+        var _rtmp34;
+        this.Metadata = {};
+        var _ktype1 = 0;
+        var _vtype2 = 0;
+        _rtmp34 = input.readMapBegin();
+        _ktype1 = _rtmp34.ktype;
+        _vtype2 = _rtmp34.vtype;
+        _size0 = _rtmp34.size;
+        for (var _i5 = 0; _i5 < _size0; ++_i5)
+        {
+          if (_i5 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key6 = null;
+          var val7 = null;
+          key6 = input.readString().value;
+          val7 = input.readString().value;
+          this.Metadata[key6] = val7;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
       if (ftype == Thrift.Type.STRING) {
         this.DocumentContent = input.readString().value;
       } else {
@@ -277,92 +310,24 @@ Kraken.ImportedDocument.prototype.write = function(output) {
     output.writeString(this.ImportDateTime);
     output.writeFieldEnd();
   }
-  if (this.DocumentContent !== null && this.DocumentContent !== undefined) {
-    output.writeFieldBegin('DocumentContent', Thrift.Type.STRING, 6);
-    output.writeString(this.DocumentContent);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-Kraken.InvalidArticleSourceIdNotFound = function(args) {
-  this.errorCode = null;
-  this.message = null;
-  this.ArticleSourceId = null;
-  if (args) {
-    if (args.errorCode !== undefined) {
-      this.errorCode = args.errorCode;
-    }
-    if (args.message !== undefined) {
-      this.message = args.message;
-    }
-    if (args.ArticleSourceId !== undefined) {
-      this.ArticleSourceId = args.ArticleSourceId;
-    }
-  }
-};
-Thrift.inherits(Kraken.InvalidArticleSourceIdNotFound, Thrift.TException);
-Kraken.InvalidArticleSourceIdNotFound.prototype.name = 'InvalidArticleSourceIdNotFound';
-Kraken.InvalidArticleSourceIdNotFound.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
+  if (this.Metadata !== null && this.Metadata !== undefined) {
+    output.writeFieldBegin('Metadata', Thrift.Type.MAP, 6);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.Metadata));
+    for (var kiter8 in this.Metadata)
     {
-      case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.errorCode = input.readString().value;
-      } else {
-        input.skip(ftype);
+      if (this.Metadata.hasOwnProperty(kiter8))
+      {
+        var viter9 = this.Metadata[kiter8];
+        output.writeString(kiter8);
+        output.writeString(viter9);
       }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.message = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRING) {
-        this.ArticleSourceId = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
     }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Kraken.InvalidArticleSourceIdNotFound.prototype.write = function(output) {
-  output.writeStructBegin('InvalidArticleSourceIdNotFound');
-  if (this.errorCode !== null && this.errorCode !== undefined) {
-    output.writeFieldBegin('errorCode', Thrift.Type.STRING, 1);
-    output.writeString(this.errorCode);
+    output.writeMapEnd();
     output.writeFieldEnd();
   }
-  if (this.message !== null && this.message !== undefined) {
-    output.writeFieldBegin('message', Thrift.Type.STRING, 2);
-    output.writeString(this.message);
-    output.writeFieldEnd();
-  }
-  if (this.ArticleSourceId !== null && this.ArticleSourceId !== undefined) {
-    output.writeFieldBegin('ArticleSourceId', Thrift.Type.STRING, 3);
-    output.writeString(this.ArticleSourceId);
+  if (this.DocumentContent !== null && this.DocumentContent !== undefined) {
+    output.writeFieldBegin('DocumentContent', Thrift.Type.STRING, 7);
+    output.writeString(this.DocumentContent);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -794,6 +759,16 @@ Kraken.ImportDocumentRequest.prototype.write = function(output) {
 };
 
 Kraken.ImportDocumentResult = function(args) {
+  this.Status = null;
+  this.ImportedDocument = null;
+  if (args) {
+    if (args.Status !== undefined) {
+      this.Status = args.Status;
+    }
+    if (args.ImportedDocument !== undefined) {
+      this.ImportedDocument = args.ImportedDocument;
+    }
+  }
 };
 Kraken.ImportDocumentResult.prototype = {};
 Kraken.ImportDocumentResult.prototype.read = function(input) {
@@ -807,7 +782,26 @@ Kraken.ImportDocumentResult.prototype.read = function(input) {
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    input.skip(ftype);
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.Status = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.ImportedDocument = new Kraken.ImportedDocument();
+        this.ImportedDocument.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -816,6 +810,16 @@ Kraken.ImportDocumentResult.prototype.read = function(input) {
 
 Kraken.ImportDocumentResult.prototype.write = function(output) {
   output.writeStructBegin('ImportDocumentResult');
+  if (this.Status !== null && this.Status !== undefined) {
+    output.writeFieldBegin('Status', Thrift.Type.STRING, 1);
+    output.writeString(this.Status);
+    output.writeFieldEnd();
+  }
+  if (this.ImportedDocument !== null && this.ImportedDocument !== undefined) {
+    output.writeFieldBegin('ImportedDocument', Thrift.Type.STRUCT, 2);
+    this.ImportedDocument.write(output);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;

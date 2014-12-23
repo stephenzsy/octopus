@@ -2,7 +2,7 @@ var util = require('util');
 var Kraken = require('kraken-model').Types;
 
 var GenericHandler = require('./generic_handler');
-var ArticleSources = require('../article_sources');
+var InputValidators = require('./util/input_validators');
 
 (function () {
     "use strict";
@@ -18,14 +18,8 @@ var ArticleSources = require('../article_sources');
     };
 
     GetArticleSource.prototype.enact = function (/*GetArticleSourceRequest*/ request) {
-        var articleSource = ArticleSources[request.ArticleSourceId];
-        if (!articleSource) {
-            var e = new Kraken.InvalidArticleSourceIdNotFound();
-            e.ArticleSourceId = request.ArticleSourceId;
-            e.errorCode = 'InvalidArticleSourceId.NotFound';
-            e.message = "Invalid article source ID provided: " + request.ArticleSourceId;
-            throw e;
-        }
+        var articleSource = InputValidators.validateArticleSourceId(request.ArticleSourceId);
+
         var result = new Kraken.ArticleSource();
         result.Id = articleSource.getId();
         result.Name = articleSource.getName();
