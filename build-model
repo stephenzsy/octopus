@@ -1,0 +1,20 @@
+#!/bin/bash
+
+DIR=`pwd`
+
+cd "${DIR}/kraken-model/model";
+thrift --gen js:jquery --gen js:node kraken.thrift;
+cd "${DIR}/kraken-model"
+npm link
+npm update
+
+cd "${DIR}/kraken";
+npm link kraken-model
+npm update
+
+cd "${DIR}/hydra";
+npm link kraken-model
+npm update
+
+echo "Done"
+

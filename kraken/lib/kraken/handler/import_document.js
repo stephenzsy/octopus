@@ -4,12 +4,14 @@ var Q = require('q');
 
 var GenericHandler = require('./generic_handler');
 var HttpExternalRepository = require("../document_repository/http_external_repository");
+var AwsS3DocumentRepository = require('../document_repository/aws_s3_document_repository');
 var InputValidators = require("./util/input_validators");
 
 (function () {
     "use strict";
 
     var httpExternalRepository = new HttpExternalRepository();
+    var awsS3DocumentRepository = new AwsS3DocumentRepository();
 
     function ImportDocument() {
         GenericHandler.call(this);
@@ -30,15 +32,27 @@ var InputValidators = require("./util/input_validators");
             url = validated.articleSource.getArchiveDailyIndexUrlForId(request.DocumentId);
         }
 
+        var timestamp = new Date().toISOString();
+
         return httpExternalRepository.retrieveDocument(url)
             .then(function (documentContent) {
                 var doc = new Kraken.ImportedDocument();
                 doc.ArticleSourceId = validated.articleSource.getId();
-                doc.ImportDateTime = new Date().toISOString();
+                doc.Type = validated.documentType;
+                doc.ImportDateTime = timestamp;
                 doc.Id = request.DocumentId;
                 doc.SourceUrl = url;
                 doc.DocumentContent = documentContent;
-                return new Kraken.ImportDocumentResult({Status: Kraken.STATUS_IMPORTED, ImportedDocument: doc});
+                doc.Metadata = {
+                    "ContentType": "text/html"
+                };
+                return doc;
+            }).then(awsS3DocumentRepository.storeImportedDocument)
+            .then(function (/* Kraken.ImportedDocument */ importedDocument) {
+                return new Kraken.ImportDocumentResult({
+                    Status: Kraken.STATUS_UNKNOWN,
+                    ImportedDocument: importedDocument
+                });
             });
     };
 

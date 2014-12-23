@@ -27,11 +27,11 @@ var ArticleSources = require('../../article_sources');
                 throw new Kraken.ValidationError({
                     errorCode: "InvalidDocumentType.NotFound",
                     message: "Invalid document type provided: " + request.DocumenType
-                })
+                });
             }
             return {
                 articleSource: articleSource,
-                documenType: documentType,
+                documentType: documentType,
                 documentId: request.DocumentId
             };
         }
