@@ -4,14 +4,13 @@ var Q = require('q');
 
 var GenericHandler = require('./generic_handler');
 var HttpExternalRepository = require("../document_repository/http_external_repository");
-var AwsS3DocumentRepository = require('../document_repository/aws_s3_document_repository');
 var InputValidators = require("./util/input_validators");
 
 (function () {
     "use strict";
 
     var httpExternalRepository = new HttpExternalRepository();
-    var awsS3DocumentRepository = new AwsS3DocumentRepository();
+    var awsS3DocumentRepository = require('../document_repository/aws_s3_document_repository');
 
     function ImportDocument() {
         GenericHandler.call(this);
@@ -50,7 +49,7 @@ var InputValidators = require("./util/input_validators");
             }).then(awsS3DocumentRepository.storeImportedDocument)
             .then(function (/* Kraken.ImportedDocument */ importedDocument) {
                 return new Kraken.ImportDocumentResult({
-                    Status: Kraken.STATUS_UNKNOWN,
+                    Status: Kraken.STATUS_IMPORTED,
                     ImportedDocument: importedDocument
                 });
             });

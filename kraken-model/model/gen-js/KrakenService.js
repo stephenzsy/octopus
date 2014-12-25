@@ -115,19 +115,19 @@ Kraken.KrakenService_ListArticleSources_result.prototype.read = function(input) 
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size10 = 0;
-        var _rtmp314;
+        var _size20 = 0;
+        var _rtmp324;
         this.success = [];
-        var _etype13 = 0;
-        _rtmp314 = input.readListBegin();
-        _etype13 = _rtmp314.etype;
-        _size10 = _rtmp314.size;
-        for (var _i15 = 0; _i15 < _size10; ++_i15)
+        var _etype23 = 0;
+        _rtmp324 = input.readListBegin();
+        _etype23 = _rtmp324.etype;
+        _size20 = _rtmp324.size;
+        for (var _i25 = 0; _i25 < _size20; ++_i25)
         {
-          var elem16 = null;
-          elem16 = new Kraken.ArticleSource();
-          elem16.read(input);
-          this.success.push(elem16);
+          var elem26 = null;
+          elem26 = new Kraken.ArticleSource();
+          elem26.read(input);
+          this.success.push(elem26);
         }
         input.readListEnd();
       } else {
@@ -151,12 +151,12 @@ Kraken.KrakenService_ListArticleSources_result.prototype.write = function(output
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter17 in this.success)
+    for (var iter27 in this.success)
     {
-      if (this.success.hasOwnProperty(iter17))
+      if (this.success.hasOwnProperty(iter27))
       {
-        iter17 = this.success[iter17];
-        iter17.write(output);
+        iter27 = this.success[iter27];
+        iter27.write(output);
       }
     }
     output.writeListEnd();
@@ -507,19 +507,19 @@ Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.read = function(in
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size18 = 0;
-        var _rtmp322;
+        var _size28 = 0;
+        var _rtmp332;
         this.success = [];
-        var _etype21 = 0;
-        _rtmp322 = input.readListBegin();
-        _etype21 = _rtmp322.etype;
-        _size18 = _rtmp322.size;
-        for (var _i23 = 0; _i23 < _size18; ++_i23)
+        var _etype31 = 0;
+        _rtmp332 = input.readListBegin();
+        _etype31 = _rtmp332.etype;
+        _size28 = _rtmp332.size;
+        for (var _i33 = 0; _i33 < _size28; ++_i33)
         {
-          var elem24 = null;
-          elem24 = new Kraken.ArchiveDailyIndex();
-          elem24.read(input);
-          this.success.push(elem24);
+          var elem34 = null;
+          elem34 = new Kraken.ArchiveDailyIndex();
+          elem34.read(input);
+          this.success.push(elem34);
         }
         input.readListEnd();
       } else {
@@ -548,12 +548,12 @@ Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.write = function(o
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter25 in this.success)
+    for (var iter35 in this.success)
     {
-      if (this.success.hasOwnProperty(iter25))
+      if (this.success.hasOwnProperty(iter35))
       {
-        iter25 = this.success[iter25];
-        iter25.write(output);
+        iter35 = this.success[iter35];
+        iter35.write(output);
       }
     }
     output.writeListEnd();

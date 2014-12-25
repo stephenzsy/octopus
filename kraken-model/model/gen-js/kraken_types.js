@@ -341,7 +341,7 @@ Kraken.ArchiveDailyIndex = function(args) {
   this.LocalDate = null;
   this.Status = null;
   this.SourceUrl = null;
-  this.ImportedDocumentId = null;
+  this.Metadata = null;
   if (args) {
     if (args.ArticleSourceId !== undefined) {
       this.ArticleSourceId = args.ArticleSourceId;
@@ -358,8 +358,8 @@ Kraken.ArchiveDailyIndex = function(args) {
     if (args.SourceUrl !== undefined) {
       this.SourceUrl = args.SourceUrl;
     }
-    if (args.ImportedDocumentId !== undefined) {
-      this.ImportedDocumentId = args.ImportedDocumentId;
+    if (args.Metadata !== undefined) {
+      this.Metadata = args.Metadata;
     }
   }
 };
@@ -413,8 +413,30 @@ Kraken.ArchiveDailyIndex.prototype.read = function(input) {
       }
       break;
       case 6:
-      if (ftype == Thrift.Type.STRING) {
-        this.ImportedDocumentId = input.readString().value;
+      if (ftype == Thrift.Type.MAP) {
+        var _size10 = 0;
+        var _rtmp314;
+        this.Metadata = {};
+        var _ktype11 = 0;
+        var _vtype12 = 0;
+        _rtmp314 = input.readMapBegin();
+        _ktype11 = _rtmp314.ktype;
+        _vtype12 = _rtmp314.vtype;
+        _size10 = _rtmp314.size;
+        for (var _i15 = 0; _i15 < _size10; ++_i15)
+        {
+          if (_i15 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key16 = null;
+          var val17 = null;
+          key16 = input.readString().value;
+          val17 = input.readString().value;
+          this.Metadata[key16] = val17;
+        }
+        input.readMapEnd();
       } else {
         input.skip(ftype);
       }
@@ -455,9 +477,19 @@ Kraken.ArchiveDailyIndex.prototype.write = function(output) {
     output.writeString(this.SourceUrl);
     output.writeFieldEnd();
   }
-  if (this.ImportedDocumentId !== null && this.ImportedDocumentId !== undefined) {
-    output.writeFieldBegin('ImportedDocumentId', Thrift.Type.STRING, 6);
-    output.writeString(this.ImportedDocumentId);
+  if (this.Metadata !== null && this.Metadata !== undefined) {
+    output.writeFieldBegin('Metadata', Thrift.Type.MAP, 6);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.Metadata));
+    for (var kiter18 in this.Metadata)
+    {
+      if (this.Metadata.hasOwnProperty(kiter18))
+      {
+        var viter19 = this.Metadata[kiter18];
+        output.writeString(kiter18);
+        output.writeString(viter19);
+      }
+    }
+    output.writeMapEnd();
     output.writeFieldEnd();
   }
   output.writeFieldStop();

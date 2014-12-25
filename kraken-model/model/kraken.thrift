@@ -37,7 +37,7 @@ struct ArchiveDailyIndex {
   3: string LocalDate,
   4: string Status,
   5: string SourceUrl,
-  6: string ImportedDocumentId
+  6: map<string, string> Metadata
 }
 
 struct GetArchiveDailyIndexRequest {

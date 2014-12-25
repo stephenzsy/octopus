@@ -22,10 +22,9 @@ var Q = require('q');
                     r = _this.enact(arg1);
                 }
                 if (_this.isAsync()) {
-                    console.log(r);
                     r.done(function (rr) {
                         result(null, rr);
-                    }, function(err) {
+                    }, function (err) {
                         result(err);
                     });
                 } else {

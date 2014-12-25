@@ -1,5 +1,6 @@
 var util = require('util');
 
+var Q = require('q');
 var moment = require('moment-timezone');
 var Kraken = require('kraken-model').Types;
 
@@ -19,6 +20,25 @@ var InputValidators = require('./util/input_validators');
         return 'ListArchiveDailyIndices';
     };
 
+    var awsS3DocumentRepository = require('../document_repository/aws_s3_document_repository');
+
+    function getMetadataForDailyIndexPromise(/* Kraken.ArchiveDailyIndex */ dailyIndex) {
+        return awsS3DocumentRepository.getImportedDocumentMetadata(dailyIndex.ArticleSourceId, Kraken.TYPE_DAILY_INDEX, dailyIndex.ArchiveDailyIndexId)
+            .then(function (s3Response) {
+                if (s3Response) {
+                    dailyIndex.Status = Kraken.STATUS_IMPORTED;
+                    console.log(s3Response);
+                    dailyIndex.Metadata = {
+                        "ImportDateTime": s3Response.Metadata['importdatetime'],
+                        "Size": s3Response.ContentLength
+                    };
+                } else {
+                    dailyIndex.Status = Kraken.STATUS_NOT_FOUND;
+                }
+                return dailyIndex;
+            });
+    }
+
     ListArchiveDailyIndices.prototype.enact = function (/*Kraken.ListArchiveDailyIndicesRequest*/ request) {
         var articleSource = InputValidators.validateArticleSourceId(request.ArticleSourceId);
 
@@ -30,7 +50,7 @@ var InputValidators = require('./util/input_validators');
         }
         latestLocalDate = latestLocalDate.startOf('day');
 
-        var results = [];
+        var promises = [];
         if (request.Limit > 50 || request.Limit < 1) {
             throw new Kraken.ValidationError("Request not in range between 1 and 50 ")
         }
@@ -42,9 +62,14 @@ var InputValidators = require('./util/input_validators');
             dailyIndex.LocalDate = d.format();
             dailyIndex.Status = Kraken.STATUS_UNKNOWN;
             dailyIndex.SourceUrl = articleSource.getArchiveDailyIndexUrlForLocalDate(d);
-            results.push(dailyIndex);
+
+            promises.push(getMetadataForDailyIndexPromise(dailyIndex));
         }
-        return results;
+        return Q.all(promises);
+    };
+
+    ListArchiveDailyIndices.prototype.isAsync = function () {
+        return true;
     };
 
     var handler = module.exports = new ListArchiveDailyIndices().handler;
