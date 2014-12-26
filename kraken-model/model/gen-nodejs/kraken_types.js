@@ -853,6 +853,62 @@ Kraken.ImportDocumentResult.prototype.write = function(output) {
   return;
 };
 
+Kraken.ParseArchiveDailyIndexRequest = module.exports.ParseArchiveDailyIndexRequest = function(args) {
+};
+Kraken.ParseArchiveDailyIndexRequest.prototype = {};
+Kraken.ParseArchiveDailyIndexRequest.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.ParseArchiveDailyIndexRequest.prototype.write = function(output) {
+  output.writeStructBegin('ParseArchiveDailyIndexRequest');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.ParseArchiveDailyIndexResult = module.exports.ParseArchiveDailyIndexResult = function(args) {
+};
+Kraken.ParseArchiveDailyIndexResult.prototype = {};
+Kraken.ParseArchiveDailyIndexResult.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    input.skip(ftype);
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.ParseArchiveDailyIndexResult.prototype.write = function(output) {
+  output.writeStructBegin('ParseArchiveDailyIndexResult');
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 ttypes.TYPE_DAILY_INDEX = 'ARCHIVE_DAILY_INDEX';
 ttypes.TYPE_ARTICLE = 'ARTICLE';
 ttypes.STATUS_UNKNOWN = 'UNKNOWN';

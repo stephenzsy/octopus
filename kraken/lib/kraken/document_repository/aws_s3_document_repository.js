@@ -53,7 +53,8 @@ var DocumentRepository = require('./document_repository');
                 metadata[k] = importedDocument.Metadata[k];
             }
         }
-        metadata['ImportDateTime'] = importedDocument.ImportDateTime;
+        metadata['source-url'] = importedDocument.SourceUrl;
+        metadata['import-date-time'] = importedDocument.ImportDateTime;
         request.Metadata = metadata;
         s3.putObject(request, function (err, data) {
             if (err) {
@@ -81,7 +82,29 @@ var DocumentRepository = require('./document_repository');
                     console.error(err);
                     deferred.reject(err);
                 }
-                return;
+            } else {
+                deferred.resolve(data);
+            }
+        });
+        return deferred.promise;
+    };
+
+
+    AwsS3DocumentRepository.prototype.getImportedDocument = function (articleSourceId, documentType, documentId) {
+        var deferred = Q.defer();
+        var s3Key = getS3Key(articleSourceId, documentType, documentId);
+        var request = {
+            Bucket: bucketName,
+            Key: s3Key
+        };
+        s3.getObject(request, function (err, data) {
+            if (err) {
+                if (err.code === 'NoSuchKey') {
+                    deferred.resolve(null);
+                } else {
+                    console.error(err);
+                    deferred.reject(err);
+                }
             } else {
                 deferred.resolve(data);
             }

@@ -18,10 +18,16 @@
                     {{dailyIndex.LocalDate | limitTo: 10}}
                 </a>
             </div>
-            <div>Status: {{dailyIndex.Status}}</div>
+            <div>Status: <span ng-switch="dailyIndex.Status">
+                <span ng-switch-when="NOT_FOUND" class="text-danger">Not Found</span>
+                <span ng-switch-when="IMPORTED" class="text-warning">Imported</span>
+                <span ng-switch-default class="text-danger">{{dailyIndex.Status}}</span>
+            </span></div>
+            <div>
+                <span class="btn btn-link" ng-click="importDailyIndexDocument(dailyIndex)">Import</span>
+                <span class="btn btn-link" ng-click="getImportedDailyIndexDocument(dailyIndex)">Get Imported Document</span>
+            </div>
             <div>External URL: <a ng-href="{{dailyIndex.SourceUrl}}">{{dailyIndex.SourceUrl}}</a></div>
-
-            <div class="btn btn-primary" ng-click="importDailyIndexDocument(dailyIndex)">Import</div>
             <hr>
         </div>
     </div>

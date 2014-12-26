@@ -27,9 +27,9 @@ var InputValidators = require('./util/input_validators');
             .then(function (s3Response) {
                 if (s3Response) {
                     dailyIndex.Status = Kraken.STATUS_IMPORTED;
-                    console.log(s3Response);
                     dailyIndex.Metadata = {
-                        "ImportDateTime": s3Response.Metadata['importdatetime'],
+                        "ImportDateTime": s3Response.Metadata['import-date-time'],
+                        "SourceUrl": s3Response.Metadata['source-url'],
                         "Size": s3Response.ContentLength
                     };
                 } else {

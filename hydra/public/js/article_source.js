@@ -33,9 +33,21 @@
                 request.DocumentType = Kraken.TYPE_DAILY_INDEX;
                 request.DocumentId = dailyIndex.ArchiveDailyIndexId;
                 KrakenService.ImportDocument(request, function () {
-                }).then(function (data) {
-                    console.log(data);
+                }).then(function (/* Kraken.ImportDocumentResult */ result) {
+                    dailyIndex.Status = result.Status;
+                    $scope.$apply();
                 });
             };
+
+            $scope.getImportedDailyIndexDocument = function (dailyIndex) {
+                var request = new Kraken.ImportDocumentRequest();
+                request.ArticleSourceId = dailyIndex.ArticleSourceId;
+                request.DocumentType = Kraken.TYPE_DAILY_INDEX;
+                request.DocumentId = dailyIndex.ArchiveDailyIndexId;
+                KrakenService.GetImportedDocument(request, function () {
+                }).then(function (/* Kraken.ImportDocumentResult */ result) {
+                    console.log(result);
+                });
+            }
         });
 })();

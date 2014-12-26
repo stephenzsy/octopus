@@ -66,6 +66,12 @@ struct ImportDocumentResult {
   2: ImportedDocument ImportedDocument,
 }
 
+struct ParseArchiveDailyIndexRequest {
+}
+
+struct ParseArchiveDailyIndexResult {
+}
+
 service KrakenService {
   void ping(),
 
@@ -101,4 +107,18 @@ service KrakenService {
   ArchiveDailyIndex GetArchiveDailyIndex(1: required GetArchiveDailyIndexRequest request) throws (
     1: ValidationError validationError,
   ),
+
+  /**
+   * Get imported document
+   **/
+  ImportDocumentResult GetImportedDocument(1: required ImportDocumentRequest request) throws (
+    1: ValidationError validationError,
+  )
+
+  /**
+   * Parse imported archive daily index
+   **/
+  ParseArchiveDailyIndexResult parseArchiveDailyIndex(1: required ParseArchiveDailyIndexRequest request) throws (
+    1: ValidationError validationError,
+  )
 }
