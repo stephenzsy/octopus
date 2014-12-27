@@ -21,8 +21,8 @@ var InputValidators = require("./util/input_validators");
         return 'GetImportedDocument';
     };
 
-    GetImportedDocument.prototype.enact = function (/*Kraken.ImportDocumentRequest*/ request) {
-        var validated = InputValidators.validateImportDocumentRequest(request);
+    GetImportedDocument.prototype.enact = function (/*Kraken.GenericDocumentRequest*/ request) {
+        var validated = InputValidators.validateGenericDocumentRequest(request);
 
         return awsS3DocumentRepository.getImportedDocument(request.ArticleSourceId, request.DocumentType, request.DocumentId)
             .then(function (result) {
@@ -40,9 +40,9 @@ var InputValidators = require("./util/input_validators");
                         })
                     });
                 } else {
-                    return new Kraken.ImportDocumentResult({
-                        Status: Kraken.STATUS_NOT_FOUND
-                    });
+                   throw new Kraken.ValidationError({
+
+                   })
                 }
             });
     };

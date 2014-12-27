@@ -8,7 +8,8 @@
         GetArchiveDailyIndex: require('./get_archive_daily_index'),
         ListArchiveDailyIndices: require('./list_archive_daily_indices'),
         ImportDocument: require('./import_document'),
-        GetImportedDocument: require('./get_imported_document')
+        GetImportedDocument: require('./get_imported_document'),
+        ParseArchiveDailyIndex: require('./parse_achive_daily_index')
     };
 
 })();

@@ -22,8 +22,8 @@ var InputValidators = require("./util/input_validators");
         return 'ImportDocument';
     };
 
-    ImportDocument.prototype.enact = function (/*Kraken.ImportDocumentRequest*/ request) {
-        var validated = InputValidators.validateImportDocumentRequest(request);
+    ImportDocument.prototype.enact = function (/*Kraken.GenericDocumentRequest*/ request) {
+        var validated = InputValidators.validateGenericDocumentRequest(request);
 
         // resolve url
         var url = null;

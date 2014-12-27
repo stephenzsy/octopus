@@ -1,6 +1,7 @@
 var util = require('util');
 
 var ArticleSource = require('../article_source');
+var DocumentParser = require('../../parser/document_parser');
 
 (function () {
     "use strict";
@@ -33,6 +34,12 @@ var ArticleSource = require('../article_source');
 
     BusinessInsider.prototype.getArchiveDailyIndexUrlForId = function (id) {
         return 'http://www.businessinsider.com/archives?date=' + id;
+    };
+
+    var archiveDailyIndexParser = new DocumentParser(require('./daily_index_model.json'));
+
+    BusinessInsider.prototype.getArchiveDailyIndexParser = function () {
+        return archiveDailyIndexParser;
     };
 
     module.exports = BusinessInsider;

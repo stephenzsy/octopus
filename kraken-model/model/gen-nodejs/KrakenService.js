@@ -195,7 +195,7 @@ Kraken.KrakenService_ImportDocument_args.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.request = new ttypes.ImportDocumentRequest();
+        this.request = new ttypes.GenericDocumentRequest();
         this.request.read(input);
       } else {
         input.skip(ftype);
@@ -727,7 +727,7 @@ Kraken.KrakenService_GetImportedDocument_args.prototype.read = function(input) {
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.request = new ttypes.ImportDocumentRequest();
+        this.request = new ttypes.GenericDocumentRequest();
         this.request.read(input);
       } else {
         input.skip(ftype);
@@ -829,7 +829,7 @@ Kraken.KrakenService_GetImportedDocument_result.prototype.write = function(outpu
   return;
 };
 
-Kraken.KrakenService_parseArchiveDailyIndex_args = function(args) {
+Kraken.KrakenService_ParseArchiveDailyIndex_args = function(args) {
   this.request = null;
   if (args) {
     if (args.request !== undefined) {
@@ -839,8 +839,8 @@ Kraken.KrakenService_parseArchiveDailyIndex_args = function(args) {
     }
   }
 };
-Kraken.KrakenService_parseArchiveDailyIndex_args.prototype = {};
-Kraken.KrakenService_parseArchiveDailyIndex_args.prototype.read = function(input) {
+Kraken.KrakenService_ParseArchiveDailyIndex_args.prototype = {};
+Kraken.KrakenService_ParseArchiveDailyIndex_args.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -855,7 +855,7 @@ Kraken.KrakenService_parseArchiveDailyIndex_args.prototype.read = function(input
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.request = new ttypes.ParseArchiveDailyIndexRequest();
+        this.request = new ttypes.GenericDocumentRequest();
         this.request.read(input);
       } else {
         input.skip(ftype);
@@ -873,8 +873,8 @@ Kraken.KrakenService_parseArchiveDailyIndex_args.prototype.read = function(input
   return;
 };
 
-Kraken.KrakenService_parseArchiveDailyIndex_args.prototype.write = function(output) {
-  output.writeStructBegin('KrakenService_parseArchiveDailyIndex_args');
+Kraken.KrakenService_ParseArchiveDailyIndex_args.prototype.write = function(output) {
+  output.writeStructBegin('KrakenService_ParseArchiveDailyIndex_args');
   if (this.request !== null && this.request !== undefined) {
     output.writeFieldBegin('request', Thrift.Type.STRUCT, 1);
     this.request.write(output);
@@ -885,7 +885,7 @@ Kraken.KrakenService_parseArchiveDailyIndex_args.prototype.write = function(outp
   return;
 };
 
-Kraken.KrakenService_parseArchiveDailyIndex_result = function(args) {
+Kraken.KrakenService_ParseArchiveDailyIndex_result = function(args) {
   this.success = null;
   this.validationError = null;
   if (args instanceof ttypes.ValidationError) {
@@ -901,8 +901,8 @@ Kraken.KrakenService_parseArchiveDailyIndex_result = function(args) {
     }
   }
 };
-Kraken.KrakenService_parseArchiveDailyIndex_result.prototype = {};
-Kraken.KrakenService_parseArchiveDailyIndex_result.prototype.read = function(input) {
+Kraken.KrakenService_ParseArchiveDailyIndex_result.prototype = {};
+Kraken.KrakenService_ParseArchiveDailyIndex_result.prototype.read = function(input) {
   input.readStructBegin();
   while (true)
   {
@@ -917,7 +917,7 @@ Kraken.KrakenService_parseArchiveDailyIndex_result.prototype.read = function(inp
     {
       case 0:
       if (ftype == Thrift.Type.STRUCT) {
-        this.success = new ttypes.ParseArchiveDailyIndexResult();
+        this.success = new ttypes.ArchiveDailyIndex();
         this.success.read(input);
       } else {
         input.skip(ftype);
@@ -940,8 +940,8 @@ Kraken.KrakenService_parseArchiveDailyIndex_result.prototype.read = function(inp
   return;
 };
 
-Kraken.KrakenService_parseArchiveDailyIndex_result.prototype.write = function(output) {
-  output.writeStructBegin('KrakenService_parseArchiveDailyIndex_result');
+Kraken.KrakenService_ParseArchiveDailyIndex_result.prototype.write = function(output) {
+  output.writeStructBegin('KrakenService_ParseArchiveDailyIndex_result');
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
     this.success.write(output);
@@ -1305,7 +1305,7 @@ Kraken.KrakenServiceClient.prototype.recv_GetImportedDocument = function(input,m
   }
   return callback('GetImportedDocument failed: unknown result');
 };
-Kraken.KrakenServiceClient.prototype.parseArchiveDailyIndex = function(request, callback) {
+Kraken.KrakenServiceClient.prototype.ParseArchiveDailyIndex = function(request, callback) {
   this._seqid = this.new_seqid();
   if (callback === undefined) {
     var _defer = Q.defer();
@@ -1316,25 +1316,25 @@ Kraken.KrakenServiceClient.prototype.parseArchiveDailyIndex = function(request, 
         _defer.resolve(result);
       }
     };
-    this.send_parseArchiveDailyIndex(request);
+    this.send_ParseArchiveDailyIndex(request);
     return _defer.promise;
   } else {
     this._reqs[this.seqid()] = callback;
-    this.send_parseArchiveDailyIndex(request);
+    this.send_ParseArchiveDailyIndex(request);
   }
 };
 
-Kraken.KrakenServiceClient.prototype.send_parseArchiveDailyIndex = function(request) {
+Kraken.KrakenServiceClient.prototype.send_ParseArchiveDailyIndex = function(request) {
   var output = new this.pClass(this.output);
-  output.writeMessageBegin('parseArchiveDailyIndex', Thrift.MessageType.CALL, this.seqid());
-  var args = new Kraken.KrakenService_parseArchiveDailyIndex_args();
+  output.writeMessageBegin('ParseArchiveDailyIndex', Thrift.MessageType.CALL, this.seqid());
+  var args = new Kraken.KrakenService_ParseArchiveDailyIndex_args();
   args.request = request;
   args.write(output);
   output.writeMessageEnd();
   return this.output.flush();
 };
 
-Kraken.KrakenServiceClient.prototype.recv_parseArchiveDailyIndex = function(input,mtype,rseqid) {
+Kraken.KrakenServiceClient.prototype.recv_ParseArchiveDailyIndex = function(input,mtype,rseqid) {
   var callback = this._reqs[rseqid] || function() {};
   delete this._reqs[rseqid];
   if (mtype == Thrift.MessageType.EXCEPTION) {
@@ -1343,7 +1343,7 @@ Kraken.KrakenServiceClient.prototype.recv_parseArchiveDailyIndex = function(inpu
     input.readMessageEnd();
     return callback(x);
   }
-  var result = new Kraken.KrakenService_parseArchiveDailyIndex_result();
+  var result = new Kraken.KrakenService_ParseArchiveDailyIndex_result();
   result.read(input);
   input.readMessageEnd();
 
@@ -1353,7 +1353,7 @@ Kraken.KrakenServiceClient.prototype.recv_parseArchiveDailyIndex = function(inpu
   if (null !== result.success) {
     return callback(null, result.success);
   }
-  return callback('parseArchiveDailyIndex failed: unknown result');
+  return callback('ParseArchiveDailyIndex failed: unknown result');
 };
 Kraken.KrakenServiceProcessor = exports.Processor = function(handler) {
   this._handler = handler
@@ -1583,29 +1583,29 @@ Kraken.KrakenServiceProcessor.prototype.process_GetImportedDocument = function(s
   }
 }
 
-Kraken.KrakenServiceProcessor.prototype.process_parseArchiveDailyIndex = function(seqid, input, output) {
-  var args = new Kraken.KrakenService_parseArchiveDailyIndex_args();
+Kraken.KrakenServiceProcessor.prototype.process_ParseArchiveDailyIndex = function(seqid, input, output) {
+  var args = new Kraken.KrakenService_ParseArchiveDailyIndex_args();
   args.read(input);
   input.readMessageEnd();
-  if (this._handler.parseArchiveDailyIndex.length === 1) {
-    Q.fcall(this._handler.parseArchiveDailyIndex, args.request)
+  if (this._handler.ParseArchiveDailyIndex.length === 1) {
+    Q.fcall(this._handler.ParseArchiveDailyIndex, args.request)
       .then(function(result) {
-        var result = new Kraken.KrakenService_parseArchiveDailyIndex_result({success: result});
-        output.writeMessageBegin("parseArchiveDailyIndex", Thrift.MessageType.REPLY, seqid);
+        var result = new Kraken.KrakenService_ParseArchiveDailyIndex_result({success: result});
+        output.writeMessageBegin("ParseArchiveDailyIndex", Thrift.MessageType.REPLY, seqid);
         result.write(output);
         output.writeMessageEnd();
         output.flush();
       }, function (err) {
-        var result = new Kraken.KrakenService_parseArchiveDailyIndex_result(err);
-        output.writeMessageBegin("parseArchiveDailyIndex", Thrift.MessageType.REPLY, seqid);
+        var result = new Kraken.KrakenService_ParseArchiveDailyIndex_result(err);
+        output.writeMessageBegin("ParseArchiveDailyIndex", Thrift.MessageType.REPLY, seqid);
         result.write(output);
         output.writeMessageEnd();
         output.flush();
       });
   } else {
-    this._handler.parseArchiveDailyIndex(args.request,  function (err, result) {
-      var result = new Kraken.KrakenService_parseArchiveDailyIndex_result((err != null ? err : {success: result}));
-      output.writeMessageBegin("parseArchiveDailyIndex", Thrift.MessageType.REPLY, seqid);
+    this._handler.ParseArchiveDailyIndex(args.request,  function (err, result) {
+      var result = new Kraken.KrakenService_ParseArchiveDailyIndex_result((err != null ? err : {success: result}));
+      output.writeMessageBegin("ParseArchiveDailyIndex", Thrift.MessageType.REPLY, seqid);
       result.write(output);
       output.writeMessageEnd();
       output.flush();

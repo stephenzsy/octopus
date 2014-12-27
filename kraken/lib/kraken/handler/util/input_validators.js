@@ -9,8 +9,8 @@ var ArticleSources = require('../../article_sources');
         var articleSource = ArticleSources[articleSourceId];
         if (!articleSource) {
             var e = new Kraken.ValidationError();
-            e.errorCode = 'InvalidArticleSourceId.NotFound';
-            e.message = "Invalid article source ID provided: " + articleSourceId;
+            e.ErrorCode = 'InvalidArticleSourceId.NotFound';
+            e.Message = "Invalid article source ID provided: " + articleSourceId;
             throw e;
         }
         return articleSource;
@@ -18,15 +18,15 @@ var ArticleSources = require('../../article_sources');
 
     module.exports = {
         validateArticleSourceId: validateArticleSourceId,
-        validateImportDocumentRequest: function (/* Kraken.ImportDocumentRequest */ request) {
+        validateGenericDocumentRequest: function (/* Kraken.GenericDocumentRequest */ request) {
             var articleSource = validateArticleSourceId(request.ArticleSourceId);
             var documentType = null;
             if (request.DocumentType === Kraken.TYPE_DAILY_INDEX) {
                 documentType = Kraken.TYPE_DAILY_INDEX;
             } else {
                 throw new Kraken.ValidationError({
-                    errorCode: "InvalidDocumentType.NotFound",
-                    message: "Invalid document type provided: " + request.DocumenType
+                    ErrorCode: "InvalidDocumentType.NotFound",
+                    Message: "Invalid document type provided: " + request.DocumenType
                 });
             }
             return {

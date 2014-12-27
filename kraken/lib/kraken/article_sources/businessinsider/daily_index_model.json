@@ -1,0 +1,60 @@
+{
+  "version": "0.0.1",
+  "model": {
+    "div.content": [
+      {
+        "filters": {
+          "h2, div.filters, div.next-prev, div.archives-footer": [
+            {"action": "remove"}
+          ]
+        }
+      },
+      {
+        "data": {
+          "action": "beginScope",
+          "type": "array"
+        }
+      },
+      {
+        "filters": {
+          "table > tr > td > a": [
+            {
+              "each": [
+                {
+                  "data": {
+                    "action": "beginScope",
+                    "type": "object"
+                  }
+                },
+                {
+                  "data": {
+                    "action": "collect",
+                    "type": "attribute",
+                    "attributeKey": "href",
+                    "dataKey": "link"
+                  }
+                },
+                {
+                  "data": {
+                    "action": "collect",
+                    "type": "text",
+                    "dataKey": "text"
+                  }
+                },
+                {
+                  "data": {
+                    "action": "appendToParent"
+                  }
+                },
+                {"action": "remove"}
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "action": "#inspect"
+      }
+    ]
+  }
+}

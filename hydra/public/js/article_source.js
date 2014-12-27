@@ -28,7 +28,7 @@
             });
 
             $scope.importDailyIndexDocument = function (dailyIndex) {
-                var request = new Kraken.ImportDocumentRequest();
+                var request = new Kraken.GenericDocumentRequest();
                 request.ArticleSourceId = dailyIndex.ArticleSourceId;
                 request.DocumentType = Kraken.TYPE_DAILY_INDEX;
                 request.DocumentId = dailyIndex.ArchiveDailyIndexId;
@@ -40,12 +40,23 @@
             };
 
             $scope.getImportedDailyIndexDocument = function (dailyIndex) {
-                var request = new Kraken.ImportDocumentRequest();
+                var request = new Kraken.GenericDocumentRequest();
                 request.ArticleSourceId = dailyIndex.ArticleSourceId;
                 request.DocumentType = Kraken.TYPE_DAILY_INDEX;
                 request.DocumentId = dailyIndex.ArchiveDailyIndexId;
                 KrakenService.GetImportedDocument(request, function () {
                 }).then(function (/* Kraken.ImportDocumentResult */ result) {
+                    console.log(result);
+                });
+            };
+
+            $scope.parseDailyIndex = function (dailyIndex) {
+                var request = new Kraken.GenericDocumentRequest();
+                request.ArticleSourceId = dailyIndex.ArticleSourceId;
+                request.DocumentType = Kraken.TYPE_DAILY_INDEX;
+                request.DocumentId = dailyIndex.ArchiveDailyIndexId;
+                KrakenService.ParseArchiveDailyIndex(request, function () {
+                }).then(function (/* Kraken.ParseArchiveDailyIndexResult */ result) {
                     console.log(result);
                 });
             }

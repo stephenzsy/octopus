@@ -2,8 +2,8 @@
 namespace js Kraken
 
 exception ValidationError {
-  1: string errorCode,
-  2: string message
+  1: string ErrorCode,
+  2: string Message
 }
 
 struct ArticleSource {
@@ -37,7 +37,8 @@ struct ArchiveDailyIndex {
   3: string LocalDate,
   4: string Status,
   5: string SourceUrl,
-  6: map<string, string> Metadata
+  6: map<string, string> Metadata,
+  7: string Content
 }
 
 struct GetArchiveDailyIndexRequest {
@@ -55,7 +56,7 @@ struct GetArticleSourceRequest {
   1: required string ArticleSourceId
 }
 
-struct ImportDocumentRequest {
+struct GenericDocumentRequest {
   1: required string ArticleSourceId,
   2: required string DocumentType,
   3: required string DocumentId,
@@ -64,12 +65,6 @@ struct ImportDocumentRequest {
 struct ImportDocumentResult {
   1: string Status,
   2: ImportedDocument ImportedDocument,
-}
-
-struct ParseArchiveDailyIndexRequest {
-}
-
-struct ParseArchiveDailyIndexResult {
 }
 
 service KrakenService {
@@ -83,7 +78,7 @@ service KrakenService {
   /**
    * Import external document into repository
    */
-  ImportDocumentResult ImportDocument(1: ImportDocumentRequest request) throws (
+  ImportDocumentResult ImportDocument(1: GenericDocumentRequest request) throws (
     1: ValidationError validationError,
   ),
 
@@ -111,14 +106,14 @@ service KrakenService {
   /**
    * Get imported document
    **/
-  ImportDocumentResult GetImportedDocument(1: required ImportDocumentRequest request) throws (
+  ImportDocumentResult GetImportedDocument(1: required GenericDocumentRequest request) throws (
     1: ValidationError validationError,
   )
 
   /**
    * Parse imported archive daily index
    **/
-  ParseArchiveDailyIndexResult parseArchiveDailyIndex(1: required ParseArchiveDailyIndexRequest request) throws (
+  ArchiveDailyIndex ParseArchiveDailyIndex(1: required GenericDocumentRequest request) throws (
     1: ValidationError validationError,
   )
 }
