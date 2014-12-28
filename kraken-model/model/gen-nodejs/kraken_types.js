@@ -171,6 +171,7 @@ Kraken.ImportedDocument = module.exports.ImportedDocument = function(args) {
   this.ImportDateTime = null;
   this.Metadata = null;
   this.DocumentContent = null;
+  this.Status = null;
   if (args) {
     if (args.ArticleSourceId !== undefined) {
       this.ArticleSourceId = args.ArticleSourceId;
@@ -192,6 +193,9 @@ Kraken.ImportedDocument = module.exports.ImportedDocument = function(args) {
     }
     if (args.DocumentContent !== undefined) {
       this.DocumentContent = args.DocumentContent;
+    }
+    if (args.Status !== undefined) {
+      this.Status = args.Status;
     }
   }
 };
@@ -275,6 +279,13 @@ Kraken.ImportedDocument.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 8:
+      if (ftype == Thrift.Type.STRING) {
+        this.Status = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -331,6 +342,77 @@ Kraken.ImportedDocument.prototype.write = function(output) {
     output.writeString(this.DocumentContent);
     output.writeFieldEnd();
   }
+  if (this.Status !== null && this.Status !== undefined) {
+    output.writeFieldBegin('Status', Thrift.Type.STRING, 8);
+    output.writeString(this.Status);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.ArchiveDailyIndexEntry = module.exports.ArchiveDailyIndexEntry = function(args) {
+  this.ArticleId = null;
+  this.Url = null;
+  if (args) {
+    if (args.ArticleId !== undefined) {
+      this.ArticleId = args.ArticleId;
+    }
+    if (args.Url !== undefined) {
+      this.Url = args.Url;
+    }
+  }
+};
+Kraken.ArchiveDailyIndexEntry.prototype = {};
+Kraken.ArchiveDailyIndexEntry.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.ArticleId = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.Url = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.ArchiveDailyIndexEntry.prototype.write = function(output) {
+  output.writeStructBegin('ArchiveDailyIndexEntry');
+  if (this.ArticleId !== null && this.ArticleId !== undefined) {
+    output.writeFieldBegin('ArticleId', Thrift.Type.STRING, 1);
+    output.writeString(this.ArticleId);
+    output.writeFieldEnd();
+  }
+  if (this.Url !== null && this.Url !== undefined) {
+    output.writeFieldBegin('Url', Thrift.Type.STRING, 2);
+    output.writeString(this.Url);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -343,7 +425,7 @@ Kraken.ArchiveDailyIndex = module.exports.ArchiveDailyIndex = function(args) {
   this.Status = null;
   this.SourceUrl = null;
   this.Metadata = null;
-  this.Content = null;
+  this.articleEntries = null;
   if (args) {
     if (args.ArticleSourceId !== undefined) {
       this.ArticleSourceId = args.ArticleSourceId;
@@ -363,8 +445,8 @@ Kraken.ArchiveDailyIndex = module.exports.ArchiveDailyIndex = function(args) {
     if (args.Metadata !== undefined) {
       this.Metadata = args.Metadata;
     }
-    if (args.Content !== undefined) {
-      this.Content = args.Content;
+    if (args.articleEntries !== undefined) {
+      this.articleEntries = args.articleEntries;
     }
   }
 };
@@ -442,8 +524,22 @@ Kraken.ArchiveDailyIndex.prototype.read = function(input) {
       }
       break;
       case 7:
-      if (ftype == Thrift.Type.STRING) {
-        this.Content = input.readString();
+      if (ftype == Thrift.Type.LIST) {
+        var _size18 = 0;
+        var _rtmp322;
+        this.articleEntries = [];
+        var _etype21 = 0;
+        _rtmp322 = input.readListBegin();
+        _etype21 = _rtmp322.etype;
+        _size18 = _rtmp322.size;
+        for (var _i23 = 0; _i23 < _size18; ++_i23)
+        {
+          var elem24 = null;
+          elem24 = new ttypes.ArchiveDailyIndexEntry();
+          elem24.read(input);
+          this.articleEntries.push(elem24);
+        }
+        input.readListEnd();
       } else {
         input.skip(ftype);
       }
@@ -487,21 +583,30 @@ Kraken.ArchiveDailyIndex.prototype.write = function(output) {
   if (this.Metadata !== null && this.Metadata !== undefined) {
     output.writeFieldBegin('Metadata', Thrift.Type.MAP, 6);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.Metadata));
-    for (var kiter18 in this.Metadata)
+    for (var kiter25 in this.Metadata)
     {
-      if (this.Metadata.hasOwnProperty(kiter18))
+      if (this.Metadata.hasOwnProperty(kiter25))
       {
-        var viter19 = this.Metadata[kiter18];
-        output.writeString(kiter18);
-        output.writeString(viter19);
+        var viter26 = this.Metadata[kiter25];
+        output.writeString(kiter25);
+        output.writeString(viter26);
       }
     }
     output.writeMapEnd();
     output.writeFieldEnd();
   }
-  if (this.Content !== null && this.Content !== undefined) {
-    output.writeFieldBegin('Content', Thrift.Type.STRING, 7);
-    output.writeString(this.Content);
+  if (this.articleEntries !== null && this.articleEntries !== undefined) {
+    output.writeFieldBegin('articleEntries', Thrift.Type.LIST, 7);
+    output.writeListBegin(Thrift.Type.STRUCT, this.articleEntries.length);
+    for (var iter27 in this.articleEntries)
+    {
+      if (this.articleEntries.hasOwnProperty(iter27))
+      {
+        iter27 = this.articleEntries[iter27];
+        iter27.write(output);
+      }
+    }
+    output.writeListEnd();
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -795,73 +900,6 @@ Kraken.GenericDocumentRequest.prototype.write = function(output) {
   if (this.DocumentId !== null && this.DocumentId !== undefined) {
     output.writeFieldBegin('DocumentId', Thrift.Type.STRING, 3);
     output.writeString(this.DocumentId);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-Kraken.ImportDocumentResult = module.exports.ImportDocumentResult = function(args) {
-  this.Status = null;
-  this.ImportedDocument = null;
-  if (args) {
-    if (args.Status !== undefined) {
-      this.Status = args.Status;
-    }
-    if (args.ImportedDocument !== undefined) {
-      this.ImportedDocument = args.ImportedDocument;
-    }
-  }
-};
-Kraken.ImportDocumentResult.prototype = {};
-Kraken.ImportDocumentResult.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.Status = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.ImportedDocument = new ttypes.ImportedDocument();
-        this.ImportedDocument.read(input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Kraken.ImportDocumentResult.prototype.write = function(output) {
-  output.writeStructBegin('ImportDocumentResult');
-  if (this.Status !== null && this.Status !== undefined) {
-    output.writeFieldBegin('Status', Thrift.Type.STRING, 1);
-    output.writeString(this.Status);
-    output.writeFieldEnd();
-  }
-  if (this.ImportedDocument !== null && this.ImportedDocument !== undefined) {
-    output.writeFieldBegin('ImportedDocument', Thrift.Type.STRUCT, 2);
-    this.ImportedDocument.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

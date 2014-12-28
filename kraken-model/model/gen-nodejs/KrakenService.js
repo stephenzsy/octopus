@@ -119,19 +119,19 @@ Kraken.KrakenService_ListArticleSources_result.prototype.read = function(input) 
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size20 = 0;
-        var _rtmp324;
+        var _size28 = 0;
+        var _rtmp332;
         this.success = [];
-        var _etype23 = 0;
-        _rtmp324 = input.readListBegin();
-        _etype23 = _rtmp324.etype;
-        _size20 = _rtmp324.size;
-        for (var _i25 = 0; _i25 < _size20; ++_i25)
+        var _etype31 = 0;
+        _rtmp332 = input.readListBegin();
+        _etype31 = _rtmp332.etype;
+        _size28 = _rtmp332.size;
+        for (var _i33 = 0; _i33 < _size28; ++_i33)
         {
-          var elem26 = null;
-          elem26 = new ttypes.ArticleSource();
-          elem26.read(input);
-          this.success.push(elem26);
+          var elem34 = null;
+          elem34 = new ttypes.ArticleSource();
+          elem34.read(input);
+          this.success.push(elem34);
         }
         input.readListEnd();
       } else {
@@ -155,12 +155,12 @@ Kraken.KrakenService_ListArticleSources_result.prototype.write = function(output
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter27 in this.success)
+    for (var iter35 in this.success)
     {
-      if (this.success.hasOwnProperty(iter27))
+      if (this.success.hasOwnProperty(iter35))
       {
-        iter27 = this.success[iter27];
-        iter27.write(output);
+        iter35 = this.success[iter35];
+        iter35.write(output);
       }
     }
     output.writeListEnd();
@@ -257,7 +257,7 @@ Kraken.KrakenService_ImportDocument_result.prototype.read = function(input) {
     {
       case 0:
       if (ftype == Thrift.Type.STRUCT) {
-        this.success = new ttypes.ImportDocumentResult();
+        this.success = new ttypes.ImportedDocument();
         this.success.read(input);
       } else {
         input.skip(ftype);
@@ -511,19 +511,19 @@ Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.read = function(in
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size28 = 0;
-        var _rtmp332;
+        var _size36 = 0;
+        var _rtmp340;
         this.success = [];
-        var _etype31 = 0;
-        _rtmp332 = input.readListBegin();
-        _etype31 = _rtmp332.etype;
-        _size28 = _rtmp332.size;
-        for (var _i33 = 0; _i33 < _size28; ++_i33)
+        var _etype39 = 0;
+        _rtmp340 = input.readListBegin();
+        _etype39 = _rtmp340.etype;
+        _size36 = _rtmp340.size;
+        for (var _i41 = 0; _i41 < _size36; ++_i41)
         {
-          var elem34 = null;
-          elem34 = new ttypes.ArchiveDailyIndex();
-          elem34.read(input);
-          this.success.push(elem34);
+          var elem42 = null;
+          elem42 = new ttypes.ArchiveDailyIndex();
+          elem42.read(input);
+          this.success.push(elem42);
         }
         input.readListEnd();
       } else {
@@ -552,12 +552,12 @@ Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.write = function(o
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter35 in this.success)
+    for (var iter43 in this.success)
     {
-      if (this.success.hasOwnProperty(iter35))
+      if (this.success.hasOwnProperty(iter43))
       {
-        iter35 = this.success[iter35];
-        iter35.write(output);
+        iter43 = this.success[iter43];
+        iter43.write(output);
       }
     }
     output.writeListEnd();
@@ -789,7 +789,7 @@ Kraken.KrakenService_GetImportedDocument_result.prototype.read = function(input)
     {
       case 0:
       if (ftype == Thrift.Type.STRUCT) {
-        this.success = new ttypes.ImportDocumentResult();
+        this.success = new ttypes.ImportedDocument();
         this.success.read(input);
       } else {
         input.skip(ftype);

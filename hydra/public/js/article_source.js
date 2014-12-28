@@ -33,8 +33,8 @@
                 request.DocumentType = Kraken.TYPE_DAILY_INDEX;
                 request.DocumentId = dailyIndex.ArchiveDailyIndexId;
                 KrakenService.ImportDocument(request, function () {
-                }).then(function (/* Kraken.ImportDocumentResult */ result) {
-                    dailyIndex.Status = result.Status;
+                }).then(function (/* Kraken.ImportedDocument */ importedDocument) {
+                    dailyIndex.Status = importedDocument.Status;
                     $scope.$apply();
                 });
             };

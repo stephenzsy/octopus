@@ -67,6 +67,11 @@ var DocumentRepository = require('./document_repository');
         return deferred.promise;
     };
 
+    AwsS3DocumentRepository.prototype.storeParsedDocument = function (articleSourceId, documentType, documentId) {
+        var deferred = Q.defer();
+        return deferred.promise;
+    };
+
     AwsS3DocumentRepository.prototype.getImportedDocumentMetadata = function (articleSourceId, documentType, documentId) {
         var deferred = Q.defer();
         var s3Key = getS3Key(articleSourceId, documentType, documentId);
@@ -88,7 +93,6 @@ var DocumentRepository = require('./document_repository');
         });
         return deferred.promise;
     };
-
 
     AwsS3DocumentRepository.prototype.getImportedDocument = function (articleSourceId, documentType, documentId) {
         var deferred = Q.defer();

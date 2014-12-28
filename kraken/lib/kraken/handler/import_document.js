@@ -48,10 +48,8 @@ var InputValidators = require("./util/input_validators");
                 return doc;
             }).then(awsS3DocumentRepository.storeImportedDocument)
             .then(function (/* Kraken.ImportedDocument */ importedDocument) {
-                return new Kraken.ImportDocumentResult({
-                    Status: Kraken.STATUS_IMPORTED,
-                    ImportedDocument: importedDocument
-                });
+                importedDocument.Status = Kraken.STATUS_IMPORTED;
+                return importedDocument;
             });
     };
 

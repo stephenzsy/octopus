@@ -1,6 +1,10 @@
 (function () {
     'use strict';
 
+    var getImportedDocument = require('./get_imported_document');
+    var parseArchiveDailyIndex = require('./parse_achive_daily_index');
+    parseArchiveDailyIndex.setGetImportedDocumentHandler(getImportedDocument);
+
     var handlers = module.exports = {
         ping: require('./ping'),
         ListArticleSources: require('./list_article_sources'),
@@ -8,8 +12,8 @@
         GetArchiveDailyIndex: require('./get_archive_daily_index'),
         ListArchiveDailyIndices: require('./list_archive_daily_indices'),
         ImportDocument: require('./import_document'),
-        GetImportedDocument: require('./get_imported_document'),
-        ParseArchiveDailyIndex: require('./parse_achive_daily_index')
+        GetImportedDocument: getImportedDocument.handler,
+        ParseArchiveDailyIndex: parseArchiveDailyIndex.handler
     };
 
 })();

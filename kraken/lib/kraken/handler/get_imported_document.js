@@ -21,35 +21,38 @@ var InputValidators = require("./util/input_validators");
         return 'GetImportedDocument';
     };
 
+    GetImportedDocument.prototype.getImportedDocument = function (articleSourceId, documentType, documentId) {
+        return awsS3DocumentRepository.getImportedDocument(articleSourceId, documentType, documentId)
+            .then(function (result) {
+                if (result == null) {
+                    throw new Kraken.ValidationError({
+                        ErrorCode: "InvalidDocument.NotImported",
+                        Message: "Document not imported: " + request.toString()
+                    });
+                }
+                var metadata = {};
+                return new Kraken.ImportedDocument({
+                    ArticleSourceId: articleSourceId,
+                    Type: documentType,
+                    Id: documentId,
+                    SourceUrl: result.Metadata['source-url'],
+                    ImportDateTime: result.Metadata['import-date-time'],
+                    Metadata: metadata,
+                    DocumentContent: result.Body.toString(),
+                    Status: Kraken.STATUS_IMPORTED
+                });
+            });
+    };
+
     GetImportedDocument.prototype.enact = function (/*Kraken.GenericDocumentRequest*/ request) {
         var validated = InputValidators.validateGenericDocumentRequest(request);
 
-        return awsS3DocumentRepository.getImportedDocument(request.ArticleSourceId, request.DocumentType, request.DocumentId)
-            .then(function (result) {
-                if (result) {
-                    return new Kraken.ImportDocumentResult({
-                        Status: Kraken.STATUS_IMPORTED,
-                        ImportedDocument: new Kraken.ImportedDocument({
-                            ArticleSourceId: request.ArticleSourceId,
-                            Type: request.DocumentType,
-                            Id: request.DocumentId,
-                            SourceUrl: result.Metadata['source-url'],
-                            ImportDateTime: result.Metadata['import-date-time'],
-                            //  6: map<string, string> Metadata,
-                            DocumentContent: result.Body.toString()
-                        })
-                    });
-                } else {
-                   throw new Kraken.ValidationError({
-
-                   })
-                }
-            });
+        return this.getImportedDocument(request.ArticleSourceId, request.DocumentType, request.DocumentId);
     };
 
     GetImportedDocument.prototype.isAsync = function () {
         return true;
     };
 
-    var handler = module.exports = new GetImportedDocument().handler;
+    var handler = module.exports = new GetImportedDocument();
 })();

@@ -23,12 +23,18 @@ struct ImportedDocument {
   5: string ImportDateTime,
   6: map<string, string> Metadata,
   7: string DocumentContent
+  8: string Status
 }
 
 const string STATUS_UNKNOWN = "UNKNOWN" // unknown
 const string STATUS_NOT_FOUND = "NOT_FOUND" // not imported yet
 const string STATUS_IMPORTED = "IMPORTED" // document imported
 const string STATUS_READY = "READY" // document parsed
+
+struct ArchiveDailyIndexEntry {
+  1: string ArticleId,
+  2: string Url
+}
 
 struct ArchiveDailyIndex {
   // metadata fields
@@ -38,7 +44,7 @@ struct ArchiveDailyIndex {
   4: string Status,
   5: string SourceUrl,
   6: map<string, string> Metadata,
-  7: string Content
+  7: list<ArchiveDailyIndexEntry> articleEntries;
 }
 
 struct GetArchiveDailyIndexRequest {
@@ -62,11 +68,6 @@ struct GenericDocumentRequest {
   3: required string DocumentId,
 }
 
-struct ImportDocumentResult {
-  1: string Status,
-  2: ImportedDocument ImportedDocument,
-}
-
 service KrakenService {
   void ping(),
 
@@ -78,7 +79,7 @@ service KrakenService {
   /**
    * Import external document into repository
    */
-  ImportDocumentResult ImportDocument(1: GenericDocumentRequest request) throws (
+  ImportedDocument ImportDocument(1: GenericDocumentRequest request) throws (
     1: ValidationError validationError,
   ),
 
@@ -106,7 +107,7 @@ service KrakenService {
   /**
    * Get imported document
    **/
-  ImportDocumentResult GetImportedDocument(1: required GenericDocumentRequest request) throws (
+  ImportedDocument GetImportedDocument(1: required GenericDocumentRequest request) throws (
     1: ValidationError validationError,
   )
 
