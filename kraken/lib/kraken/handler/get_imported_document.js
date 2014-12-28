@@ -27,7 +27,7 @@ var InputValidators = require("./util/input_validators");
                 if (result == null) {
                     throw new Kraken.ValidationError({
                         ErrorCode: "InvalidDocument.NotImported",
-                        Message: "Document not imported: " + request.toString()
+                        Message: "Document not imported: " + articleSourceId + "," + documentType + "," + documentId
                     });
                 }
                 var metadata = {};
@@ -36,7 +36,7 @@ var InputValidators = require("./util/input_validators");
                     Type: documentType,
                     Id: documentId,
                     SourceUrl: result.Metadata['source-url'],
-                    ImportDateTime: result.Metadata['import-date-time'],
+                    ImportTimestamp: result.Metadata['import-timestamp'],
                     Metadata: metadata,
                     DocumentContent: result.Body.toString(),
                     Status: Kraken.STATUS_IMPORTED

@@ -22,13 +22,16 @@
             $locationProvider.html5Mode(true);
             $routeProvider.
                 when('/', {
-                    templateUrl: 'views/_article_sources.html',
+                    templateUrl: 'views/article_sources.html',
                     controller: 'ArticleSourcesController'
                 }).when('/article_source/:article_source_id', {
-                    templateUrl: 'views/_article_source.html',
+                    templateUrl: 'views/article_source.html',
                     controller: 'ArticleSourceController'
+                }).when('/daily_index/:article_source_id/:daily_index_id', {
+                    templateUrl: 'views/_daily_index.html',
+                    controller: 'DailyIndexController'
                 }).when('/status', {
-                    templateUrl: 'views/_status.html',
+                    templateUrl: 'views/status.html',
                     controller: 'StatusController'
                 });
         }]);

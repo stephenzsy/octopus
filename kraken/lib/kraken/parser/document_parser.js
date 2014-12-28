@@ -80,6 +80,10 @@ var Q = require('q');
         return parseParts($(documentContent), this.model);
     };
 
+    DocumentParser.prototype.getModelVersion = function () {
+        return this.modelVersion;
+    };
+
     module.exports = DocumentParser;
 
 })();

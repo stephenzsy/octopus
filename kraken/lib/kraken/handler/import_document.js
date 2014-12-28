@@ -26,6 +26,9 @@ var InputValidators = require("./util/input_validators");
         var validated = InputValidators.validateGenericDocumentRequest(request);
 
         // resolve url
+        var metadata = {
+            ContentType: "text/html"
+        };
         var url = null;
         if (request.DocumentType == Kraken.TYPE_DAILY_INDEX) {
             url = validated.articleSource.getArchiveDailyIndexUrlForId(request.DocumentId);
@@ -35,17 +38,15 @@ var InputValidators = require("./util/input_validators");
 
         return httpExternalRepository.retrieveDocument(url)
             .then(function (documentContent) {
-                var doc = new Kraken.ImportedDocument();
-                doc.ArticleSourceId = validated.articleSource.getId();
-                doc.Type = validated.documentType;
-                doc.ImportDateTime = timestamp;
-                doc.Id = request.DocumentId;
-                doc.SourceUrl = url;
-                doc.DocumentContent = documentContent;
-                doc.Metadata = {
-                    "ContentType": "text/html"
-                };
-                return doc;
+                return new Kraken.ImportedDocument({
+                    ArticleSourceId: validated.articleSource.getId(),
+                    Type: validated.documentType,
+                    ImportTimestamp: timestamp,
+                    Id: request.DocumentId,
+                    SourceUrl: url,
+                    DocumentContent: documentContent,
+                    Metadata: metadata
+                });
             }).then(awsS3DocumentRepository.storeImportedDocument)
             .then(function (/* Kraken.ImportedDocument */ importedDocument) {
                 importedDocument.Status = Kraken.STATUS_IMPORTED;

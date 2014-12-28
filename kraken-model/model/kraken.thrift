@@ -20,7 +20,7 @@ struct ImportedDocument {
   2: string Type,
   3: string Id,
   4: string SourceUrl,
-  5: string ImportDateTime,
+  5: string ImportTimestamp,
   6: map<string, string> Metadata,
   7: string DocumentContent
   8: string Status
@@ -34,17 +34,17 @@ const string STATUS_READY = "READY" // document parsed
 struct ArchiveDailyIndexEntry {
   1: string ArticleId,
   2: string Url
+  3: string Name
 }
 
 struct ArchiveDailyIndex {
-  // metadata fields
   1: string ArticleSourceId,
   2: string ArchiveDailyIndexId,
   3: string LocalDate,
   4: string Status,
   5: string SourceUrl,
   6: map<string, string> Metadata,
-  7: list<ArchiveDailyIndexEntry> articleEntries;
+  7: list<ArchiveDailyIndexEntry> ArticleEntries;
 }
 
 struct GetArchiveDailyIndexRequest {

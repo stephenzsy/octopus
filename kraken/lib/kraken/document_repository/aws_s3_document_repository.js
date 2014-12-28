@@ -21,7 +21,7 @@ var DocumentRepository = require('./document_repository');
     var s3 = new AWS.S3({region: 'us-west-2'});
     var bucketName = Config.aws.s3.bucket;
 
-    function getS3Key(articleSourceId, documentType, documentId) {
+    function getS3Key(articleSourceId, documentType, documentId, format) {
         var content_part = null;
         var tail = null;
         if (documentType === Kraken.TYPE_DAILY_INDEX) {
@@ -30,11 +30,11 @@ var DocumentRepository = require('./document_repository');
         } else {
             throw "Invalid imported document type: " + importedDocument.Type;
         }
-        return articleSourceId + ":" + content_part + ":raw/" + tail;
+        return articleSourceId + ":" + content_part + ":" + format + "/" + tail;
     }
 
     function getS3KeyForImportedDocument(/* Kraken.ImportedDocument */ importedDocument) {
-        return getS3Key(importedDocument.ArticleSourceId, importedDocument.Type, importedDocument.Id);
+        return getS3Key(importedDocument.ArticleSourceId, importedDocument.Type, importedDocument.Id, "raw");
     }
 
     AwsS3DocumentRepository.prototype.storeImportedDocument = function (/* Kraken.ImportedDocument */ importedDocument) {
@@ -54,7 +54,7 @@ var DocumentRepository = require('./document_repository');
             }
         }
         metadata['source-url'] = importedDocument.SourceUrl;
-        metadata['import-date-time'] = importedDocument.ImportDateTime;
+        metadata['import-timestamp'] = importedDocument.ImportTimestamp;
         request.Metadata = metadata;
         s3.putObject(request, function (err, data) {
             if (err) {
@@ -67,14 +67,35 @@ var DocumentRepository = require('./document_repository');
         return deferred.promise;
     };
 
-    AwsS3DocumentRepository.prototype.storeParsedDocument = function (articleSourceId, documentType, documentId) {
+    AwsS3DocumentRepository.prototype.storeParsedDocument = function (articleSourceId, documentType, documentId, parsed, metadata) {
         var deferred = Q.defer();
+        var s3Key = getS3Key(articleSourceId, documentType, documentId, "json");
+        var request = {
+            Bucket: bucketName,
+            Key: s3Key,
+            Body: JSON.stringify(parsed),
+            ContentType: "application/json",
+            Metadata: {
+                "import-timestamp": metadata.ImportTimestamp,
+                "source-url": metadata.SourceUrl,
+                "parse-timestamp": metadata.ParseTimestamp,
+                "parser-model-version": metadata.ParserModelVersion
+            }
+        };
+        s3.putObject(request, function (err, data) {
+            if (err) {
+                console.error(err);
+                deferred.reject(err);
+            } else {
+                deferred.resolve(data);
+            }
+        });
         return deferred.promise;
     };
 
     AwsS3DocumentRepository.prototype.getImportedDocumentMetadata = function (articleSourceId, documentType, documentId) {
         var deferred = Q.defer();
-        var s3Key = getS3Key(articleSourceId, documentType, documentId);
+        var s3Key = getS3Key(articleSourceId, documentType, documentId, "raw");
         var request = {
             Bucket: bucketName,
             Key: s3Key
@@ -96,7 +117,7 @@ var DocumentRepository = require('./document_repository');
 
     AwsS3DocumentRepository.prototype.getImportedDocument = function (articleSourceId, documentType, documentId) {
         var deferred = Q.defer();
-        var s3Key = getS3Key(articleSourceId, documentType, documentId);
+        var s3Key = getS3Key(articleSourceId, documentType, documentId, "raw");
         var request = {
             Bucket: bucketName,
             Key: s3Key

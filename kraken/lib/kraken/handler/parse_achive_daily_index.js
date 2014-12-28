@@ -22,29 +22,31 @@ var InputValidators = require("./util/input_validators");
 
     ParseArchiveDailyIndex.prototype.enact = function (/*Kraken.GenericDocumentRequest*/ request) {
         var validated = InputValidators.validateGenericDocumentRequest(request);
-        var archiveDailyIndexParser = validated.articleSource.getArchiveDailyIndexParser();
         var articleSource = validated.articleSource;
+        var archiveDailyIndexParser = articleSource.getArchiveDailyIndexParser();
 
         return this.GetImportedDocumentHandler.getImportedDocument(request.ArticleSourceId, request.DocumentType, request.DocumentId)
             .then(function (/*Kraken.ImportedDocument*/ importedDocument) {
+                var parseTimestamp = new Date().toISOString();
                 var parsed = archiveDailyIndexParser.parse(importedDocument.DocumentContent);
-                console.log(parsed);
-                console.log(importedDocument);
 
-                //                struct ArchiveDailyIndex {
-                //  1: string ArticleSourceId,
-                //        2: string ArchiveDailyIndexId,
-                //        3: string LocalDate,
-                //        4: string Status,
-                //        5: string SourceUrl,
-                //        6: map<string, string> Metadata,
-                //        7: string Content
+                // store it in s3
+                return awsS3DocumentRepository.storeParsedDocument(request.ArticleSourceId, request.DocumentType, request.DocumentId, parsed, {
+                    ImportTimestamp: importedDocument.ImportTimestamp,
+                    SourceUrl: importedDocument.SourceUrl,
+                    ParseTimestamp: parseTimestamp,
+                    ParserModelVersion: archiveDailyIndexParser.getModelVersion()
+                }).then(function () {
 
-
-                // then store
-
-                return new Kraken.ArchiveDailyIndex({
-                    Status: Kraken.STATUS_READY
+                    return new Kraken.ArchiveDailyIndex({
+                        ArticleSourceId: request.ArticleSourceId,
+                        ArchiveDailyIndexId: request.DocumentId,
+                        LocalDate: articleSource.getLocalDateForArchiveDailyIndexId(request.DocumentId),
+                        SourceUrl: importedDocument.SourceUrl,
+                        Metadata: {'ParseTimestamp': parseTimestamp},
+                        Status: Kraken.STATUS_READY,
+                        ArticleEntries: articleSource.toListOfArchiveDailyIndexEntries(parsed)
+                    });
                 });
             });
     };

@@ -26,9 +26,14 @@ var InputValidators = require('./util/input_validators');
         return awsS3DocumentRepository.getImportedDocumentMetadata(dailyIndex.ArticleSourceId, Kraken.TYPE_DAILY_INDEX, dailyIndex.ArchiveDailyIndexId)
             .then(function (s3Response) {
                 if (s3Response) {
+                    var importTimestamp = s3Response.Metadata['import-timestamp'];
+                    if (!importTimestamp) {
+                        dailyIndex.Status = Kraken.STATUS_NOT_FOUND;
+                        return dailyIndex;
+                    }
                     dailyIndex.Status = Kraken.STATUS_IMPORTED;
                     dailyIndex.Metadata = {
-                        "ImportDateTime": s3Response.Metadata['import-date-time'],
+                        "ImportTimestamp": importTimestamp,
                         "SourceUrl": s3Response.Metadata['source-url'],
                         "Size": s3Response.ContentLength
                     };
