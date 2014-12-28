@@ -634,72 +634,6 @@ Kraken.ArchiveDailyIndex.prototype.write = function(output) {
   return;
 };
 
-Kraken.GetArchiveDailyIndexRequest = function(args) {
-  this.ArticleSourceId = null;
-  this.ArchiveDailyIndexId = null;
-  if (args) {
-    if (args.ArticleSourceId !== undefined) {
-      this.ArticleSourceId = args.ArticleSourceId;
-    }
-    if (args.ArchiveDailyIndexId !== undefined) {
-      this.ArchiveDailyIndexId = args.ArchiveDailyIndexId;
-    }
-  }
-};
-Kraken.GetArchiveDailyIndexRequest.prototype = {};
-Kraken.GetArchiveDailyIndexRequest.prototype.read = function(input) {
-  input.readStructBegin();
-  while (true)
-  {
-    var ret = input.readFieldBegin();
-    var fname = ret.fname;
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid)
-    {
-      case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.ArticleSourceId = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.ArchiveDailyIndexId = input.readString().value;
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Kraken.GetArchiveDailyIndexRequest.prototype.write = function(output) {
-  output.writeStructBegin('GetArchiveDailyIndexRequest');
-  if (this.ArticleSourceId !== null && this.ArticleSourceId !== undefined) {
-    output.writeFieldBegin('ArticleSourceId', Thrift.Type.STRING, 1);
-    output.writeString(this.ArticleSourceId);
-    output.writeFieldEnd();
-  }
-  if (this.ArchiveDailyIndexId !== null && this.ArchiveDailyIndexId !== undefined) {
-    output.writeFieldBegin('ArchiveDailyIndexId', Thrift.Type.STRING, 2);
-    output.writeString(this.ArchiveDailyIndexId);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
 Kraken.ListArchiveDailyIndicesRequest = function(args) {
   this.ArticleSourceId = null;
   this.LatestLocalDate = null;
@@ -843,6 +777,7 @@ Kraken.GenericDocumentRequest = function(args) {
   this.ArticleSourceId = null;
   this.DocumentType = null;
   this.DocumentId = null;
+  this.ArchiveBucket = null;
   if (args) {
     if (args.ArticleSourceId !== undefined) {
       this.ArticleSourceId = args.ArticleSourceId;
@@ -858,6 +793,9 @@ Kraken.GenericDocumentRequest = function(args) {
       this.DocumentId = args.DocumentId;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field DocumentId is unset!');
+    }
+    if (args.ArchiveBucket !== undefined) {
+      this.ArchiveBucket = args.ArchiveBucket;
     }
   }
 };
@@ -896,6 +834,13 @@ Kraken.GenericDocumentRequest.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.ArchiveBucket = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -920,6 +865,11 @@ Kraken.GenericDocumentRequest.prototype.write = function(output) {
   if (this.DocumentId !== null && this.DocumentId !== undefined) {
     output.writeFieldBegin('DocumentId', Thrift.Type.STRING, 3);
     output.writeString(this.DocumentId);
+    output.writeFieldEnd();
+  }
+  if (this.ArchiveBucket !== null && this.ArchiveBucket !== undefined) {
+    output.writeFieldBegin('ArchiveBucket', Thrift.Type.STRING, 4);
+    output.writeString(this.ArchiveBucket);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

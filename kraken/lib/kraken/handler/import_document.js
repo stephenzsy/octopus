@@ -54,9 +54,7 @@ var InputValidators = require("./util/input_validators");
             });
     };
 
-    ImportDocument.prototype.isAsync = function () {
-        return true;
-    };
+    ImportDocument.prototype.isAsync = true;
 
     var handler = module.exports = new ImportDocument().handler;
 })();

@@ -28,7 +28,7 @@
                     templateUrl: 'views/article_source.html',
                     controller: 'ArticleSourceController'
                 }).when('/daily_index/:article_source_id/:daily_index_id', {
-                    templateUrl: 'views/_daily_index.html',
+                    templateUrl: 'views/daily_index.html',
                     controller: 'DailyIndexController'
                 }).when('/status', {
                     templateUrl: 'views/status.html',

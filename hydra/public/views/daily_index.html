@@ -1,35 +1,30 @@
 <div class="container">
     <div hydra-breadcrumb="breadcrumb"></div>
     <div class="page-header">
-        <h1>{{ArticleSource.Name}}</h1>
+        <h1>{{dailyIndexId}}</h1>
 
         <div class="well">
-            <b>Article Source Info</b><br>
-            <b>ID:</b> {{ArticleSource.Id}}</br>
-            <b>External URL:</b> <a ng-href="{{ArticleSource.Url}}">{{ArticleSource.Url}}</a>
+            <b>Daily Index Info</b><br>
+            <b>Article Source ID:</b> {{articleDailyIndex.ArticleSourceId}}<br>
+            <b>ID:</b> {{articleDailyIndex.ArchiveDailyIndexId}}</br>
+            <b>Local Date:</b> {{articleDailyIndex.LocalDate}}</br>
+            <b>Import Timestamp:</b> {{articleDailyIndex.Metadata['ImportTimestamp']}}</br>
+            <b>Parse Timestamp:</b> {{articleDailyIndex.Metadata['ParseTimestamp']}}</br>
+
+            <b>External URL:</b> <a ng-href="{{ArticleSource.Url}}">{{articleDailyIndex.SourceUrl}}</a>
         </div>
     </div>
     <div>
-        <h2>Daily Indices</h2>
-
-        <div ng-repeat="dailyIndex in dailyIndices">
+        <div ng-repeat="entry in articleDailyIndex.ArticleEntries">
             <div>
-                <a ng-href="/daily_index/{{ArticleSource.Id}}/{{dailyIndex.ArchiveDailyIndexId}}">
-                    {{dailyIndex.LocalDate | limitTo: 10}}
+                <span>
+                <a ng-href="/article/{{articleDailyIndex.ArticleSourceId}}/{{articleDailyIndex.ArchiveDailyIndexId}}/{{entry.ArticleId}}">
+                    {{entry.Name}}
                 </a>
+
+                <a ng-href="{{entry.Url}}"><i class="fa fa-external-link"></i></a>
+                </span>
             </div>
-            <div>Status: <span ng-switch="dailyIndex.Status">
-                <span ng-switch-when="NOT_FOUND" class="text-danger">Not Found</span>
-                <span ng-switch-when="IMPORTED" class="text-warning">Imported</span>
-                <span ng-switch-default class="text-danger">{{dailyIndex.Status}}</span>
-            </span></div>
-            <div>
-                <span class="btn btn-link" ng-click="importDailyIndexDocument(dailyIndex)">Import</span>
-                <span class="btn btn-link" ng-click="getImportedDailyIndexDocument(dailyIndex)">Get</span>
-                <span class="btn btn-link" ng-click="parseDailyIndex(dailyIndex)">Parse</span>
-            </div>
-            <div>External URL: <a ng-href="{{dailyIndex.SourceUrl}}">{{dailyIndex.SourceUrl}}</a></div>
-            <hr>
         </div>
     </div>
 

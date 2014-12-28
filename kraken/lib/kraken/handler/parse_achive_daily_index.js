@@ -51,9 +51,7 @@ var InputValidators = require("./util/input_validators");
             });
     };
 
-    ParseArchiveDailyIndex.prototype.isAsync = function () {
-        return true;
-    };
+    ParseArchiveDailyIndex.prototype.isAsync = true;
 
     ParseArchiveDailyIndex.prototype.setGetImportedDocumentHandler = function (/*GetImportedDocument*/ handler) {
         this.GetImportedDocumentHandler = handler;

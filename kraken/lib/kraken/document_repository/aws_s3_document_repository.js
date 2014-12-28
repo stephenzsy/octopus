@@ -93,6 +93,24 @@ var DocumentRepository = require('./document_repository');
         return deferred.promise;
     };
 
+    AwsS3DocumentRepository.prototype.getParsedDocument = function (articleSourceId, documentType, documentId) {
+        var deferred = Q.defer();
+        var s3Key = getS3Key(articleSourceId, documentType, documentId, "json");
+        var request = {
+            Bucket: bucketName,
+            Key: s3Key,
+        };
+        s3.getObject(request, function (err, data) {
+            if (err) {
+                console.error(err);
+                deferred.reject(err);
+            } else {
+                deferred.resolve(data);
+            }
+        });
+        return deferred.promise;
+    };
+
     AwsS3DocumentRepository.prototype.getImportedDocumentMetadata = function (articleSourceId, documentType, documentId) {
         var deferred = Q.defer();
         var s3Key = getS3Key(articleSourceId, documentType, documentId, "raw");

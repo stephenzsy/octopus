@@ -50,9 +50,7 @@ var InputValidators = require("./util/input_validators");
         return this.getImportedDocument(request.ArticleSourceId, request.DocumentType, request.DocumentId);
     };
 
-    GetImportedDocument.prototype.isAsync = function () {
-        return true;
-    };
+    GetImportedDocument.prototype.isAsync = true;
 
     var handler = module.exports = new GetImportedDocument();
 })();

@@ -47,11 +47,6 @@ struct ArchiveDailyIndex {
   7: list<ArchiveDailyIndexEntry> ArticleEntries;
 }
 
-struct GetArchiveDailyIndexRequest {
-  1: string ArticleSourceId,
-  2: string ArchiveDailyIndexId
-}
-
 struct ListArchiveDailyIndicesRequest {
   1: required string ArticleSourceId,
   2: string LatestLocalDate, // ISO 8601 formatted
@@ -66,6 +61,7 @@ struct GenericDocumentRequest {
   1: required string ArticleSourceId,
   2: required string DocumentType,
   3: required string DocumentId,
+  4: string ArchiveBucket // Import bucket for archiving and storing documents, especially for Articles. Usually it's the date in YYYY-MM-DD format
 }
 
 service KrakenService {
@@ -100,7 +96,7 @@ service KrakenService {
   /**
    * Get Archive Daily Index
    **/
-  ArchiveDailyIndex GetArchiveDailyIndex(1: required GetArchiveDailyIndexRequest request) throws (
+  ArchiveDailyIndex GetArchiveDailyIndex(1: required GenericDocumentRequest request) throws (
     1: ValidationError validationError,
   ),
 

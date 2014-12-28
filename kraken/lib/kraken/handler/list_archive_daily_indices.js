@@ -73,9 +73,7 @@ var InputValidators = require('./util/input_validators');
         return Q.all(promises);
     };
 
-    ListArchiveDailyIndices.prototype.isAsync = function () {
-        return true;
-    };
+    ListArchiveDailyIndices.prototype.isAsync = true;
 
     var handler = module.exports = new ListArchiveDailyIndices().handler;
 })();

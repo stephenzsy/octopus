@@ -56,7 +56,6 @@ var DocumentParser = require('../../parser/document_parser');
     BusinessInsider.prototype.toListOfArchiveDailyIndexEntries = function (parsed) {
         var baseUrl = this.getUrl();
         return parsed.map(function (element) {
-            console.log(element);
             return new Kraken.ArchiveDailyIndexEntry({
                 ArticleId: stripLeadingSlashes(element.link),
                 Url: baseUrl + element.link,

@@ -9,6 +9,7 @@ var handler = function (req, res) {
 
 router.get('/', handler);
 router.get('/article_source/:article_source_id', handler);
+router.get('/daily_index/:article_source_id/:daily_index_id', handler);
 router.get('/status', handler);
 
 router.get('/js/lib/kraken_types.js', function (req, res) {

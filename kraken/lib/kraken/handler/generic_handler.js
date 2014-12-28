@@ -21,7 +21,7 @@ var Q = require('q');
                     console.log(_this.getMethodName() + " Input: ", arg1);
                     r = _this.enact(arg1);
                 }
-                if (_this.isAsync()) {
+                if (_this.isAsync) {
                     r.done(function (rr) {
                         result(null, rr);
                     }, function (err) {
@@ -41,9 +41,7 @@ var Q = require('q');
         };
     }
 
-    GenericHandler.prototype.isAsync = function () {
-        return false;
-    };
+    GenericHandler.prototype.isAsync = false;
 
     module.exports = GenericHandler;
 })();

@@ -595,7 +595,7 @@ Kraken.KrakenService_GetArchiveDailyIndex_args.prototype.read = function(input) 
     {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.request = new Kraken.GetArchiveDailyIndexRequest();
+        this.request = new Kraken.GenericDocumentRequest();
         this.request.read(input);
       } else {
         input.skip(ftype);
