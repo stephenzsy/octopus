@@ -26,7 +26,9 @@ var Q = require('q');
                         result(null, rr);
                     }, function (err) {
                         console.error(err);
-                        console.error(err.stack);
+                        if (err.stack) {
+                            console.error(err.stack);
+                        }
                         result(err);
                     });
                 } else {

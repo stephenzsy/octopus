@@ -26,7 +26,7 @@ var InputValidators = require("./util/input_validators");
             .then(function (result) {
                 if (result == null) {
                     throw new Kraken.ValidationError({
-                        ErrorCode: "InvalidDocument.NotImported",
+                        ErrorCode: "InvalidDocumentId.NotImported",
                         Message: "Document not imported: " + articleSourceId + "," + documentType + "," + documentId
                     });
                 }

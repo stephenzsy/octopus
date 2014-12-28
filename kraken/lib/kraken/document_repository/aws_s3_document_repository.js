@@ -98,12 +98,16 @@ var DocumentRepository = require('./document_repository');
         var s3Key = getS3Key(articleSourceId, documentType, documentId, "json");
         var request = {
             Bucket: bucketName,
-            Key: s3Key,
+            Key: s3Key
         };
         s3.getObject(request, function (err, data) {
             if (err) {
-                console.error(err);
-                deferred.reject(err);
+                if (err.code === 'NoSuchKey') {
+                    deferred.resolve(null);
+                } else {
+                    console.error(err);
+                    deferred.reject(err);
+                }
             } else {
                 deferred.resolve(data);
             }

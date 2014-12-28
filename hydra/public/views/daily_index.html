@@ -13,7 +13,13 @@
 
             <b>External URL:</b> <a ng-href="{{ArticleSource.Url}}">{{articleDailyIndex.SourceUrl}}</a>
         </div>
+        <div>
+            <span class="btn btn-link" ng-click="parseDailyIndex()">Parse</span>
+            <span class="btn btn-link" ng-click="importDailyIndex()">Import</span>
+        </div>
     </div>
+    <div ng-show="status === 'NotParsed'" class="alert alert-warning">Document is not parsed yet.</div>
+    <div ng-show="status === 'NotImported'" class="alert alert-warning">Document is not Imported yet.</div>
     <div>
         <div ng-repeat="entry in articleDailyIndex.ArticleEntries">
             <div>
