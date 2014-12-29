@@ -21,25 +21,32 @@ var DocumentRepository = require('./document_repository');
     var s3 = new AWS.S3({region: 'us-west-2'});
     var bucketName = Config.aws.s3.bucket;
 
-    function getS3Key(articleSourceId, documentType, documentId, format) {
-        var content_part = null;
-        var tail = null;
-        if (documentType === Kraken.TYPE_DAILY_INDEX) {
-            content_part = "daily_index";
-            tail = documentId.replace(/-/g, "/");
+    function getS3KeyForGenericDocumentRequest(/* Kraken.GenericDocumentRequest */ request, format) {
+        if (request.DocumentType === Kraken.TYPE_DAILY_INDEX) {
+            return request.ArticleSourceId + ":daily_index:" + format + "/" + request.DocumentId.replace(/-/g, "/");
+        } else if (request.DocumentType === Kraken.TYPE_ARTICLE) {
+            var tail = request.ArchiveBucket.replace(/-/g, "/") + "/" + request.DocumentId;
+            return request.ArticleSourceId + ":article:" + format + "/" + tail;
         } else {
-            throw "Invalid imported document type: " + importedDocument.Type;
+            throw "Invalid imported document type: " + request.DocumentType;
         }
-        return articleSourceId + ":" + content_part + ":" + format + "/" + tail;
     }
 
-    function getS3KeyForImportedDocument(/* Kraken.ImportedDocument */ importedDocument) {
-        return getS3Key(importedDocument.ArticleSourceId, importedDocument.Type, importedDocument.Id, "raw");
+    function getS3KeyForImportedDocument(/* Kraken.ImportedDocument */ importedDocument, format) {
+        var request = new Kraken.GenericDocumentRequest({
+            ArticleSourceId: importedDocument.ArticleSourceId,
+            DocumentType: importedDocument.Type,
+            DocumentId: importedDocument.Id
+        });
+        if (importedDocument.Type === Kraken.TYPE_ARTICLE && importedDocument.Metadata['ArchiveBucket']) {
+            request.ArchiveBucket = importedDocument.Metadata['ArchiveBucket'];
+        }
+        return getS3KeyForGenericDocumentRequest(request, format);
     }
 
     AwsS3DocumentRepository.prototype.storeImportedDocument = function (/* Kraken.ImportedDocument */ importedDocument) {
         var deferred = Q.defer();
-        var s3Key = getS3KeyForImportedDocument(importedDocument);
+        var s3Key = getS3KeyForImportedDocument(importedDocument, 'raw');
         var request = {
             Bucket: bucketName,
             Key: s3Key,
@@ -47,8 +54,10 @@ var DocumentRepository = require('./document_repository');
         };
         var metadata = {};
         for (var k in importedDocument.Metadata) {
-            if (k == 'ContentType') {
+            if (k === 'ContentType') {
                 request.ContentType = importedDocument.Metadata[k];
+            } else if (k === 'ArchiveBucket') {
+                // skip
             } else {
                 metadata[k] = importedDocument.Metadata[k];
             }
@@ -67,9 +76,9 @@ var DocumentRepository = require('./document_repository');
         return deferred.promise;
     };
 
-    AwsS3DocumentRepository.prototype.storeParsedDocument = function (articleSourceId, documentType, documentId, parsed, metadata) {
+    AwsS3DocumentRepository.prototype.storeParsedDocument = function (genericDocumentRequest, parsed, metadata) {
         var deferred = Q.defer();
-        var s3Key = getS3Key(articleSourceId, documentType, documentId, "json");
+        var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'json');
         var request = {
             Bucket: bucketName,
             Key: s3Key,
@@ -93,9 +102,9 @@ var DocumentRepository = require('./document_repository');
         return deferred.promise;
     };
 
-    AwsS3DocumentRepository.prototype.getParsedDocument = function (articleSourceId, documentType, documentId) {
+    AwsS3DocumentRepository.prototype.getParsedDocument = function (genericDocumentRequest) {
         var deferred = Q.defer();
-        var s3Key = getS3Key(articleSourceId, documentType, documentId, "json");
+        var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'json');
         var request = {
             Bucket: bucketName,
             Key: s3Key
@@ -115,9 +124,9 @@ var DocumentRepository = require('./document_repository');
         return deferred.promise;
     };
 
-    AwsS3DocumentRepository.prototype.getImportedDocumentMetadata = function (articleSourceId, documentType, documentId) {
+    AwsS3DocumentRepository.prototype.getImportedDocumentMetadata = function (genericDocumentRequest) {
         var deferred = Q.defer();
-        var s3Key = getS3Key(articleSourceId, documentType, documentId, "raw");
+        var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'raw');
         var request = {
             Bucket: bucketName,
             Key: s3Key
@@ -137,9 +146,9 @@ var DocumentRepository = require('./document_repository');
         return deferred.promise;
     };
 
-    AwsS3DocumentRepository.prototype.getImportedDocument = function (articleSourceId, documentType, documentId) {
+    AwsS3DocumentRepository.prototype.getImportedDocument = function (genericDocumentRequest) {
         var deferred = Q.defer();
-        var s3Key = getS3Key(articleSourceId, documentType, documentId, "raw");
+        var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'raw');
         var request = {
             Bucket: bucketName,
             Key: s3Key

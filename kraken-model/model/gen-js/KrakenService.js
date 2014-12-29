@@ -115,19 +115,19 @@ Kraken.KrakenService_ListArticleSources_result.prototype.read = function(input) 
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size28 = 0;
-        var _rtmp332;
+        var _size38 = 0;
+        var _rtmp342;
         this.success = [];
-        var _etype31 = 0;
-        _rtmp332 = input.readListBegin();
-        _etype31 = _rtmp332.etype;
-        _size28 = _rtmp332.size;
-        for (var _i33 = 0; _i33 < _size28; ++_i33)
+        var _etype41 = 0;
+        _rtmp342 = input.readListBegin();
+        _etype41 = _rtmp342.etype;
+        _size38 = _rtmp342.size;
+        for (var _i43 = 0; _i43 < _size38; ++_i43)
         {
-          var elem34 = null;
-          elem34 = new Kraken.ArticleSource();
-          elem34.read(input);
-          this.success.push(elem34);
+          var elem44 = null;
+          elem44 = new Kraken.ArticleSource();
+          elem44.read(input);
+          this.success.push(elem44);
         }
         input.readListEnd();
       } else {
@@ -151,12 +151,12 @@ Kraken.KrakenService_ListArticleSources_result.prototype.write = function(output
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter35 in this.success)
+    for (var iter45 in this.success)
     {
-      if (this.success.hasOwnProperty(iter35))
+      if (this.success.hasOwnProperty(iter45))
       {
-        iter35 = this.success[iter35];
-        iter35.write(output);
+        iter45 = this.success[iter45];
+        iter45.write(output);
       }
     }
     output.writeListEnd();
@@ -507,19 +507,19 @@ Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.read = function(in
     {
       case 0:
       if (ftype == Thrift.Type.LIST) {
-        var _size36 = 0;
-        var _rtmp340;
+        var _size46 = 0;
+        var _rtmp350;
         this.success = [];
-        var _etype39 = 0;
-        _rtmp340 = input.readListBegin();
-        _etype39 = _rtmp340.etype;
-        _size36 = _rtmp340.size;
-        for (var _i41 = 0; _i41 < _size36; ++_i41)
+        var _etype49 = 0;
+        _rtmp350 = input.readListBegin();
+        _etype49 = _rtmp350.etype;
+        _size46 = _rtmp350.size;
+        for (var _i51 = 0; _i51 < _size46; ++_i51)
         {
-          var elem42 = null;
-          elem42 = new Kraken.ArchiveDailyIndex();
-          elem42.read(input);
-          this.success.push(elem42);
+          var elem52 = null;
+          elem52 = new Kraken.ArchiveDailyIndex();
+          elem52.read(input);
+          this.success.push(elem52);
         }
         input.readListEnd();
       } else {
@@ -548,12 +548,12 @@ Kraken.KrakenService_ListArchiveDailyIndices_result.prototype.write = function(o
   if (this.success !== null && this.success !== undefined) {
     output.writeFieldBegin('success', Thrift.Type.LIST, 0);
     output.writeListBegin(Thrift.Type.STRUCT, this.success.length);
-    for (var iter43 in this.success)
+    for (var iter53 in this.success)
     {
-      if (this.success.hasOwnProperty(iter43))
+      if (this.success.hasOwnProperty(iter53))
       {
-        iter43 = this.success[iter43];
-        iter43.write(output);
+        iter53 = this.success[iter53];
+        iter53.write(output);
       }
     }
     output.writeListEnd();
@@ -953,6 +953,134 @@ Kraken.KrakenService_ParseArchiveDailyIndex_result.prototype.write = function(ou
   return;
 };
 
+Kraken.KrakenService_GetArticle_args = function(args) {
+  this.request = null;
+  if (args) {
+    if (args.request !== undefined) {
+      this.request = args.request;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field request is unset!');
+    }
+  }
+};
+Kraken.KrakenService_GetArticle_args.prototype = {};
+Kraken.KrakenService_GetArticle_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.request = new Kraken.GenericDocumentRequest();
+        this.request.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.KrakenService_GetArticle_args.prototype.write = function(output) {
+  output.writeStructBegin('KrakenService_GetArticle_args');
+  if (this.request !== null && this.request !== undefined) {
+    output.writeFieldBegin('request', Thrift.Type.STRUCT, 1);
+    this.request.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.KrakenService_GetArticle_result = function(args) {
+  this.success = null;
+  this.validationError = null;
+  if (args instanceof Kraken.ValidationError) {
+    this.validationError = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined) {
+      this.success = args.success;
+    }
+    if (args.validationError !== undefined) {
+      this.validationError = args.validationError;
+    }
+  }
+};
+Kraken.KrakenService_GetArticle_result.prototype = {};
+Kraken.KrakenService_GetArticle_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new Kraken.Article();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.validationError = new Kraken.ValidationError();
+        this.validationError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.KrakenService_GetArticle_result.prototype.write = function(output) {
+  output.writeStructBegin('KrakenService_GetArticle_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.validationError !== null && this.validationError !== undefined) {
+    output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
+    this.validationError.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 Kraken.KrakenServiceClient = function(input, output) {
     this.input = input;
     this.output = (!output) ? input : output;
@@ -1291,4 +1419,47 @@ Kraken.KrakenServiceClient.prototype.recv_ParseArchiveDailyIndex = function() {
     return result.success;
   }
   throw 'ParseArchiveDailyIndex failed: unknown result';
+};
+Kraken.KrakenServiceClient.prototype.GetArticle = function(request, callback) {
+  if (callback === undefined) {
+    this.send_GetArticle(request);
+    return this.recv_GetArticle();
+  } else {
+    var postData = this.send_GetArticle(request, true);
+    return this.output.getTransport()
+      .jqRequest(this, postData, arguments, this.recv_GetArticle);
+  }
+};
+
+Kraken.KrakenServiceClient.prototype.send_GetArticle = function(request, callback) {
+  this.output.writeMessageBegin('GetArticle', Thrift.MessageType.CALL, this.seqid);
+  var args = new Kraken.KrakenService_GetArticle_args();
+  args.request = request;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  return this.output.getTransport().flush(callback);
+};
+
+Kraken.KrakenServiceClient.prototype.recv_GetArticle = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new Kraken.KrakenService_GetArticle_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.validationError) {
+    throw result.validationError;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'GetArticle failed: unknown result';
 };

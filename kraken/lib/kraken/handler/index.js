@@ -13,7 +13,8 @@
         ListArchiveDailyIndices: require('./list_archive_daily_indices'),
         ImportDocument: require('./import_document'),
         GetImportedDocument: getImportedDocument.handler,
-        ParseArchiveDailyIndex: parseArchiveDailyIndex.handler
+        ParseArchiveDailyIndex: parseArchiveDailyIndex.handler,
+        GetArticle: require('./get_article').handler
     };
 
 })();

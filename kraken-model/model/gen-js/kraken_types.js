@@ -634,6 +634,168 @@ Kraken.ArchiveDailyIndex.prototype.write = function(output) {
   return;
 };
 
+Kraken.Article = function(args) {
+  this.ArticleSourceId = null;
+  this.ArticleDailyIndexId = null;
+  this.Status = null;
+  this.Sourceurl = null;
+  this.Metadata = null;
+  this.Content = null;
+  if (args) {
+    if (args.ArticleSourceId !== undefined) {
+      this.ArticleSourceId = args.ArticleSourceId;
+    }
+    if (args.ArticleDailyIndexId !== undefined) {
+      this.ArticleDailyIndexId = args.ArticleDailyIndexId;
+    }
+    if (args.Status !== undefined) {
+      this.Status = args.Status;
+    }
+    if (args.Sourceurl !== undefined) {
+      this.Sourceurl = args.Sourceurl;
+    }
+    if (args.Metadata !== undefined) {
+      this.Metadata = args.Metadata;
+    }
+    if (args.Content !== undefined) {
+      this.Content = args.Content;
+    }
+  }
+};
+Kraken.Article.prototype = {};
+Kraken.Article.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.ArticleSourceId = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.ArticleDailyIndexId = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.Status = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.Sourceurl = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.MAP) {
+        var _size28 = 0;
+        var _rtmp332;
+        this.Metadata = {};
+        var _ktype29 = 0;
+        var _vtype30 = 0;
+        _rtmp332 = input.readMapBegin();
+        _ktype29 = _rtmp332.ktype;
+        _vtype30 = _rtmp332.vtype;
+        _size28 = _rtmp332.size;
+        for (var _i33 = 0; _i33 < _size28; ++_i33)
+        {
+          if (_i33 > 0 ) {
+            if (input.rstack.length > input.rpos[input.rpos.length -1] + 1) {
+              input.rstack.pop();
+            }
+          }
+          var key34 = null;
+          var val35 = null;
+          key34 = input.readString().value;
+          val35 = input.readString().value;
+          this.Metadata[key34] = val35;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.Content = input.readString().value;
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.Article.prototype.write = function(output) {
+  output.writeStructBegin('Article');
+  if (this.ArticleSourceId !== null && this.ArticleSourceId !== undefined) {
+    output.writeFieldBegin('ArticleSourceId', Thrift.Type.STRING, 1);
+    output.writeString(this.ArticleSourceId);
+    output.writeFieldEnd();
+  }
+  if (this.ArticleDailyIndexId !== null && this.ArticleDailyIndexId !== undefined) {
+    output.writeFieldBegin('ArticleDailyIndexId', Thrift.Type.STRING, 2);
+    output.writeString(this.ArticleDailyIndexId);
+    output.writeFieldEnd();
+  }
+  if (this.Status !== null && this.Status !== undefined) {
+    output.writeFieldBegin('Status', Thrift.Type.STRING, 3);
+    output.writeString(this.Status);
+    output.writeFieldEnd();
+  }
+  if (this.Sourceurl !== null && this.Sourceurl !== undefined) {
+    output.writeFieldBegin('Sourceurl', Thrift.Type.STRING, 4);
+    output.writeString(this.Sourceurl);
+    output.writeFieldEnd();
+  }
+  if (this.Metadata !== null && this.Metadata !== undefined) {
+    output.writeFieldBegin('Metadata', Thrift.Type.MAP, 5);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRING, Thrift.objectLength(this.Metadata));
+    for (var kiter36 in this.Metadata)
+    {
+      if (this.Metadata.hasOwnProperty(kiter36))
+      {
+        var viter37 = this.Metadata[kiter36];
+        output.writeString(kiter36);
+        output.writeString(viter37);
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.Content !== null && this.Content !== undefined) {
+    output.writeFieldBegin('Content', Thrift.Type.STRING, 6);
+    output.writeString(this.Content);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 Kraken.ListArchiveDailyIndicesRequest = function(args) {
   this.ArticleSourceId = null;
   this.LatestLocalDate = null;

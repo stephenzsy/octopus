@@ -21,12 +21,19 @@ var ArticleSources = require('../../article_sources');
         validateGenericDocumentRequest: function (/* Kraken.GenericDocumentRequest */ request) {
             var articleSource = validateArticleSourceId(request.ArticleSourceId);
             var documentType = null;
-            if (request.DocumentType === Kraken.TYPE_DAILY_INDEX) {
-                documentType = Kraken.TYPE_DAILY_INDEX;
+            if (request.DocumentType === Kraken.TYPE_DAILY_INDEX ||
+                request.DocumentType === Kraken.TYPE_ARTICLE) {
+                documentType = request.DocumentType;
             } else {
                 throw new Kraken.ValidationError({
                     ErrorCode: "InvalidDocumentType.NotFound",
                     Message: "Invalid document type provided: " + request.DocumenType
+                });
+            }
+            if (request.DocumentType === Kraken.TYPE_ARTICLE && !request.ArchiveBucket) {
+                throw new Kraken.ValidationError({
+                    ErrorCode: "InvalidRequest.NullArchiveBucket",
+                    Message: "Archive bucket is null for document type: " + request.DocumenType
                 });
             }
             return {

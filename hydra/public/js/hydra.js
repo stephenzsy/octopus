@@ -30,6 +30,9 @@
                 }).when('/daily_index/:article_source_id/:daily_index_id', {
                     templateUrl: 'views/daily_index.html',
                     controller: 'DailyIndexController'
+                }).when('/article/:article_source_id/:local_date/:article_id', {
+                    templateUrl: 'views/article.html',
+                    controller: 'ArticleController'
                 }).when('/status', {
                     templateUrl: 'views/status.html',
                     controller: 'StatusController'

@@ -21,20 +21,20 @@ var InputValidators = require("./util/input_validators");
         return 'GetImportedDocument';
     };
 
-    GetImportedDocument.prototype.getImportedDocument = function (articleSourceId, documentType, documentId) {
-        return awsS3DocumentRepository.getImportedDocument(articleSourceId, documentType, documentId)
+    GetImportedDocument.prototype.getImportedDocument = function (/*Kraken.GenericDocumentRequest*/ request) {
+        return awsS3DocumentRepository.getImportedDocument(request)
             .then(function (result) {
                 if (result == null) {
                     throw new Kraken.ValidationError({
                         ErrorCode: "InvalidDocumentId.NotImported",
-                        Message: "Document not imported: " + articleSourceId + "," + documentType + "," + documentId
+                        Message: "Document not imported: " + request.ArticleSourceId + "," + request.DocumentType + "," + request.DocumentId
                     });
                 }
                 var metadata = {};
                 return new Kraken.ImportedDocument({
-                    ArticleSourceId: articleSourceId,
-                    Type: documentType,
-                    Id: documentId,
+                    ArticleSourceId: request.ArticleSourceId,
+                    Type: request.DocumentType,
+                    Id: request.DocumentId,
                     SourceUrl: result.Metadata['source-url'],
                     ImportTimestamp: result.Metadata['import-timestamp'],
                     Metadata: metadata,
@@ -47,7 +47,7 @@ var InputValidators = require("./util/input_validators");
     GetImportedDocument.prototype.enact = function (/*Kraken.GenericDocumentRequest*/ request) {
         var validated = InputValidators.validateGenericDocumentRequest(request);
 
-        return this.getImportedDocument(request.ArticleSourceId, request.DocumentType, request.DocumentId);
+        return this.getImportedDocument(request);
     };
 
     GetImportedDocument.prototype.isAsync = true;

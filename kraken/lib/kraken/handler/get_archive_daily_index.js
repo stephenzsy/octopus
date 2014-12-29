@@ -23,7 +23,7 @@ var GenericHandler = require('./generic_handler');
         var validated = InputValidators.validateGenericDocumentRequest(request);
         var articleSource = validated.articleSource;
 
-        return awsS3DocumentRepository.getParsedDocument(request.ArticleSourceId, request.DocumentType, request.DocumentId)
+        return awsS3DocumentRepository.getParsedDocument(request)
             .then(function (s3Response) {
                 if (!s3Response) {
                     throw new Kraken.ValidationError({

@@ -1,0 +1,37 @@
+<div class="container">
+    <div hydra-breadcrumb="breadcrumb"></div>
+    <div class="page-header">
+        <h1>Article</h1>
+
+        <div class="well">
+            <b>Daily Index Info</b><br>
+            <b>Article Source ID:</b> {{articleDailyIndex.ArticleSourceId}}<br>
+            <b>ID:</b> {{articleDailyIndex.ArchiveDailyIndexId}}</br>
+            <b>Local Date:</b> {{articleDailyIndex.LocalDate}}</br>
+            <b>Import Timestamp:</b> {{articleDailyIndex.Metadata['ImportTimestamp']}}</br>
+            <b>Parse Timestamp:</b> {{articleDailyIndex.Metadata['ParseTimestamp']}}</br>
+
+            <b>External URL:</b> <a ng-href="{{ArticleSource.Url}}">{{articleDailyIndex.SourceUrl}}</a>
+        </div>
+        <div>
+            <span class="btn btn-link" ng-click="parseDailyIndex()">Parse</span>
+            <span class="btn btn-link" ng-click="importArticle()">Import</span>
+        </div>
+    </div>
+    <div ng-show="status === 'NotParsed'" class="alert alert-warning">Document is not parsed yet.</div>
+    <div ng-show="status === 'NotImported'" class="alert alert-warning">Document is not Imported yet.</div>
+    <div>
+        <div ng-repeat="entry in articleDailyIndex.ArticleEntries">
+            <div>
+                <span>
+                <a ng-href="/article/{{articleDailyIndex.ArticleSourceId}}/{{articleDailyIndex.ArchiveDailyIndexId}}/{{entry.ArticleId}}">
+                    {{entry.Name}}
+                </a>
+
+                <a ng-href="{{entry.Url}}"><i class="fa fa-external-link"></i></a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+</div>

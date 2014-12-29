@@ -25,13 +25,13 @@ var InputValidators = require("./util/input_validators");
         var articleSource = validated.articleSource;
         var archiveDailyIndexParser = articleSource.getArchiveDailyIndexParser();
 
-        return this.GetImportedDocumentHandler.getImportedDocument(request.ArticleSourceId, request.DocumentType, request.DocumentId)
+        return this.GetImportedDocumentHandler.getImportedDocument(request)
             .then(function (/*Kraken.ImportedDocument*/ importedDocument) {
                 var parseTimestamp = new Date().toISOString();
                 var parsed = archiveDailyIndexParser.parse(importedDocument.DocumentContent);
 
                 // store it in s3
-                return awsS3DocumentRepository.storeParsedDocument(request.ArticleSourceId, request.DocumentType, request.DocumentId, parsed, {
+                return awsS3DocumentRepository.storeParsedDocument(request, parsed, {
                     ImportTimestamp: importedDocument.ImportTimestamp,
                     SourceUrl: importedDocument.SourceUrl,
                     ParseTimestamp: parseTimestamp,

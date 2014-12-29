@@ -24,14 +24,19 @@ var InputValidators = require("./util/input_validators");
 
     ImportDocument.prototype.enact = function (/*Kraken.GenericDocumentRequest*/ request) {
         var validated = InputValidators.validateGenericDocumentRequest(request);
+        var articleSource = validated.articleSource;
 
         // resolve url
         var metadata = {
             ContentType: "text/html"
         };
+
         var url = null;
-        if (request.DocumentType == Kraken.TYPE_DAILY_INDEX) {
-            url = validated.articleSource.getArchiveDailyIndexUrlForId(request.DocumentId);
+        if (request.DocumentType === Kraken.TYPE_DAILY_INDEX) {
+            url = articleSource.getArchiveDailyIndexUrlForId(request.DocumentId);
+        } else if (request.DocumentType === Kraken.TYPE_ARTICLE) {
+            url = articleSource.getArticleUrlForId(request.DocumentId);
+            metadata['ArchiveBucket'] = request.ArchiveBucket;
         }
 
         var timestamp = new Date().toISOString();
@@ -39,7 +44,7 @@ var InputValidators = require("./util/input_validators");
         return httpExternalRepository.retrieveDocument(url)
             .then(function (documentContent) {
                 return new Kraken.ImportedDocument({
-                    ArticleSourceId: validated.articleSource.getId(),
+                    ArticleSourceId: articleSource.getId(),
                     Type: validated.documentType,
                     ImportTimestamp: timestamp,
                     Id: request.DocumentId,

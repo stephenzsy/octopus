@@ -44,7 +44,15 @@ struct ArchiveDailyIndex {
   4: string Status,
   5: string SourceUrl,
   6: map<string, string> Metadata,
-  7: list<ArchiveDailyIndexEntry> ArticleEntries;
+  7: list<ArchiveDailyIndexEntry> ArticleEntries,
+}
+
+struct Article {
+  1: string ArticleSourceId,
+  2: string ArticleDailyIndexId
+  3: string Sourceurl,
+  4: map<string, string> Metadata,
+  5: string Content
 }
 
 struct ListArchiveDailyIndicesRequest {
@@ -111,6 +119,14 @@ service KrakenService {
    * Parse imported archive daily index
    **/
   ArchiveDailyIndex ParseArchiveDailyIndex(1: required GenericDocumentRequest request) throws (
+    1: ValidationError validationError,
+  )
+
+  Article GetArticle(1: required GenericDocumentRequest request) throws (
+    1: ValidationError validationError,
+  )
+
+  Article ParseArticle(1: required GenericDocumentRequest request) throws (
     1: ValidationError validationError,
   )
 }
