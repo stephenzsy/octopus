@@ -1,4 +1,5 @@
 var util = require("util");
+var crypto = require('crypto');
 
 var Config = require('../../../config');
 var Q = require('q');
@@ -8,20 +9,24 @@ var Kraken = require('kraken-model').Types;
 (function () {
     "use strict";
 
-    function AwsS3DocumentRepository() {
+    function AwsS3DynamodbDocumentRepository() {
     }
-
 
     var credentials = new AWS.SharedIniFileCredentials({profile: 'kraken'});
     AWS.config.credentials = credentials;
     var s3 = new AWS.S3({region: 'us-west-2'});
+    var dynamodb = new AWS.DynamoDB({region: 'us-west-2'});
     var bucketName = Config.aws.s3.bucket;
+    var tableName = Config.aws.dynamodb.tableName;
 
     function getS3KeyForGenericDocumentRequest(/* Kraken.GenericDocumentRequest */ request, format) {
         if (request.DocumentType === Kraken.TYPE_DAILY_INDEX) {
             return request.ArticleSourceId + ":daily_index:" + format + "/" + request.DocumentId.replace(/-/g, "/");
         } else if (request.DocumentType === Kraken.TYPE_ARTICLE) {
-            var tail = request.ArchiveBucket.replace(/-/g, "/") + "/" + request.DocumentId;
+            var hash = crypto.createHash('md5');
+            hash.update(request.DocumentId);
+            var digest = hash.digest('hex');
+            var tail = digest.substring(0, 4) + "/" + request.DocumentId;
             return request.ArticleSourceId + ":article:" + format + "/" + tail;
         } else {
             throw "Invalid imported document type: " + request.DocumentType;
@@ -40,18 +45,44 @@ var Kraken = require('kraken-model').Types;
         return getS3KeyForGenericDocumentRequest(request, format);
     }
 
-    AwsS3DocumentRepository.prototype.storeImportedDocument = function (/* Kraken.ImportedDocument */ importedDocument) {
-        var deferred = Q.defer();
+    function getDynamodbArticleKey(articleSourceId, documentId) {
+        return articleSourceId + ":" + documentId;
+    }
+
+    AwsS3DynamodbDocumentRepository.prototype.storeImportedDocument = function (/* Kraken.ImportedDocument */ importedDocument) {
+        var deferredS3 = Q.defer();
+        var deferredDynamodb = Q.defer();
         var s3Key = getS3KeyForImportedDocument(importedDocument, 'raw');
-        var request = {
+
+        var putItemRequest = {
+            TableName: tableName,
+            Item: {
+                ArticleKey: {S: getDynamodbArticleKey(importedDocument.ArticleSourceId, importedDocument.Id)},
+                LatestDateArchived: {S: importedDocument.Metadata['ArchiveBucket']},
+                ArticleSourceId: {S: importedDocument.ArticleSourceId},
+                ArticleId: {S: importedDocument.Id},
+                S3Key: {S: s3Key}
+            }
+        };
+        dynamodb.putItem(putItemRequest, function (err, data) {
+            if (err) {
+                console.error(err);
+                deferredDynamodb.reject(err);
+            } else {
+                deferredDynamodb.resolve(data);
+            }
+        });
+
+        var putObjectRequest = {
             Bucket: bucketName,
             Key: s3Key,
             Body: importedDocument.DocumentContent
         };
+
         var metadata = {};
         for (var k in importedDocument.Metadata) {
             if (k === 'ContentType') {
-                request.ContentType = importedDocument.Metadata[k];
+                putItemRequest.ContentType = importedDocument.Metadata[k];
             } else if (k === 'ArchiveBucket') {
                 // skip
             } else {
@@ -60,19 +91,50 @@ var Kraken = require('kraken-model').Types;
         }
         metadata['source-url'] = importedDocument.SourceUrl;
         metadata['import-timestamp'] = importedDocument.ImportTimestamp;
-        request.Metadata = metadata;
-        s3.putObject(request, function (err, data) {
+        putObjectRequest.Metadata = metadata;
+
+        s3.putObject(putObjectRequest, function (err, data) {
             if (err) {
                 console.error(err);
-                deferred.reject(err);
+                deferredS3.reject(err);
             } else {
-                deferred.resolve(importedDocument);
+                deferredS3.resolve(importedDocument);
             }
         });
+
+        return Q.all([deferredS3.promise, deferredDynamodb.promise]).then(function () {
+            return importedDocument;
+        });
+    };
+
+    AwsS3DynamodbDocumentRepository.prototype.storeDocumentRedirection = function (/*Kraken.GenericDocumentRequest*/ request, redirectedArticleId) {
+        var deferred = Q.defer();
+        if (request.DocumentType === Kraken.TYPE_ARTICLE) {
+            var request = {
+                TableName: tableName,
+                Item: {
+                    ArticleKey: {S: getDynamodbArticleKey(request.ArticleSourceId, request.DocumentId)},
+                    LatestDateArchived: {S: request.ArchiveBucket},
+                    ArticleSourceId: {S: request.ArticleSourceId},
+                    ArticleId: {S: request.DocumentId},
+                    RedirectTo: {S: getDynamodbArticleKey(request.ArticleSourceId, redirectedArticleId)}
+                }
+            };
+            dynamodb.putItem(request, function (err, data) {
+                if (err) {
+                    console.error(err);
+                    deferred.reject(err);
+                } else {
+                    deferred.resolve(data);
+                }
+            });
+        } else {
+            deferred.reject("Invalid Document Type: " + request.DocumentType);
+        }
         return deferred.promise;
     };
 
-    AwsS3DocumentRepository.prototype.storeParsedDocument = function (genericDocumentRequest, parsed, metadata) {
+    AwsS3DynamodbDocumentRepository.prototype.storeParsedDocument = function (genericDocumentRequest, parsed, metadata) {
         var deferred = Q.defer();
         var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'json');
         var request = {
@@ -98,7 +160,7 @@ var Kraken = require('kraken-model').Types;
         return deferred.promise;
     };
 
-    AwsS3DocumentRepository.prototype.getParsedDocument = function (genericDocumentRequest) {
+    AwsS3DynamodbDocumentRepository.prototype.getParsedDocument = function (genericDocumentRequest) {
         var deferred = Q.defer();
         var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'json');
         var request = {
@@ -120,7 +182,7 @@ var Kraken = require('kraken-model').Types;
         return deferred.promise;
     };
 
-    AwsS3DocumentRepository.prototype.getImportedDocumentMetadata = function (genericDocumentRequest) {
+    AwsS3DynamodbDocumentRepository.prototype.getImportedDocumentMetadata = function (genericDocumentRequest) {
         var deferred = Q.defer();
         var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'raw');
         var request = {
@@ -142,7 +204,7 @@ var Kraken = require('kraken-model').Types;
         return deferred.promise;
     };
 
-    AwsS3DocumentRepository.prototype.getImportedDocument = function (genericDocumentRequest) {
+    AwsS3DynamodbDocumentRepository.prototype.getImportedDocument = function (genericDocumentRequest) {
         var deferred = Q.defer();
         var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'raw');
         var request = {
@@ -164,6 +226,6 @@ var Kraken = require('kraken-model').Types;
         return deferred.promise;
     };
 
-    module.exports = new AwsS3DocumentRepository();
+    module.exports = new AwsS3DynamodbDocumentRepository();
 
 })();

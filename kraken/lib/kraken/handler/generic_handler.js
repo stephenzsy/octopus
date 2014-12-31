@@ -25,11 +25,16 @@ var Q = require('q');
                     r.done(function (rr) {
                         result(null, rr);
                     }, function (err) {
+                        if (err instanceof Kraken.ValidationError) {
+                            result(err);
+                            return;
+                        }
+                        // unhandled
                         console.error(err);
                         if (err.stack) {
                             console.error(err.stack);
                         }
-                        result(err);
+                        result(null);
                     });
                 } else {
                     result(null, r);

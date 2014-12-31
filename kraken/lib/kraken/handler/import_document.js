@@ -11,6 +11,7 @@ var InputValidators = require("./util/input_validators");
 
     var httpExternalRepository = new HttpExternalRepository();
     var awsS3DocumentRepository = require('../document_repository/aws_s3_document_repository');
+    var awsS3DynamodbDocumentRepository = require('../document_repository/aws_s3_dynamodb_document_repository');
 
     function ImportDocument() {
         GenericHandler.call(this);
@@ -26,6 +27,8 @@ var InputValidators = require("./util/input_validators");
         var validated = InputValidators.validateGenericDocumentRequest(request);
         var articleSource = validated.articleSource;
 
+        var documentStoreRepository = null;
+
         // resolve url
         var metadata = {
             ContentType: "text/html"
@@ -34,9 +37,11 @@ var InputValidators = require("./util/input_validators");
         var url = null;
         if (request.DocumentType === Kraken.TYPE_DAILY_INDEX) {
             url = articleSource.getArchiveDailyIndexUrlForId(request.DocumentId);
+            documentStoreRepository = awsS3DocumentRepository;
         } else if (request.DocumentType === Kraken.TYPE_ARTICLE) {
             url = articleSource.getArticleUrlForId(request.DocumentId);
             metadata['ArchiveBucket'] = request.ArchiveBucket;
+            documentStoreRepository = awsS3DynamodbDocumentRepository
         }
 
         var timestamp = new Date().toISOString();
@@ -52,7 +57,19 @@ var InputValidators = require("./util/input_validators");
                     DocumentContent: documentContent,
                     Metadata: metadata
                 });
-            }).then(awsS3DocumentRepository.storeImportedDocument)
+            }).then(documentStoreRepository.storeImportedDocument, function (err) {
+                if (request.DocumentType === Kraken.TYPE_ARTICLE && err.type === 'redirect') {
+                    var redirectedArticleId = articleSource.getArticleIdForUrl(err.location);
+                    return documentStoreRepository.storeDocumentRedirection(request, redirectedArticleId)
+                        .then(function (result) {
+                            throw new Kraken.ValidationError({
+                                ErrorCode: "DuplicateArticleId.Redirect",
+                                Message: "Redirected to article ID: " + redirectedArticleId
+                            })
+                        });
+                }
+                throw err;
+            })
             .then(function (/* Kraken.ImportedDocument */ importedDocument) {
                 importedDocument.Status = Kraken.STATUS_IMPORTED;
                 return importedDocument;

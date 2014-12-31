@@ -43,6 +43,10 @@ var DocumentParser = require('../../parser/document_parser');
         return 'http://www.businessinsider.com/' + articleId;
     };
 
+    BusinessInsider.prototype.getArticleIdForUrl = function (url) {
+        return url.substr('http://www.businessinsider.com/'.length);
+    };
+
     BusinessInsider.prototype.getLocalDateForArchiveDailyIndexId = function (id) {
         return moment.tz(id, this.getTimezone()).format();
     };

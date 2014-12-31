@@ -1,23 +1,19 @@
 var util = require("util");
 var http = require('http');
-var DocumentRepository = require('./document_repository');
 var Q = require('q');
 
 (function () {
     "use strict";
 
     function HttpExternalRepository() {
-        DocumentRepository.call(this);
     }
-
-    util.inherits(HttpExternalRepository, DocumentRepository);
 
     HttpExternalRepository.prototype.retrieveDocument = function (url) {
         var resolved = false;
         var deferred = Q.defer();
         console.log("URL: " + url);
         http.get(url, function (res) {
-            if (res.statusCode == 200) {
+            if (res.statusCode === 200) {
                 var data = '';
                 res.on('data', function (chunk) {
                     data += chunk;
@@ -31,8 +27,14 @@ var Q = require('q');
                         deferred.reject("Connection closed for URL: " + url);
                     }
                 })
+            } else if (res.statusCode === 302) {
+                var location = res.headers['location'];
+                deferred.reject({type: 'redirect', location: location});
             } else {
-                deferred.reject("Bad response code: " + res.statusCode.toString() + ", for URL: " + url);
+                deferred.reject({
+                    type: 'unknown',
+                    message: "Bad response code: " + res.statusCode.toString() + ", for URL: " + url
+                });
             }
         }).on('error', function (e) {
             deferred.reject(e);
