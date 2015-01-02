@@ -27,7 +27,7 @@ var GenericHandler = require('./generic_handler');
             .then(function (s3Response) {
                 if (!s3Response) {
                     throw new Kraken.ValidationError({
-                        ErrorCode: "InvalidDocumentId.NotParsed",
+                        ErrorCode: Kraken.ERROR_CODE_INVALID_DOCUMENT_ID_NOT_PARSED,
                         Message: "Document is not parsed: " + request.toString()
                     });
                 }

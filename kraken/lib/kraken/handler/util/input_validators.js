@@ -24,6 +24,7 @@ var ArticleSources = require('../../article_sources');
             if (request.DocumentType === Kraken.TYPE_DAILY_INDEX ||
                 request.DocumentType === Kraken.TYPE_ARTICLE) {
                 documentType = request.DocumentType;
+                articleSource.validateDocumentIdForType(request.DocumentType, request.DocumentId);
             } else {
                 throw new Kraken.ValidationError({
                     ErrorCode: "InvalidDocumentType.NotFound",
@@ -33,7 +34,7 @@ var ArticleSources = require('../../article_sources');
             if (request.DocumentType === Kraken.TYPE_ARTICLE && !request.ArchiveBucket) {
                 throw new Kraken.ValidationError({
                     ErrorCode: "InvalidRequest.NullArchiveBucket",
-                    Message: "Archive bucket is null for document type: " + request.DocumenType
+                    Message: "Archive bucket is null for document type provided: " + request.DocumenType
                 });
             }
             return {

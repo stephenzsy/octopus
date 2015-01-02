@@ -6,6 +6,9 @@ exception ValidationError {
   2: string Message
 }
 
+const string ERROR_CODE_INVALID_DOCUMENT_ID_NOT_IMPORTED = "InvalidDocumentId.NotImported"
+const string ERROR_CODE_INVALID_DOCUMENT_ID_NOT_PARSED = "InvalidDocumentId.NotParsed"
+
 struct ArticleSource {
   1: string Id,
   2: string Name,

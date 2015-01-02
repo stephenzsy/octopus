@@ -13,6 +13,19 @@
         };
     });
 
+    app.factory('ArticleSources', function () {
+        var mem = {};
+
+        return {
+            set: function (key, value) {
+                mem[key] = value;
+            },
+            get: function (key) {
+                return mem[key];
+            }
+        };
+    });
+
     app.controller('MainController', function () {
     });
 

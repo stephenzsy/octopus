@@ -1081,6 +1081,134 @@ Kraken.KrakenService_GetArticle_result.prototype.write = function(output) {
   return;
 };
 
+Kraken.KrakenService_ParseArticle_args = function(args) {
+  this.request = null;
+  if (args) {
+    if (args.request !== undefined) {
+      this.request = args.request;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field request is unset!');
+    }
+  }
+};
+Kraken.KrakenService_ParseArticle_args.prototype = {};
+Kraken.KrakenService_ParseArticle_args.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.request = new Kraken.GenericDocumentRequest();
+        this.request.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 0:
+        input.skip(ftype);
+        break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.KrakenService_ParseArticle_args.prototype.write = function(output) {
+  output.writeStructBegin('KrakenService_ParseArticle_args');
+  if (this.request !== null && this.request !== undefined) {
+    output.writeFieldBegin('request', Thrift.Type.STRUCT, 1);
+    this.request.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+Kraken.KrakenService_ParseArticle_result = function(args) {
+  this.success = null;
+  this.validationError = null;
+  if (args instanceof Kraken.ValidationError) {
+    this.validationError = args;
+    return;
+  }
+  if (args) {
+    if (args.success !== undefined) {
+      this.success = args.success;
+    }
+    if (args.validationError !== undefined) {
+      this.validationError = args.validationError;
+    }
+  }
+};
+Kraken.KrakenService_ParseArticle_result.prototype = {};
+Kraken.KrakenService_ParseArticle_result.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true)
+  {
+    var ret = input.readFieldBegin();
+    var fname = ret.fname;
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 0:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.success = new Kraken.Article();
+        this.success.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 1:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.validationError = new Kraken.ValidationError();
+        this.validationError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Kraken.KrakenService_ParseArticle_result.prototype.write = function(output) {
+  output.writeStructBegin('KrakenService_ParseArticle_result');
+  if (this.success !== null && this.success !== undefined) {
+    output.writeFieldBegin('success', Thrift.Type.STRUCT, 0);
+    this.success.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.validationError !== null && this.validationError !== undefined) {
+    output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
+    this.validationError.write(output);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 Kraken.KrakenServiceClient = function(input, output) {
     this.input = input;
     this.output = (!output) ? input : output;
@@ -1462,4 +1590,47 @@ Kraken.KrakenServiceClient.prototype.recv_GetArticle = function() {
     return result.success;
   }
   throw 'GetArticle failed: unknown result';
+};
+Kraken.KrakenServiceClient.prototype.ParseArticle = function(request, callback) {
+  if (callback === undefined) {
+    this.send_ParseArticle(request);
+    return this.recv_ParseArticle();
+  } else {
+    var postData = this.send_ParseArticle(request, true);
+    return this.output.getTransport()
+      .jqRequest(this, postData, arguments, this.recv_ParseArticle);
+  }
+};
+
+Kraken.KrakenServiceClient.prototype.send_ParseArticle = function(request, callback) {
+  this.output.writeMessageBegin('ParseArticle', Thrift.MessageType.CALL, this.seqid);
+  var args = new Kraken.KrakenService_ParseArticle_args();
+  args.request = request;
+  args.write(this.output);
+  this.output.writeMessageEnd();
+  return this.output.getTransport().flush(callback);
+};
+
+Kraken.KrakenServiceClient.prototype.recv_ParseArticle = function() {
+  var ret = this.input.readMessageBegin();
+  var fname = ret.fname;
+  var mtype = ret.mtype;
+  var rseqid = ret.rseqid;
+  if (mtype == Thrift.MessageType.EXCEPTION) {
+    var x = new Thrift.TApplicationException();
+    x.read(this.input);
+    this.input.readMessageEnd();
+    throw x;
+  }
+  var result = new Kraken.KrakenService_ParseArticle_result();
+  result.read(this.input);
+  this.input.readMessageEnd();
+
+  if (null !== result.validationError) {
+    throw result.validationError;
+  }
+  if (null !== result.success) {
+    return result.success;
+  }
+  throw 'ParseArticle failed: unknown result';
 };

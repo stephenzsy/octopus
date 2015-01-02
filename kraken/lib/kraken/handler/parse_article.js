@@ -10,17 +10,17 @@ var InputValidators = require("./util/input_validators");
 
     var awsS3DocumentRepository = require('../document_repository/aws_s3_document_repository');
 
-    function ParseArchiveDailyIndex() {
+    function ParseArticle() {
         GenericHandler.call(this);
     }
 
-    util.inherits(ParseArchiveDailyIndex, GenericHandler);
+    util.inherits(ParseArticle, GenericHandler);
 
-    ParseArchiveDailyIndex.prototype.getMethodName = function () {
+    ParseArticle.prototype.getMethodName = function () {
         return 'ParseArchiveDailyIndex';
     };
 
-    ParseArchiveDailyIndex.prototype.enact = function (/*Kraken.GenericDocumentRequest*/ request) {
+    ParseArticle.prototype.enact = function (/*Kraken.GenericDocumentRequest*/ request) {
         var validated = InputValidators.validateGenericDocumentRequest(request);
         var articleSource = validated.articleSource;
         var archiveDailyIndexParser = articleSource.getArchiveDailyIndexParser();
@@ -43,10 +43,7 @@ var InputValidators = require("./util/input_validators");
                         ArchiveDailyIndexId: request.DocumentId,
                         LocalDate: articleSource.getLocalDateForArchiveDailyIndexId(request.DocumentId),
                         SourceUrl: importedDocument.SourceUrl,
-                        Metadata: {
-                            'ImportTimestamp': importedDocument.ImportTimestamp,
-                            'ParseTimestamp': parseTimestamp
-                        },
+                        Metadata: {'ParseTimestamp': parseTimestamp},
                         Status: Kraken.STATUS_READY,
                         ArticleEntries: articleSource.toListOfArchiveDailyIndexEntries(parsed)
                     });
@@ -54,11 +51,11 @@ var InputValidators = require("./util/input_validators");
             });
     };
 
-    ParseArchiveDailyIndex.prototype.isAsync = true;
+    ParseArticle.prototype.isAsync = true;
 
-    ParseArchiveDailyIndex.prototype.setGetImportedDocumentHandler = function (/*GetImportedDocument*/ handler) {
+    ParseArticle.prototype.setGetImportedDocumentHandler = function (/*GetImportedDocument*/ handler) {
         this.GetImportedDocumentHandler = handler;
     };
 
-    var handler = module.exports = new ParseArchiveDailyIndex();
+    var handler = module.exports = new ParseArticle();
 })();

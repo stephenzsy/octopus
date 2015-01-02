@@ -2,30 +2,32 @@
     'use strict';
 
     angular.module('hydra')
-        .controller('ArticleSourceController', function ($scope, $routeParams, KrakenService) {
+        .controller('ArticleSourceController', function ($scope, $routeParams, KrakenService, ArticleSources) {
             $scope.breadcrumb = [];
 
-            var request = new Kraken.GetArticleSourceRequest();
-            request.ArticleSourceId = $routeParams['article_source_id'];
-            var x = KrakenService.GetArticleSource(request, function () {
-            }).then(function (data) {
-                $scope.ArticleSource = data;
-                $scope.$apply();
-                var listArchiveDailyIndicesRequest = new Kraken.ListArchiveDailyIndicesRequest();
-                listArchiveDailyIndicesRequest.ArticleSourceId = data.Id;
-                return KrakenService.ListArchiveDailyIndices(listArchiveDailyIndicesRequest);
-            }, function (xhr, status, err) {
-                console.dir(xhr);
-                console.dir(status);
-                console.dir(err);
-            }).then(function (data) {
-                $scope.dailyIndices = data;
-                $scope.$apply();
-            }, function (xhr, status, err) {
-                console.dir(xhr);
-                console.dir(status);
-                console.dir(err);
+            var articleSourceId = $routeParams['article_source_id'];
+            var request = new Kraken.GetArticleSourceRequest({
+                ArticleSourceId: articleSourceId
             });
+            var x = KrakenService.GetArticleSource(request)
+                .then(function (articleSource) {
+                    $scope.ArticleSource = articleSource;
+                    ArticleSources.set(request.ArticleSourceId, $scope.ArticleSource);
+                    $scope.breadcrumb = [{
+                        display: articleSource.Name,
+                        // url: '/article_source/' + articleSource.Id,
+                        active: true
+                    }];
+                });
+
+            var listArchiveDailyIndicesRequest = new Kraken.ListArchiveDailyIndicesRequest({
+                ArticleSourceId: articleSourceId
+            });
+
+            KrakenService.ListArchiveDailyIndices(listArchiveDailyIndicesRequest)
+                .then(function (archiveDailyIndices) {
+                    $scope.dailyIndices = archiveDailyIndices;
+                });
 
             $scope.importDailyIndexDocument = function (dailyIndex) {
                 var request = new Kraken.GenericDocumentRequest();
