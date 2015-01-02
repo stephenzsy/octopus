@@ -1,0 +1,67 @@
+{
+  "version": "0.0.1",
+  "dev": false,
+  "model": {
+    "div.right_stories": [
+      {
+        "filters": {
+          "div.sub_headline, h3": [
+            {"action": "remove"}
+          ]
+        }
+      },
+      {
+        "filters": {
+          "ul.stories": [
+            {
+              "data": {
+                "action": "beginScope",
+                "type": "array"
+              }
+            },
+            {
+              "filters": {
+                "li > a": [
+                  {
+                    "each": [
+                      {
+                        "data": {
+                          "action": "beginScope",
+                          "type": "object"
+                        }
+                      },
+                      {
+                        "data": {
+                          "action": "collect",
+                          "type": "attribute",
+                          "attributeKey": "href",
+                          "dataKey": "link"
+                        }
+                      },
+                      {
+                        "data": {
+                          "action": "collect",
+                          "type": "text",
+                          "dataKey": "text"
+                        }
+                      },
+                      {
+                        "data": {
+                          "action": "appendToParent"
+                        }
+                      },
+                      {"action": "remove"}
+                    ]
+                  }
+                ]
+              }
+            },
+            {"action": "#inspect"},
+            {"action": "remove"}
+          ]
+        }
+      },
+      {"action": "#inspect"}
+    ]
+  }
+}

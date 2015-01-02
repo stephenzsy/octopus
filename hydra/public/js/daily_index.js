@@ -41,18 +41,19 @@
                         $scope.status = 'NotParsed';
 
                         // check if it is imported
-                        return KrakenService.GetImportedDocument(request)
+                        return KrakenService.ParseArchiveDailyIndex(request)
                             .then(function (data) {
                                 return data;
                             }, function (err) {
                                 // not imported, import
                                 if (err instanceof Kraken.ValidationError && err.ErrorCode === Kraken.ERROR_CODE_INVALID_DOCUMENT_ID_NOT_IMPORTED) {
                                     $scope.status = 'NotImported';
-                                    return KrakenService.ImportDocument(request);
+                                    return KrakenService.ImportDocument(request)
+                                        .then(function () {
+                                            return KrakenService.ParseArchiveDailyIndex(request);
+                                        });
                                 }
                                 throw err;
-                            }).then(function (data) {
-                                return KrakenService.ParseArchiveDailyIndex(request);
                             }).then(handleArticleDailyIndex);
                     }
                     throw err;

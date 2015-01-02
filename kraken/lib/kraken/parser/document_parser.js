@@ -7,6 +7,7 @@ var Q = require('q');
     function DocumentParser(/*tree file*/ model) {
         this.model = model['model'];
         this.modelVersion = model['version'];
+        this.isDev = (model['dev'] === true);
     }
 
     function applyRules(nodes, rules, dataScope) {
@@ -43,7 +44,10 @@ var Q = require('q');
                         }
                         break;
                     case 'filters':
-                        parseParts(nodes, op, dataScope);
+                        var parsed = parseParts(nodes, op, dataScope);
+                        if (!dataScope) {
+                            dataScope = parsed;
+                        }
                         break;
                     case 'each':
                         nodes.each(function () {
@@ -77,7 +81,12 @@ var Q = require('q');
     }
 
     DocumentParser.prototype.parse = function (documentContent) {
-        return parseParts($(documentContent), this.model);
+        var parsed = parseParts($(documentContent), this.model);
+        if (this.isDev) {
+            console.log(parsed);
+            throw "Parser In Development";
+        }
+        return parsed;
     };
 
     DocumentParser.prototype.getModelVersion = function () {
