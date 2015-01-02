@@ -36,8 +36,9 @@ const string STATUS_READY = "READY" // document parsed
 
 struct ArchiveDailyIndexEntry {
   1: string ArticleId,
-  2: string Url
-  3: string Name
+  2: string Url,
+  3: string Name,
+  4: string ArchiveBucket,
 }
 
 struct ArchiveDailyIndex {
@@ -55,7 +56,8 @@ struct Article {
   2: string ArticleDailyIndexId
   3: string Sourceurl,
   4: map<string, string> Metadata,
-  5: string Content
+  5: string Content,
+  6: string ArchiveBucket
 }
 
 struct ListArchiveDailyIndicesRequest {

@@ -24,7 +24,7 @@
         <div ng-repeat="entry in articleDailyIndex.ArticleEntries">
             <div>
                 <span>
-                <a ng-href="/article/{{articleDailyIndex.ArticleSourceId}}/{{articleDailyIndex.ArchiveDailyIndexId}}/{{entry.ArticleId}}">
+                <a ng-href="/article/{{articleDailyIndex.ArticleSourceId}}/{{entry.ArchiveBucket}}/{{entry.ArticleId}}">
                     {{entry.Name}}
                 </a>
 

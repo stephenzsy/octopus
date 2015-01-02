@@ -356,6 +356,7 @@ Kraken.ArchiveDailyIndexEntry = module.exports.ArchiveDailyIndexEntry = function
   this.ArticleId = null;
   this.Url = null;
   this.Name = null;
+  this.ArchiveBucket = null;
   if (args) {
     if (args.ArticleId !== undefined) {
       this.ArticleId = args.ArticleId;
@@ -365,6 +366,9 @@ Kraken.ArchiveDailyIndexEntry = module.exports.ArchiveDailyIndexEntry = function
     }
     if (args.Name !== undefined) {
       this.Name = args.Name;
+    }
+    if (args.ArchiveBucket !== undefined) {
+      this.ArchiveBucket = args.ArchiveBucket;
     }
   }
 };
@@ -403,6 +407,13 @@ Kraken.ArchiveDailyIndexEntry.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.STRING) {
+        this.ArchiveBucket = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -427,6 +438,11 @@ Kraken.ArchiveDailyIndexEntry.prototype.write = function(output) {
   if (this.Name !== null && this.Name !== undefined) {
     output.writeFieldBegin('Name', Thrift.Type.STRING, 3);
     output.writeString(this.Name);
+    output.writeFieldEnd();
+  }
+  if (this.ArchiveBucket !== null && this.ArchiveBucket !== undefined) {
+    output.writeFieldBegin('ArchiveBucket', Thrift.Type.STRING, 4);
+    output.writeString(this.ArchiveBucket);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -636,6 +652,7 @@ Kraken.Article = module.exports.Article = function(args) {
   this.Sourceurl = null;
   this.Metadata = null;
   this.Content = null;
+  this.ArchiveBucket = null;
   if (args) {
     if (args.ArticleSourceId !== undefined) {
       this.ArticleSourceId = args.ArticleSourceId;
@@ -651,6 +668,9 @@ Kraken.Article = module.exports.Article = function(args) {
     }
     if (args.Content !== undefined) {
       this.Content = args.Content;
+    }
+    if (args.ArchiveBucket !== undefined) {
+      this.ArchiveBucket = args.ArchiveBucket;
     }
   }
 };
@@ -720,6 +740,13 @@ Kraken.Article.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.ArchiveBucket = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -764,6 +791,11 @@ Kraken.Article.prototype.write = function(output) {
   if (this.Content !== null && this.Content !== undefined) {
     output.writeFieldBegin('Content', Thrift.Type.STRING, 5);
     output.writeString(this.Content);
+    output.writeFieldEnd();
+  }
+  if (this.ArchiveBucket !== null && this.ArchiveBucket !== undefined) {
+    output.writeFieldBegin('ArchiveBucket', Thrift.Type.STRING, 6);
+    output.writeString(this.ArchiveBucket);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

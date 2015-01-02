@@ -63,13 +63,21 @@ var DocumentParser = require('../../parser/document_parser');
 
     BusinessInsider.prototype.toListOfArchiveDailyIndexEntries = function (parsed) {
         var baseUrl = this.getUrl();
-        return parsed.map(function (element) {
-            return new Kraken.ArchiveDailyIndexEntry({
-                ArticleId: stripLeadingSlashes(element.link),
+        var entries = [];
+        parsed.forEach(function (element) {
+            var m = /^\/(.*)-(\d{4}-\d{1,2})$/g.exec(element.link);
+            if (m == null) {
+                console.error(element.link);
+                throw 'WTF';
+            }
+            entries.push(new Kraken.ArchiveDailyIndexEntry({
+                ArticleId: m[1],
                 Url: baseUrl + element.link,
-                Name: element.text
-            });
+                Name: element.text,
+                ArchiveBucket: m[2]
+            }));
         });
+        return entries;
     };
 
     module.exports = BusinessInsider;

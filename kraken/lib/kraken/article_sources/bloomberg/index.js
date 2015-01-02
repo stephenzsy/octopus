@@ -44,7 +44,7 @@ var DocumentParser = require('../../parser/document_parser');
     };
 
     Bloomberg.prototype.getArticleIdForUrl = function (url) {
-        return url.substr('http://www.bloomberg.com/'.length);
+        return url.substring('http://www.bloomberg.com/'.length, url.length - ".html".length);
     };
 
     Bloomberg.prototype.getLocalDateForArchiveDailyIndexId = function (id) {
@@ -61,15 +61,35 @@ var DocumentParser = require('../../parser/document_parser');
         return str.replace(/^\/*/, '');
     }
 
+
     Bloomberg.prototype.toListOfArchiveDailyIndexEntries = function (parsed) {
         var baseUrl = this.getUrl();
-        return parsed.map(function (element) {
-            return new Kraken.ArchiveDailyIndexEntry({
-                ArticleId: stripLeadingSlashes(element.link),
-                Url: baseUrl + element.link,
-                Name: element.text
-            });
+        var entries = [];
+        parsed.forEach(function (element) {
+            var m = /^\/(\w+)\/([\d-]+)\/([^\/]*)\.html$/g.exec(element.link);
+            if (m == null) {
+                console.error(element);
+                throw 'WTF';
+            }
+            if (m[1] === 'news') {
+                entries.push(new Kraken.ArchiveDailyIndexEntry({
+                    ArticleId: m[3],
+                    Url: baseUrl + element.link,
+                    Name: element.text,
+                    ArchiveBucket: m[2]
+                }));
+            } else {
+                switch (m[1]) {
+                    case 'slideshow':
+                        // do nothing as slideshow
+                        break;
+                    default:
+                        console.err("Unrecognized link");
+                        throw 'WTF'
+                }
+            }
         });
+        return entries;
     };
 
     module.exports = Bloomberg;
