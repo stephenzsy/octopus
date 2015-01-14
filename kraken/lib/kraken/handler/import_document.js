@@ -39,7 +39,7 @@ var InputValidators = require("./util/input_validators");
             url = articleSource.getArchiveDailyIndexUrlForId(request.DocumentId);
             documentStoreRepository = awsS3DocumentRepository;
         } else if (request.DocumentType === Kraken.TYPE_ARTICLE) {
-            url = articleSource.getArticleUrlForId(request.DocumentId);
+            url = articleSource.getArticleUrlForArchiveBucketAndId(request.ArchiveBucket, request.DocumentId);
             metadata['ArchiveBucket'] = request.ArchiveBucket;
             documentStoreRepository = awsS3DynamodbDocumentRepository
         }

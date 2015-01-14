@@ -11,24 +11,31 @@
                 ArticleSourceId: $routeParams['article_source_id'],
                 DocumentType: Kraken.TYPE_ARTICLE,
                 DocumentId: $routeParams['article_id'],
-                ArchiveBucket: $routeParams['local_date']
+                ArchiveBucket: $routeParams['archive_bucket']
             });
 
-            var x = KrakenService.GetArticle(request, function () {
-            }).then(function (data) {
-                console.log(data);
-            }, function (xhr, status, err) {
-                console.dir(xhr);
-                console.dir(status);
-                console.dir(err);
+            var x = KrakenService.GetArticle(request).then(function (/* Kraken.Article */ article) {
+                console.log(article)
+            }, function (err) {
+                if (err instanceof Kraken.ValidationError && err.ErrorCode === Kraken.ERROR_CODE_INVALID_DOCUMENT_ID_NOT_PARSED) {
+                    // check if it is imported
+                    return KrakenService.ParseArticle(request)
+                        .then(function (data) {
+                            return data;
+                        }, function (err) {
+                            // not imported, import
+                            if (err instanceof Kraken.ValidationError && err.ErrorCode === Kraken.ERROR_CODE_INVALID_DOCUMENT_ID_NOT_IMPORTED) {
+                                $scope.status = 'NotImported';
+                                return KrakenService.ImportDocument(request)
+                                    .then(function () {
+                                        return KrakenService.ParseARticle(request);
+                                    });
+                            }
+                            throw err;
+                        }).then(function (article) {
+                            console.log(article);
+                        });
+                }
             });
-
-            $scope.importArticle = function () {
-                KrakenService.ImportDocument(request, function () {
-                }).then(function (/* Kraken.ImportedDocument */ importedDocument) {
-                    $scope.status = null;
-                    $scope.$apply();
-                });
-            };
         });
 })();

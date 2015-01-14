@@ -74,7 +74,8 @@ struct GenericDocumentRequest {
   1: required string ArticleSourceId,
   2: required string DocumentType,
   3: required string DocumentId,
-  4: string ArchiveBucket // Import bucket for archiving and storing documents, especially for Articles. Usually it's the date in YYYY-MM-DD format
+  4: string ArchiveBucket, // Import bucket for archiving and storing documents, especially for Articles. Usually it's the date in YYYY-MM-DD format
+  5: bool MetadataOnly
 }
 
 service KrakenService {

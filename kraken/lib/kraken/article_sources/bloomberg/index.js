@@ -39,8 +39,8 @@ var DocumentParser = require('../../parser/document_parser');
         return 'http://www.bloomberg.com/archive/news/' + id + '/';
     };
 
-    Bloomberg.prototype.getArticleUrlForId = function (articleId) {
-        return 'http://www.bloomberg.com/' + articleId;
+    Bloomberg.prototype.getArticleUrlForArchiveBucketAndId = function (archiveBucket, articleId) {
+        return 'http://www.bloomberg.com/news/' + archiveBucket + '/' + articleId + ".html";
     };
 
     Bloomberg.prototype.getArticleIdForUrl = function (url) {
@@ -52,9 +52,14 @@ var DocumentParser = require('../../parser/document_parser');
     };
 
     var archiveDailyIndexParser = new DocumentParser(require('./daily_index_model.json'));
+    var articleParser = new DocumentParser(require('./article_model.json'));
 
     Bloomberg.prototype.getArchiveDailyIndexParser = function () {
         return archiveDailyIndexParser;
+    };
+
+    Bloomberg.prototype.getArticleParser = function () {
+        return articleParser;
     };
 
     function stripLeadingSlashes(str) {

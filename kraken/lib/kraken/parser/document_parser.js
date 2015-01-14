@@ -1,4 +1,4 @@
-var $ = require('cheerio');
+var cheerio = require('cheerio');
 var Q = require('q');
 
 (function () {
@@ -44,14 +44,14 @@ var Q = require('q');
                         }
                         break;
                     case 'filters':
-                        var parsed = parseParts(nodes, op, dataScope);
+                        var parsed = parseParts(nodes, op, dataScope, false);
                         if (!dataScope) {
                             dataScope = parsed;
                         }
                         break;
                     case 'each':
                         nodes.each(function () {
-                            applyRules($(this), op, dataScope);
+                            applyRules(this, op, dataScope);
                         });
                         break;
                     case 'action':
@@ -63,6 +63,9 @@ var Q = require('q');
                             case 'inspect':
                                 console.log(nodes.html());
                                 break;
+                            case 'inspectRaw':
+                                console.log(nodes);
+                                break;
                         }
                 }
             }
@@ -70,9 +73,13 @@ var Q = require('q');
         return dataScope;
     }
 
-    function parseParts(root, model, dataScope) {
+    function parseParts(root, model, dataScope, isRoot) {
         for (var filter in model) {
-            var result = applyRules(root.find(filter), model[filter], dataScope);
+            if (isRoot) {
+                var result = applyRules(root(filter), model[filter], dataScope);
+            } else {
+                var result = applyRules(root.find(filter), model[filter], dataScope);
+            }
             if (!dataScope && result) {
                 dataScope = result;
             }
@@ -81,7 +88,13 @@ var Q = require('q');
     }
 
     DocumentParser.prototype.parse = function (documentContent) {
-        var parsed = parseParts($(documentContent), this.model);
+        var $ = cheerio.load(documentContent);
+        var meta = $('meta');
+        var keys = Object.keys(meta);
+        keys.forEach(function (key) {
+            console.log(meta[key].attribs);
+        });
+        var parsed = parseParts($, this.model, null, true);
         if (this.isDev) {
             console.log(parsed);
             throw "Parser In Development";

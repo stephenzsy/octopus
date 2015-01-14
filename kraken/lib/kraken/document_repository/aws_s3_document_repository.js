@@ -11,24 +11,23 @@ var Kraken = require('kraken-model').Types;
     function AwsS3DocumentRepository() {
     }
 
-
     var credentials = new AWS.SharedIniFileCredentials({profile: 'kraken'});
     AWS.config.credentials = credentials;
     var s3 = new AWS.S3({region: 'us-west-2'});
     var bucketName = Config.aws.s3.bucket;
 
-    function getS3KeyForGenericDocumentRequest(/* Kraken.GenericDocumentRequest */ request, format) {
+    AwsS3DocumentRepository.prototype.getS3KeyForGenericDocumentRequest = function (/* Kraken.GenericDocumentRequest */ request, format) {
         if (request.DocumentType === Kraken.TYPE_DAILY_INDEX) {
             return request.ArticleSourceId + ":daily_index:" + format + "/" + request.DocumentId.replace(/-/g, "/");
         } else if (request.DocumentType === Kraken.TYPE_ARTICLE) {
             var tail = request.ArchiveBucket.replace(/-/g, "/") + "/" + request.DocumentId;
             return request.ArticleSourceId + ":article:" + format + "/" + tail;
         } else {
-            throw "Invalid imported document type: " + request.DocumentType;
+            throw "Invalid document type: " + request.DocumentType;
         }
-    }
+    };
 
-    function getS3KeyForImportedDocument(/* Kraken.ImportedDocument */ importedDocument, format) {
+    AwsS3DocumentRepository.prototype.getS3KeyForImportedDocument = function (/* Kraken.ImportedDocument */ importedDocument, format) {
         var request = new Kraken.GenericDocumentRequest({
             ArticleSourceId: importedDocument.ArticleSourceId,
             DocumentType: importedDocument.Type,
@@ -37,8 +36,8 @@ var Kraken = require('kraken-model').Types;
         if (importedDocument.Type === Kraken.TYPE_ARTICLE && importedDocument.Metadata['ArchiveBucket']) {
             request.ArchiveBucket = importedDocument.Metadata['ArchiveBucket'];
         }
-        return getS3KeyForGenericDocumentRequest(request, format);
-    }
+        return this.getS3KeyForGenericDocumentRequest(request, format);
+    };
 
     AwsS3DocumentRepository.prototype.storeImportedDocument = function (/* Kraken.ImportedDocument */ importedDocument) {
         var deferred = Q.defer();
@@ -74,7 +73,7 @@ var Kraken = require('kraken-model').Types;
 
     AwsS3DocumentRepository.prototype.storeParsedDocument = function (genericDocumentRequest, parsed, metadata) {
         var deferred = Q.defer();
-        var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'json');
+        var s3Key = this.getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'json');
         var request = {
             Bucket: bucketName,
             Key: s3Key,
@@ -100,7 +99,7 @@ var Kraken = require('kraken-model').Types;
 
     AwsS3DocumentRepository.prototype.getParsedDocument = function (genericDocumentRequest) {
         var deferred = Q.defer();
-        var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'json');
+        var s3Key = this.getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'json');
         var request = {
             Bucket: bucketName,
             Key: s3Key
@@ -122,7 +121,7 @@ var Kraken = require('kraken-model').Types;
 
     AwsS3DocumentRepository.prototype.getImportedDocumentMetadata = function (genericDocumentRequest) {
         var deferred = Q.defer();
-        var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'raw');
+        var s3Key = this.getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'raw');
         var request = {
             Bucket: bucketName,
             Key: s3Key
@@ -144,7 +143,7 @@ var Kraken = require('kraken-model').Types;
 
     AwsS3DocumentRepository.prototype.getImportedDocument = function (genericDocumentRequest) {
         var deferred = Q.defer();
-        var s3Key = getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'raw');
+        var s3Key = this.getS3KeyForGenericDocumentRequest(genericDocumentRequest, 'raw');
         var request = {
             Bucket: bucketName,
             Key: s3Key
@@ -164,6 +163,7 @@ var Kraken = require('kraken-model').Types;
         return deferred.promise;
     };
 
+    AwsS3DocumentRepository.prototype.class = AwsS3DocumentRepository;
     module.exports = new AwsS3DocumentRepository();
 
 })();

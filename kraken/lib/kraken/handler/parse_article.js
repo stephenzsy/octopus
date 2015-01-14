@@ -23,29 +23,28 @@ var InputValidators = require("./util/input_validators");
     ParseArticle.prototype.enact = function (/*Kraken.GenericDocumentRequest*/ request) {
         var validated = InputValidators.validateGenericDocumentRequest(request);
         var articleSource = validated.articleSource;
-        var archiveDailyIndexParser = articleSource.getArchiveDailyIndexParser();
+        var articleParser = articleSource.getArticleParser();
 
         return this.GetImportedDocumentHandler.getImportedDocument(request)
             .then(function (/*Kraken.ImportedDocument*/ importedDocument) {
                 var parseTimestamp = new Date().toISOString();
-                var parsed = archiveDailyIndexParser.parse(importedDocument.DocumentContent);
+                var parsed = articleParser.parse(importedDocument.DocumentContent);
 
                 // store it in s3
                 return awsS3DocumentRepository.storeParsedDocument(request, parsed, {
                     ImportTimestamp: importedDocument.ImportTimestamp,
                     SourceUrl: importedDocument.SourceUrl,
                     ParseTimestamp: parseTimestamp,
-                    ParserModelVersion: archiveDailyIndexParser.getModelVersion()
+                    ParserModelVersion: articleParser.getModelVersion()
                 }).then(function () {
-
-                    return new Kraken.ArchiveDailyIndex({
+                    return new Kraken.Article({
                         ArticleSourceId: request.ArticleSourceId,
+                        ArchiveBucket: request.ArchiveBucket,
                         ArchiveDailyIndexId: request.DocumentId,
-                        LocalDate: articleSource.getLocalDateForArchiveDailyIndexId(request.DocumentId),
                         SourceUrl: importedDocument.SourceUrl,
                         Metadata: {'ParseTimestamp': parseTimestamp},
                         Status: Kraken.STATUS_READY,
-                        ArticleEntries: articleSource.toListOfArchiveDailyIndexEntries(parsed)
+                        Content: parsed
                     });
                 });
             });

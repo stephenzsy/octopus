@@ -7,12 +7,14 @@ var moment = require('moment-timezone');
     }
 
     ArticleSource.prototype.validateDocumentIdForType = function (type, id) {
-        var datetime = moment.tz(id, this.getTimezone());
-        if (!datetime.isValid() || datetime.format('YYYY-MM-DD') !== id) {
-            throw new Kraken.ValidationError({
-                ErrorCode: 'InvalidDocumentId.Malformed',
-                Message: "Invalid document ID: " + id
-            });
+        if (type === Kraken.TYPE_DAILY_INDEX) {
+            var datetime = moment.tz(id, this.getTimezone());
+            if (!datetime.isValid() || datetime.format('YYYY-MM-DD') !== id) {
+                throw new Kraken.ValidationError({
+                    ErrorCode: 'InvalidDocumentId.Malformed',
+                    Message: "Invalid document ID: " + id
+                });
+            }
         }
     };
 

@@ -1,0 +1,9 @@
+{
+  "version": "0.0.1",
+  "dev": true,
+  "model": {
+    "body": [
+      {"action": "#inspect"}
+    ]
+  }
+}

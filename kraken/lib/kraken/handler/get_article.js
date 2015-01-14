@@ -23,10 +23,22 @@ var InputValidators = require("./util/input_validators");
     GetArticle.prototype.enact = function (/*Kraken.GenericDocumentRequest*/ request) {
         var validated = InputValidators.validateGenericDocumentRequest(request);
         var articleSource = validated.articleSource;
-        return new Kraken.Article();
+
+        return awsS3DocumentRepository.getParsedDocument(request).then(function (s3Response) {
+            if (s3Response == null) {
+                throw new Kraken.ValidationError({
+                    ErrorCode: Kraken.ERROR_CODE_INVALID_DOCUMENT_ID_NOT_PARSED,
+                    Message: "Document not parsed: " + request.ArticleSourceId + "," + request.DocumentType + "," + request.DocumentId + "," + request.ArchiveBucket
+                });
+            }
+            return new Kraken.Article();
+        }, function (err) {
+            throw err;
+        });
+
     };
 
-    GetArticle.prototype.isAsync = false;
+    GetArticle.prototype.isAsync = true;
 
     var handler = module.exports = new GetArticle();
 })();

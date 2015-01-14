@@ -44,7 +44,9 @@
             GetArchiveDailyIndex: handler1Arg('GetArchiveDailyIndex'),
             GetImportedDocument: handler1Arg('GetImportedDocument'),
             ImportDocument: handler1Arg('ImportDocument'),
-            ParseArchiveDailyIndex: handler1Arg('ParseArchiveDailyIndex')
+            ParseArchiveDailyIndex: handler1Arg('ParseArchiveDailyIndex'),
+            GetArticle: handler1Arg('GetArticle'),
+            ParseArticle: handler1Arg('ParseArticle')
         };
     });
 })();

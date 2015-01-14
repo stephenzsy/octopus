@@ -40,7 +40,8 @@ var ArticleSources = require('../../article_sources');
             return {
                 articleSource: articleSource,
                 documentType: documentType,
-                documentId: request.DocumentId
+                documentId: request.DocumentId,
+                archiveBucket: request.ArchiveBucket
             };
         }
     };

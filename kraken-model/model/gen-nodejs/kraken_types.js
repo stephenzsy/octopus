@@ -947,6 +947,7 @@ Kraken.GenericDocumentRequest = module.exports.GenericDocumentRequest = function
   this.DocumentType = null;
   this.DocumentId = null;
   this.ArchiveBucket = null;
+  this.MetadataOnly = null;
   if (args) {
     if (args.ArticleSourceId !== undefined) {
       this.ArticleSourceId = args.ArticleSourceId;
@@ -965,6 +966,9 @@ Kraken.GenericDocumentRequest = module.exports.GenericDocumentRequest = function
     }
     if (args.ArchiveBucket !== undefined) {
       this.ArchiveBucket = args.ArchiveBucket;
+    }
+    if (args.MetadataOnly !== undefined) {
+      this.MetadataOnly = args.MetadataOnly;
     }
   }
 };
@@ -1010,6 +1014,13 @@ Kraken.GenericDocumentRequest.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.BOOL) {
+        this.MetadataOnly = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1039,6 +1050,11 @@ Kraken.GenericDocumentRequest.prototype.write = function(output) {
   if (this.ArchiveBucket !== null && this.ArchiveBucket !== undefined) {
     output.writeFieldBegin('ArchiveBucket', Thrift.Type.STRING, 4);
     output.writeString(this.ArchiveBucket);
+    output.writeFieldEnd();
+  }
+  if (this.MetadataOnly !== null && this.MetadataOnly !== undefined) {
+    output.writeFieldBegin('MetadataOnly', Thrift.Type.BOOL, 5);
+    output.writeBool(this.MetadataOnly);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

@@ -4,6 +4,9 @@
     var getImportedDocument = require('./get_imported_document');
     var parseArchiveDailyIndex = require('./parse_achive_daily_index');
     parseArchiveDailyIndex.setGetImportedDocumentHandler(getImportedDocument);
+    var parseArticle = require('./parse_article');
+    parseArticle.setGetImportedDocumentHandler(getImportedDocument);
+
 
     var handlers = module.exports = {
         ping: require('./ping'),
@@ -14,7 +17,8 @@
         ImportDocument: require('./import_document'),
         GetImportedDocument: getImportedDocument.handler,
         ParseArchiveDailyIndex: parseArchiveDailyIndex.handler,
-        GetArticle: require('./get_article').handler
+        GetArticle: require('./get_article').handler,
+        ParseArticle: parseArticle.handler
     };
 
 })();
