@@ -1,9 +1,152 @@
 {
   "version": "0.0.1",
   "dev": true,
+  "options": {
+    "rootDataScope": "object"
+  },
   "model": {
-    "body": [
-      {"action": "#inspect"}
+    "head meta": [
+      {
+        "data": {
+          "action": "beginScope",
+          "type": "object"
+        }
+      },
+      {
+        "each": [
+          {
+            "data": {
+              "action": "collect",
+              "type": "attribute",
+              "dataKeyFields": [
+                "name",
+                "property",
+                "itemprop"
+              ],
+              "dataValueField": "content"
+            }
+          },
+          {"action": "remove"}
+        ]
+      },
+      {
+        "data": {
+          "action": "appendToParent",
+          "key": "meta"
+        }
+      }
+    ],
+    ".article_main": [
+      {
+        "filters": {
+          "div.ad_wrap, .ad_medium": [
+            {"action": "remove"}
+          ],
+          "h1.article_title": [
+            {
+              "data": {
+                "action": "collect",
+                "type": "text",
+                "dataKey": "title"
+              }
+            },
+            {"action": "remove"}
+          ],
+          ".byline span.author": [
+            {"action": "remove"}
+          ],
+          ".byline span.date": [
+            {
+              "data": {
+                "action": "collect",
+                "type": "text",
+                "dataKey": "date"
+              }
+            },
+            {"action": "remove"}
+          ]
+        }
+      },
+      {
+        "filters": {
+          ".header_wrap, .byline, .entry_wrap .interaction_contain": [
+            {"action": "remove"}
+          ]
+        }
+      },
+      {
+        "filters": {
+          ".entry_content .article_body": [
+            {
+              "filters": {
+                "p.decoration": [
+                  {"action": "remove"}
+                ]
+              }
+            },
+            {
+              "filters": {
+                "a": [
+                  {
+                    "data": {
+                      "action": "beginScope",
+                      "type": "array"
+                    }
+                  },
+                  {
+                    "each": [
+                      {
+                        "data": {
+                          "action": "collect",
+                          "type": "attribute",
+                          "dataValueField": "href",
+                          "toParentArray": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "data": {
+                      "action": "appendToParent",
+                      "key": "links"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "filters": {
+                "p": [
+                  {
+                    "data": {
+                      "action": "beginScope",
+                      "type": "array"
+                    }
+                  },
+                  {
+                    "each": [
+                      {
+                        "data": {
+                          "action": "collect",
+                          "type": "text",
+                          "toParentArray": true
+                        }
+                      },
+                      {"action": "remove"}
+                    ]
+                  },
+                  {
+                    "data": {
+                      "action": "appendToParent",
+                      "key": "content"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     ]
   }
 }

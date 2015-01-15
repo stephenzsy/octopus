@@ -31,6 +31,7 @@ var InputValidators = require("./util/input_validators");
                     Message: "Document not parsed: " + request.ArticleSourceId + "," + request.DocumentType + "," + request.DocumentId + "," + request.ArchiveBucket
                 });
             }
+            console.log(s3Response);
             return new Kraken.Article();
         }, function (err) {
             throw err;

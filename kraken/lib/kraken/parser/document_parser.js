@@ -8,7 +8,13 @@ var Q = require('q');
         this.model = model['model'];
         this.modelVersion = model['version'];
         this.isDev = (model['dev'] === true);
+        this.options = model['options'];
+        if (this.options == null) {
+            this.options = {};
+        }
     }
+
+    var WHITESPACE_PATTERN = new RegExp("\\s+", "m");
 
     function applyRules(nodes, rules, dataScope) {
         var parentDataScope = dataScope;
@@ -31,27 +37,47 @@ var Q = require('q');
                             case 'collect':
                                 switch (op['type']) {
                                     case 'attribute':
-                                        dataScope[op['dataKey']] = nodes.attr(op['attributeKey']);
+                                        if (op['toParentArray']) {
+                                            dataScope.push(nodes.attr(op['dataValueField']));
+                                        } else if (op['dataKeyFields']) {
+                                            op['dataKeyFields'].forEach(function (field) {
+                                                if (nodes.attr(field)) {
+                                                    dataScope[nodes.attr(field)] = nodes.attr(op['dataValueField']);
+                                                    return;
+                                                }
+                                            });
+                                        } else {
+                                            dataScope[op['dataKey']] = nodes.attr(op['attributeKey']);
+                                        }
                                         break;
                                     case 'text':
-                                        dataScope[op['dataKey']] = nodes.text();
+                                        var text = nodes.text().trim();
+                                        if (op['toParentArray']) {
+                                            dataScope.push(text);
+                                        } else {
+                                            dataScope[op['dataKey']] = text;
+                                        }
                                         break;
                                 }
                                 break;
                             case 'appendToParent':
-                                parentDataScope.push(dataScope);
+                                if (op['key']) {
+                                    parentDataScope[op['key']] = dataScope;
+                                } else {
+                                    parentDataScope.push(dataScope);
+                                }
                                 break;
                         }
                         break;
                     case 'filters':
-                        var parsed = parseParts(nodes, op, dataScope, false);
+                        var parsed = parseParts(nodes, op, dataScope);
                         if (!dataScope) {
                             dataScope = parsed;
                         }
                         break;
                     case 'each':
                         nodes.each(function () {
-                            applyRules(this, op, dataScope);
+                            applyRules(cheerio(this), op, dataScope);
                         });
                         break;
                     case 'action':
@@ -73,13 +99,9 @@ var Q = require('q');
         return dataScope;
     }
 
-    function parseParts(root, model, dataScope, isRoot) {
+    function parseParts(root, model, dataScope) {
         for (var filter in model) {
-            if (isRoot) {
-                var result = applyRules(root(filter), model[filter], dataScope);
-            } else {
-                var result = applyRules(root.find(filter), model[filter], dataScope);
-            }
+            var result = applyRules(root.find(filter), model[filter], dataScope);
             if (!dataScope && result) {
                 dataScope = result;
             }
@@ -88,19 +110,21 @@ var Q = require('q');
     }
 
     DocumentParser.prototype.parse = function (documentContent) {
-        var $ = cheerio.load(documentContent);
-        var meta = $('meta');
-        var keys = Object.keys(meta);
-        keys.forEach(function (key) {
-            console.log(meta[key].attribs);
-        });
-        var parsed = parseParts($, this.model, null, true);
+        var $ = cheerio(documentContent);
+
+        var rootDataScope = null;
+        if (this.options["rootDataScope"] === 'object') {
+            rootDataScope = {};
+        }
+
+        var parsed = parseParts($, this.model, rootDataScope);
         if (this.isDev) {
             console.log(parsed);
             throw "Parser In Development";
         }
         return parsed;
-    };
+    }
+    ;
 
     DocumentParser.prototype.getModelVersion = function () {
         return this.modelVersion;
@@ -108,4 +132,5 @@ var Q = require('q');
 
     module.exports = DocumentParser;
 
-})();
+})
+();
