@@ -1,4 +1,6 @@
 var util = require('util');
+var moment = require('moment-timezone');
+
 var Kraken = require('kraken-model').Types;
 var InputValidators = require('./util/input_validators');
 
@@ -32,13 +34,21 @@ var GenericHandler = require('./generic_handler');
                     });
                 }
 
+                if (moment(s3Response.Metadata['import-timestamp']) <
+                    articleSource.getLocalDateForArchiveDailyIndexId(request.DocumentId).startOf('day').add(1, 'd').add(1, 'h')) {
+                    throw new Kraken.DocumentExpiredError({
+                        ErrorCode: Kraken.ERROR_CODE_DOCUMENT_EXPIRED,
+                        Message: "Document expired: Originally imported at " + s3Response.Metadata['import-timestamp']
+                    });
+                }
+
                 var parsed = JSON.parse(s3Response.Body.toString());
                 var entries = articleSource.toListOfArchiveDailyIndexEntries(parsed);
                 return new Kraken.ArchiveDailyIndex({
                     Status: Kraken.STATUS_READY,
                     ArticleSourceId: request.ArticleSourceId,
                     ArchiveDailyIndexId: request.DocumentId,
-                    LocalDate: articleSource.getLocalDateForArchiveDailyIndexId(request.DocumentId),
+                    LocalDate: articleSource.getLocalDateForArchiveDailyIndexId(request.DocumentId).format(),
                     SourceUrl: s3Response.Metadata['source-url'],
                     Metadata: {
                         "ImportTimestamp": s3Response.Metadata['import-timestamp'],

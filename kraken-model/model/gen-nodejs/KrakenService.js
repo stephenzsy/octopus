@@ -632,8 +632,13 @@ Kraken.KrakenService_GetArchiveDailyIndex_args.prototype.write = function(output
 Kraken.KrakenService_GetArchiveDailyIndex_result = function(args) {
   this.success = null;
   this.validationError = null;
+  this.documentExpiredError = null;
   if (args instanceof ttypes.ValidationError) {
     this.validationError = args;
+    return;
+  }
+  if (args instanceof ttypes.DocumentExpiredError) {
+    this.documentExpiredError = args;
     return;
   }
   if (args) {
@@ -642,6 +647,9 @@ Kraken.KrakenService_GetArchiveDailyIndex_result = function(args) {
     }
     if (args.validationError !== undefined) {
       this.validationError = args.validationError;
+    }
+    if (args.documentExpiredError !== undefined) {
+      this.documentExpiredError = args.documentExpiredError;
     }
   }
 };
@@ -675,6 +683,14 @@ Kraken.KrakenService_GetArchiveDailyIndex_result.prototype.read = function(input
         input.skip(ftype);
       }
       break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.documentExpiredError = new ttypes.DocumentExpiredError();
+        this.documentExpiredError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -694,6 +710,11 @@ Kraken.KrakenService_GetArchiveDailyIndex_result.prototype.write = function(outp
   if (this.validationError !== null && this.validationError !== undefined) {
     output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
     this.validationError.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.documentExpiredError !== null && this.documentExpiredError !== undefined) {
+    output.writeFieldBegin('documentExpiredError', Thrift.Type.STRUCT, 2);
+    this.documentExpiredError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1144,8 +1165,13 @@ Kraken.KrakenService_ParseArticle_args.prototype.write = function(output) {
 Kraken.KrakenService_ParseArticle_result = function(args) {
   this.success = null;
   this.validationError = null;
+  this.parseError = null;
   if (args instanceof ttypes.ValidationError) {
     this.validationError = args;
+    return;
+  }
+  if (args instanceof ttypes.ParseError) {
+    this.parseError = args;
     return;
   }
   if (args) {
@@ -1154,6 +1180,9 @@ Kraken.KrakenService_ParseArticle_result = function(args) {
     }
     if (args.validationError !== undefined) {
       this.validationError = args.validationError;
+    }
+    if (args.parseError !== undefined) {
+      this.parseError = args.parseError;
     }
   }
 };
@@ -1187,6 +1216,14 @@ Kraken.KrakenService_ParseArticle_result.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
+      case 2:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.parseError = new ttypes.ParseError();
+        this.parseError.read(input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -1206,6 +1243,11 @@ Kraken.KrakenService_ParseArticle_result.prototype.write = function(output) {
   if (this.validationError !== null && this.validationError !== undefined) {
     output.writeFieldBegin('validationError', Thrift.Type.STRUCT, 1);
     this.validationError.write(output);
+    output.writeFieldEnd();
+  }
+  if (this.parseError !== null && this.parseError !== undefined) {
+    output.writeFieldBegin('parseError', Thrift.Type.STRUCT, 2);
+    this.parseError.write(output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1506,6 +1548,9 @@ Kraken.KrakenServiceClient.prototype.recv_GetArchiveDailyIndex = function(input,
   if (null !== result.validationError) {
     return callback(result.validationError);
   }
+  if (null !== result.documentExpiredError) {
+    return callback(result.documentExpiredError);
+  }
   if (null !== result.success) {
     return callback(null, result.success);
   }
@@ -1705,6 +1750,9 @@ Kraken.KrakenServiceClient.prototype.recv_ParseArticle = function(input,mtype,rs
 
   if (null !== result.validationError) {
     return callback(result.validationError);
+  }
+  if (null !== result.parseError) {
+    return callback(result.parseError);
   }
   if (null !== result.success) {
     return callback(null, result.success);

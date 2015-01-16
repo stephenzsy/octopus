@@ -5,9 +5,20 @@ exception ValidationError {
   1: string ErrorCode,
   2: string Message
 }
-
 const string ERROR_CODE_INVALID_DOCUMENT_ID_NOT_IMPORTED = "InvalidDocumentId.NotImported"
 const string ERROR_CODE_INVALID_DOCUMENT_ID_NOT_PARSED = "InvalidDocumentId.NotParsed"
+
+exception ParseError {
+  1: string ErrorCode,
+  2: string Message
+}
+const string ERROR_CODE_PARSE_FAILURE = "ParseFailure"
+
+exception DocumentExpiredError {
+  1: string ErrorCode,
+  2: string Message
+}
+const string ERROR_CODE_DOCUMENT_EXPIRED = "DocumentExpired"
 
 struct ArticleSource {
   1: string Id,
@@ -53,11 +64,11 @@ struct ArchiveDailyIndex {
 
 struct Article {
   1: string ArticleSourceId,
-  2: string ArticleDailyIndexId
-  3: string Sourceurl,
-  4: map<string, string> Metadata,
-  5: string Content,
-  6: string ArchiveBucket
+  2: string ArchiveBucket,
+  3: string ArticleId,
+  4: string SourceUrl,
+  5: map<string, string> Metadata,
+  6: string Content
 }
 
 struct ListArchiveDailyIndicesRequest {
@@ -112,6 +123,7 @@ service KrakenService {
    **/
   ArchiveDailyIndex GetArchiveDailyIndex(1: required GenericDocumentRequest request) throws (
     1: ValidationError validationError,
+    2: DocumentExpiredError documentExpiredError
   ),
 
   /**
@@ -134,5 +146,6 @@ service KrakenService {
 
   Article ParseArticle(1: required GenericDocumentRequest request) throws (
     1: ValidationError validationError,
+    2: ParseError parseError
   )
 }

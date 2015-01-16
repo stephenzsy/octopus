@@ -56,12 +56,10 @@
                 ]
               }
             },
-            {"action": "#inspect"},
             {"action": "remove"}
           ]
         }
-      },
-      {"action": "#inspect"}
+      }
     ]
   }
 }

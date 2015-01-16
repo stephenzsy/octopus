@@ -48,7 +48,7 @@ var DocumentParser = require('../../parser/document_parser');
     };
 
     Bloomberg.prototype.getLocalDateForArchiveDailyIndexId = function (id) {
-        return moment.tz(id, this.getTimezone()).format();
+        return moment.tz(id, 'YYYY-MM-DD', this.getTimezone());
     };
 
     var archiveDailyIndexParser = new DocumentParser(require('./daily_index_model.json'));

@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
-  "dev": true,
+  "dev": false,
   "options": {
     "rootDataScope": "object"
   },
@@ -79,7 +79,7 @@
           ".entry_content .article_body": [
             {
               "filters": {
-                "p.decoration": [
+                "p.decoration, img, .image_full_view, figure": [
                   {"action": "remove"}
                 ]
               }
@@ -116,7 +116,7 @@
             },
             {
               "filters": {
-                "p": [
+                "p, h2": [
                   {
                     "data": {
                       "action": "beginScope",
@@ -143,6 +143,9 @@
                   }
                 ]
               }
+            },
+            {
+              "action": "validateEmpty"
             }
           ]
         }

@@ -1,6 +1,8 @@
 var cheerio = require('cheerio');
 var Q = require('q');
 
+var Kraken = require('kraken-model').Types;
+
 (function () {
     "use strict";
 
@@ -51,7 +53,7 @@ var Q = require('q');
                                         }
                                         break;
                                     case 'text':
-                                        var text = nodes.text().trim();
+                                        var text = nodes.text().trim().replace(/\s+/gm, ' ');
                                         if (op['toParentArray']) {
                                             dataScope.push(text);
                                         } else {
@@ -86,17 +88,35 @@ var Q = require('q');
                             case 'remove':
                                 nodes.remove();
                                 break;
+                            case 'validateEmpty':
+                                validateEmpty(nodes);
+                                break;
                             case 'inspect':
                                 console.log(nodes.html());
                                 break;
                             case 'inspectRaw':
                                 console.log(nodes);
                                 break;
+                            default:
+                                throw new Kraken.ParseError({
+                                    ErrorCode: Kraken.ERROR_CODE_PARSE_FAILURE,
+                                    Message: "Unknown Action: " + action
+                                });
                         }
                 }
             }
         });
         return dataScope;
+    }
+
+    function validateEmpty(nodes) {
+        var text = nodes.text().trim();
+        if (text.length !== 0) {
+            throw new Kraken.ParseError({
+                ErrorCode: Kraken.ERROR_CODE_PARSE_FAILURE,
+                Message: "Non empty nodes content: " + text
+            });
+        }
     }
 
     function parseParts(root, model, dataScope) {

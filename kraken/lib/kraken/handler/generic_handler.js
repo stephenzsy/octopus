@@ -25,7 +25,9 @@ var Q = require('q');
                     r.done(function (rr) {
                         result(null, rr);
                     }, function (err) {
-                        if (err instanceof Kraken.ValidationError) {
+                        if (err instanceof Kraken.ValidationError ||
+                            err instanceof Kraken.ParseError ||
+                            err instanceof Kraken.DocumentExpiredError) {
                             result(err);
                             return;
                         }

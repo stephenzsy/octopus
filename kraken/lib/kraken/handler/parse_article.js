@@ -40,11 +40,14 @@ var InputValidators = require("./util/input_validators");
                     return new Kraken.Article({
                         ArticleSourceId: request.ArticleSourceId,
                         ArchiveBucket: request.ArchiveBucket,
-                        ArchiveDailyIndexId: request.DocumentId,
+                        ArticleId: request.DocumentId,
                         SourceUrl: importedDocument.SourceUrl,
-                        Metadata: {'ParseTimestamp': parseTimestamp},
+                        Metadata: {
+                            ImportTimestamp: importedDocument.ImportTimestamp,
+                            'ParseTimestamp': parseTimestamp
+                        },
                         Status: Kraken.STATUS_READY,
-                        Content: parsed
+                        Content: JSON.stringify(parsed)
                     });
                 });
             });

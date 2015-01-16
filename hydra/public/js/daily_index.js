@@ -35,26 +35,31 @@
                     .then(setBreadcurmb);
             }
 
+            function importAndParse() {
+                return KrakenService.ImportDocument(request)
+                    .then(function () {
+                        return KrakenService.ParseArchiveDailyIndex(request);
+                    }).then(handleArticleDailyIndex);
+            }
+
             KrakenService.GetArchiveDailyIndex(request)
                 .then(handleArticleDailyIndex, function (err) {
+                    if (err instanceof Kraken.DocumentExpiredError) {
+                        return importAndParse();
+                    }
                     if (err instanceof Kraken.ValidationError && err.ErrorCode === Kraken.ERROR_CODE_INVALID_DOCUMENT_ID_NOT_PARSED) {
                         $scope.status = 'NotParsed';
 
                         // check if it is imported
                         return KrakenService.ParseArchiveDailyIndex(request)
-                            .then(function (data) {
-                                return data;
-                            }, function (err) {
+                            .then(handleArticleDailyIndex, function (err) {
                                 // not imported, import
                                 if (err instanceof Kraken.ValidationError && err.ErrorCode === Kraken.ERROR_CODE_INVALID_DOCUMENT_ID_NOT_IMPORTED) {
                                     $scope.status = 'NotImported';
-                                    return KrakenService.ImportDocument(request)
-                                        .then(function () {
-                                            return KrakenService.ParseArchiveDailyIndex(request);
-                                        });
+                                    return importAndParse();
                                 }
                                 throw err;
-                            }).then(handleArticleDailyIndex);
+                            });
                     }
                     throw err;
                 });
