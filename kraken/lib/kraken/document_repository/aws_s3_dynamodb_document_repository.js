@@ -16,10 +16,16 @@ var AWSS3DocumentRepository = require('./aws_s3_document_repository').class;
 
     util.inherits(AwsS3DynamodbDocumentRepository, AWSS3DocumentRepository);
 
-    var credentials = new AWS.SharedIniFileCredentials({profile: 'kraken'});
+    var credentials = null;
+    if (Config.aws.credentials && Config.aws.credentials.profile) {
+        credentials = new AWS.SharedIniFileCredentials({profile: Config.aws.credentials.profile});
+    } else {
+        credentials = new AWS.EC2MetadataCredentials();
+    }
     AWS.config.credentials = credentials;
-    var s3 = new AWS.S3({region: 'us-west-2'});
-    var dynamodb = new AWS.DynamoDB({region: 'us-west-2'});
+
+    var s3 = new AWS.S3({region:  Config.aws.s3.region});
+    var dynamodb = new AWS.DynamoDB({region: Config.aws.dynamodb.region});
     var bucketName = Config.aws.s3.bucket;
     var tableName = Config.aws.dynamodb.tableName;
 
