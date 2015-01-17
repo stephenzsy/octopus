@@ -317,7 +317,6 @@ exports.createWebServer = function (options) {
         }
         svcObj.transport = svcObj.transport ? svcObj.transport : TBufferedTransport;
         svcObj.protocol = TJSONProtocol;
-        svcObj.requireAuth = (svcObj.requireAuth === true);
     }
 
     //Verify CORS requirements
@@ -436,8 +435,7 @@ exports.createWebServer = function (options) {
     }
 
     function handleAuth(request) {
-        var svc = services[uri];
-        if (svc.requireAuth) {
+        if (AuthConfig.requireAuth) {
             if (request.headers['x-ssl-client-verify'] !== 'SUCCESS') {
                 return false;
             }
@@ -456,12 +454,12 @@ exports.createWebServer = function (options) {
     //   - POST XHR Thrift services
     //   - OPTIONS CORS requests
     server.on('request', function (request, response) {
-        if (!handleAuth(request)) {
-            response.writeHead(403);
-            response.end();
-            return;
-        }
         if (request.method === 'POST') {
+            if (!handleAuth(request)) {
+                response.writeHead(403);
+                response.end();
+                return;
+            }
             processPost(request, response);
         } else if (request.method === 'OPTIONS') {
             processOptions(request, response);

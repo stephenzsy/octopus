@@ -9,8 +9,7 @@ module.exports = serverFactory.createWebServer({
     services: {
         '/': {
             processor: KrakenService,
-            handler: require('./lib/kraken/handler'),
-            requireAuth: false
+            handler: require('./lib/kraken/handler')
         }
     }
 });
