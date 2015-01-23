@@ -440,10 +440,10 @@ exports.createWebServer = function (options) {
                 return false;
             }
             if (AuthConfig.whitelistedClientSDN[request.headers['x-ssl-client-s-dn']]) {
-                console.log("Authenticated:" + request.header['x-ssl-client-s-dn']);
+                console.log("Authenticated:" + request.headers['x-ssl-client-s-dn']);
                 return true;
             }
-            console.log("AuthFail:" + request.header['x-ssl-client-s-dn']);
+            console.log("AuthFail:" + request.headers['x-ssl-client-s-dn']);
             return false;
         }
         return true;

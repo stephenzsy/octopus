@@ -1,7 +1,6 @@
-<div class="container">
-    <div class="page-header">
-        <h1>Article Sources</h1>
-    </div>
+<div>
+    <h1>Article Sources</h1>
+
     <div ng-repeat="articleSource in articleSources">
         <div><a ng-href="/article_source/{{articleSource.Id}}"><b>{{articleSource.Name}}</b></a></div>
         <div><a ng-href="{{articleSource.Url}}">{{articleSource.Url}}</a></div>

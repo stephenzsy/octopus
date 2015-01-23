@@ -21,7 +21,7 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
-            }
+            };
         }
 
         function handler1Arg(method) {
@@ -34,7 +34,7 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
-            }
+            };
         }
 
         return {
