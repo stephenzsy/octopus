@@ -19,9 +19,9 @@
 var http = require('http');
 var https = require('https');
 var url = require("url");
-var path = require("path");
-var fs = require("fs");
 var crypto = require("crypto");
+var querystring = require('querystring');
+var Q = require('q');
 
 var thrift = require('thrift');
 
@@ -434,7 +434,51 @@ exports.createWebServer = function (options) {
         server = http.createServer();
     }
 
+    function httpsGet(url) {
+        var deferred = Q.defer();
+        https.get(url, function (res) {
+
+            var data = '';
+
+            res.on('data', function (d) {
+                data += d.toString();
+            });
+
+            res.on('end', function () {
+                deferred.resolve(JSON.parse(data));
+            });
+
+        }).on('error', function (e) {
+            deferred.reject(e);
+        });
+        return deferred.promise;
+    }
+
     function handleAuth(request) {
+        var deferred = Q.defer();
+        var authorization = request.headers.authorization;
+        if (authorization) {
+            var m = authorization.match(/^Bearer\s+(.*)$/);
+            if (m) {
+                var accessToken = m[1];
+                httpsGet('https://www.googleapis.com/oauth2/v1/tokeninfo?' + querystring.stringify({
+                    access_token: accessToken
+                })).then(deferred.resolve, deferred.reject);
+            }
+        } else {
+            deferred.reject("No authorization header");
+        }
+        return deferred.promise.then(function (result) {
+            console.log(result);
+            if (AuthConfig.whitelistedGoogleUserIds[result.user_id]) {
+                return true;
+            }
+            return false;
+        }, function (e) {
+            console.error(e);
+            return false
+        });
+
         if (AuthConfig.requireAuth) {
             if (request.headers['x-ssl-client-verify'] !== 'SUCCESS') {
                 return false;
@@ -455,12 +499,20 @@ exports.createWebServer = function (options) {
     //   - OPTIONS CORS requests
     server.on('request', function (request, response) {
         if (request.method === 'POST') {
-            if (!handleAuth(request)) {
-                response.writeHead(403);
+            handleAuth(request).then(function (result) {
+                if (result) {
+                    processPost(request, response);
+
+                } else {
+                    response.writeHead(403);
+                    response.end();
+                }
+            }, function (e) {
+                console.error(e);
+                response.writeHead(500);
                 response.end();
-                return;
-            }
-            processPost(request, response);
+            });
+
         } else if (request.method === 'OPTIONS') {
             processOptions(request, response);
         } else {
