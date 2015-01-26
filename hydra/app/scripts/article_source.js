@@ -5,7 +5,7 @@
         .controller('ArticleSourceController', function ($scope, $routeParams, KrakenService, ArticleSources) {
             $scope.breadcrumb = [];
 
-            var articleSourceId = $routeParams['article_source_id'];
+            var articleSourceId = $routeParams.article_source_id;
             var request = new Kraken.GetArticleSourceRequest({
                 ArticleSourceId: articleSourceId
             });

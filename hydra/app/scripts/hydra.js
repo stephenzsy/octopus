@@ -3,16 +3,6 @@
 
     var app = angular.module('hydra', ['ngRoute', 'krakenClient']);
 
-    app.directive('hydraBreadcrumb', function () {
-        return {
-            restrict: 'A',
-            scope: {
-                hydraBreadcrumb: '='
-            },
-            templateUrl: '/views/partials/_breadcrumb.html'
-        };
-    });
-
     app.factory('ArticleSources', function () {
         var mem = {};
 
@@ -28,14 +18,25 @@
 
     app.controller('MainController', function (ServiceConfig, $scope, KrakenService) {
         $scope.GooglePlusClientId = ServiceConfig.GooglePlusClientId;
+        $scope.signinStatus = 'Unknown';
         $scope.handleGoogleSigninAuthResult = function (authResult) {
+            console.log(authResult);
             if (authResult.status.signed_in) {
                 KrakenService.setAccessToken(authResult.token_type, authResult.access_token);
                 $scope.$broadcast("Authenticated");
+                $scope.signinStatus = 'SignedIn';
             } else {
-                console.error(authResult);
+                $scope.signinStatus = 'SignedOut';
             }
+            console.log($scope.signinStatus);
         };
+
+        $scope.googleSignOut = function () {
+            KrakenService.setAccessToken(null, null);
+            $scope.signinStatus = 'SignedOut';
+            gapi.auth.signOut();
+        };
+
     });
 
     // configure route

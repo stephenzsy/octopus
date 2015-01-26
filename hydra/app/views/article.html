@@ -27,7 +27,7 @@
         </p>
         <hr>
         <h3>Links</h3>
-        <div ng-repeat="url in Article.Content.links">
+        <div ng-repeat="url in Article.Content.links track by $index">
             <a ng-href="{{url}}">
                 {{url}}
             </a>

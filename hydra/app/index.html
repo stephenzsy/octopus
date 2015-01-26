@@ -52,6 +52,9 @@
     <script src="scripts/kraken_client.js"></script>
     <script src="scripts/hydra.js"></script>
     <script src="scripts/article_sources.js"></script>
+    <script src="scripts/article_source.js"></script>
+    <script src="scripts/daily_index.js"></script>
+    <script src="scripts/article.js"></script>
     <!-- endbuild -->
 
     <script src="config.js"></script>
@@ -82,12 +85,13 @@
 </nav>
 
 <div class="container text-right">
-    <span id="gSigninButton"><span
+    <span id="gSigninButton" ng-show="signinStatus === 'SignedOut'"><span
             class="g-signin"
             data-callback="gSigninCallback"
             data-clientid="{{GooglePlusClientId}}"
             data-cookiepolicy="single_host_origin"
             data-scope="openid"></span></span>
+    <span ng-show="signinStatus === 'SignedIn'">Welcome! <span class="btn btn-link" ng-click="googleSignOut()">Sign out</span></span>
 </div>
 
 <main class="container" ng-view>
