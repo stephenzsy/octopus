@@ -7,7 +7,19 @@
         var Thrift = $window.Thrift;
         var Kraken = $window.Kraken;
 
-        var transport = new Thrift.Transport(SERVICE_URL);
+        var tokenType = null;
+        var accessToken = null;
+
+        var transport = new Thrift.Transport(SERVICE_URL, {
+            authTokenProvider: {
+                getTokenType: function () {
+                    return tokenType;
+                },
+                getAccessToken: function () {
+                    return accessToken;
+                }
+            }
+        });
         var protocol = new Thrift.Protocol(transport);
         var client = new Kraken.KrakenServiceClient(protocol);
 
@@ -38,6 +50,13 @@
         }
 
         return {
+            isAuthConfigured: function () {
+                return (tokenType && accessToken);
+            },
+            setAccessToken: function (type, token) {
+                tokenType = type;
+                accessToken = token;
+            },
             ListArticleSources: handler0Arg('ListArticleSources'),
             GetArticleSource: handler1Arg('GetArticleSource'),
             ListArchiveDailyIndices: handler1Arg('ListArchiveDailyIndices'),

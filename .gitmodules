@@ -1,0 +1,3 @@
+[submodule "hydra/bootstrap-sass"]
+	path = hydra/bootstrap-sass
+	url = git@github.com:stephenzsy/bootstrap-sass.git

@@ -11,11 +11,11 @@ var GenericHandler = require('./generic_handler');
     }
 
     var ARTICLE_SOURCES_LIST = [
-        new Kraken.ArticleSource({
-            Id: 'businessinsider',
-            Name: 'Business Insider',
-            Url: 'http://www.businessinsider.com'
-        }),
+        /*   new Kraken.ArticleSource({
+         Id: 'businessinsider',
+         Name: 'Business Insider',
+         Url: 'http://www.businessinsider.com'
+         }),*/
         new Kraken.ArticleSource({
             Id: 'bloomberg',
             Name: 'Bloomberg',

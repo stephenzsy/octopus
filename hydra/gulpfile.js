@@ -27,6 +27,7 @@ var runSequence = require('run-sequence');
 var browserSync = require('browser-sync');
 var pagespeed = require('psi');
 var reload = browserSync.reload;
+var modRewrite  = require('connect-modrewrite');
 
 var AUTOPREFIXER_BROWSERS = [
     'ie >= 10',
@@ -105,7 +106,7 @@ gulp.task('styles', function () {
 
 // Scan Your HTML For Assets & Optimize Them
 gulp.task('html', function () {
-    var assets = $.useref.assets({searchPath: '{.tmp,app}'});
+    var assets = $.useref.assets({searchPath: '{.tmp,app,app/lib}'});
 
     return gulp.src('app/**/*.html')
         .pipe(assets)
@@ -156,12 +157,17 @@ gulp.task('serve', ['styles'], function () {
                 '/config.js': 'config.js',
                 '/scripts/lib/kraken_types.js': 'node_modules/kraken-model/model/gen-js/kraken_types.js',
                 '/scripts/lib/KrakenService.js': 'node_modules/kraken-model/model/gen-js/KrakenService.js'
-            }
+            },
+            middleware: [
+                modRewrite([
+                    '!\\.\\w+$ /index.html [L]'
+                ])
+            ]
         }
     });
 
     gulp.watch(['app/**/*.html'], reload);
-    gulp.watch(['app/styles/**/*.{scss,css}'], ['styles', reload]);
+    gulp.watch(['app/styles/**/*.{scss,css}', 'bootstrap-sass/assets/stylesheets/**/*.scss'], ['styles', reload]);
     gulp.watch(['app/scripts/**/*.js'], ['jshint']);
     gulp.watch(['app/images/**/*'], reload);
 });

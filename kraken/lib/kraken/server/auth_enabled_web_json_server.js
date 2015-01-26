@@ -326,7 +326,7 @@ exports.createWebServer = function (options) {
                 //Allow, origin allowed
                 response.setHeader("access-control-allow-origin", request.headers.origin);
                 response.setHeader("access-control-allow-methods", "GET, POST, OPTIONS");
-                response.setHeader("access-control-allow-headers", "content-type, accept");
+                response.setHeader("access-control-allow-headers", "content-type, accept, authorization");
                 response.setHeader("access-control-max-age", "60");
                 return true;
             } else {

@@ -3,9 +3,15 @@
 
     angular.module('hydra')
         .controller('ArticleSourcesController', function ($scope, KrakenService) {
-            KrakenService.ListArticleSources()
-                .then(function (articleSources) {
-                    $scope.articleSources = articleSources;
-                });
+            function pageInit() {
+                KrakenService.ListArticleSources()
+                    .then(function (articleSources) {
+                        $scope.articleSources = articleSources;
+                    });
+            }
+            if (KrakenService.isAuthConfigured()) {
+                pageInit();
+            }
+            $scope.$on('Authenticated', pageInit);
         });
 })();

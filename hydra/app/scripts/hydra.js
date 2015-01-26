@@ -26,7 +26,16 @@
         };
     });
 
-    app.controller('MainController', function () {
+    app.controller('MainController', function (ServiceConfig, $scope, KrakenService) {
+        $scope.GooglePlusClientId = ServiceConfig.GooglePlusClientId;
+        $scope.handleGoogleSigninAuthResult = function (authResult) {
+            if (authResult.status.signed_in) {
+                KrakenService.setAccessToken(authResult.token_type, authResult.access_token);
+                $scope.$broadcast("Authenticated");
+            } else {
+                console.error(authResult);
+            }
+        };
     });
 
     // configure route

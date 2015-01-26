@@ -1,9 +1,11 @@
 <div>
-    <h1>Article Sources</h1>
+    <h2>Article Sources</h2>
 
     <div ng-repeat="articleSource in articleSources">
+        <h3>{{articleSource.Name}}</h3>
         <div><a ng-href="/article_source/{{articleSource.Id}}"><b>{{articleSource.Name}}</b></a></div>
         <div><a ng-href="{{articleSource.Url}}">{{articleSource.Url}}</a></div>
         <br>
+        <div class="divider divider--fluid divider--spaced"></div>
     </div>
 </div>
