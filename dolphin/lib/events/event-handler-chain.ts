@@ -1,4 +1,8 @@
-///<reference path="./event-handler.ts"/>
+import MEventHandler = require('./event-handler');
+import _Event = require('./event');
+
+import EventHandler = MEventHandler.Dolphin.Events.EventHandler;
+import Event = _Event.Dolphin.Events.Event;
 
 export module Dolphin.Events {
 
@@ -7,7 +11,7 @@ export module Dolphin.Events {
         next:HandlerContainer;
 
         constructor(handler:EventHandler, next:HandlerContainer) {
-            this.handler = handler
+            this.handler = handler;
             this.next = next;
         }
     }
