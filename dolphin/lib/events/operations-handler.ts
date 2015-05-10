@@ -16,11 +16,8 @@ export module Dolphin.Events {
     export class OperationsHandler implements EventHandler {
         private operations = {};
 
-        private static METHOD_SIGNATURE_HEADER:string = "x-dolphin-method";
-
         before(event:Event):void {
-            var methodSignature:string = event.request.get(OperationsHandler.METHOD_SIGNATURE_HEADER);
-            var operation:Operation<any,any> = this.getOperation(methodSignature);
+            var operation:Operation<any,any> = this.getOperation(event.operation);
             var request:Request<any> = operation.validateInput(event.request);
             var result:Result<any> = operation.enact(request);
             event.result = result.toJsonObject();
@@ -30,9 +27,8 @@ export module Dolphin.Events {
 
         }
 
-        private getOperation<T,U>(methodSignature:string):Operation<T,U> {
-            var operationName:string = methodSignature;
-            var operation:Operation<T,U> = this.operations[operationName];
+        private getOperation<T,U>(methodName:string):Operation<T,U> {
+            var operation:Operation<T,U> = this.operations[methodName];
             return operation;
             // TODO: throw error if not matched
         }

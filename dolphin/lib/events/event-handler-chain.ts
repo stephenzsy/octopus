@@ -21,14 +21,17 @@ export module Dolphin.Events {
 
         constructor(handlers:EventHandler[]) {
             var chainHead:HandlerContainer = null;
-            handlers.forEach(function (handler:EventHandler) {
-                var e = new HandlerContainer(handler, chainHead);
+            for (var i:number = handlers.length - 1; i >= 0; --i) {
+                var e:HandlerContainer = new HandlerContainer(handlers[i], chainHead);
                 chainHead = e;
-            });
+            }
             this.chainHead = chainHead;
         }
 
         private orchestrateChain(event:Event, chain:HandlerContainer):void {
+            if(!chain) {
+                return;
+            }
             var handler:EventHandler = chain.handler;
             handler.before(event);
             this.orchestrateChain(event, chain.next);

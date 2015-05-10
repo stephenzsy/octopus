@@ -13,6 +13,6 @@ export module Dolphin.Events {
     export interface Operation<T,U> {
         name:string;
         enact(request:Request<T>):Result<U>;
-        validateInput(inputJson:string):T;
+        validateInput(input:any):T;
     }
 }

@@ -13,9 +13,9 @@ export module Dolphin.Api.Models {
         toJsonObject():any {
             return {
                 "ArticleSources": this.ArticleSources.map((articleSource:ArticleSource):any=> {
-                    articleSource.toJsonObject()
+                    return articleSource.toJsonObject();
                 })
-            }
+            };
         }
     }
 }

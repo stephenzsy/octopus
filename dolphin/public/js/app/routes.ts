@@ -6,7 +6,6 @@
 angular.module('dolphin').config(['$routeProvider', ($routeProvider:angular.route.IRouteProvider):any=> {
     $routeProvider.when('/', {
         templateUrl: 'views/_article-sources.html',
-        controller: 'MainController'
+        controller: 'ArticleSourcesController'
     });
-    console.log($routeProvider);
 }]);

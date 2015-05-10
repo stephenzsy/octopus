@@ -23,11 +23,10 @@ export module Dolphin.Events {
 
         before(event:Event):void {
             // parse method signature
-            var methodSignature:string = event.request.get(JsonProtocolHandler.METHOD_SIGNATURE_HEADER);
+            var methodSignature:string = event.originalRequest.get(JsonProtocolHandler.METHOD_SIGNATURE_HEADER);
             event.operation = methodSignature;
 
-            // parse json request body
-            event.request = JSON.parse(event.originalRequest.body);
+            event.request = event.originalRequest.body;
         }
 
         after(event:Event):void {
