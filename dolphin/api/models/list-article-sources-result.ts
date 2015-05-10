@@ -9,7 +9,7 @@ import ArticleSource = MArticleSource.Dolphin.Api.Models.ArticleSource;
 export module Dolphin.Api.Models {
     export class ListArticleSourcesResult implements Result<ListArticleSourcesResult> {
         ArticleSources:ArticleSource[];
-        
+
         toJsonObject():any {
             return {
                 "ArticleSources": this.ArticleSources.map((articleSource:ArticleSource):any=> {
