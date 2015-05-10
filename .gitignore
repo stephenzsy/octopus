@@ -30,3 +30,10 @@ node_modules
 .idea
 *.iml
 kraken/config/index.js
+
+dolphin/app/**/*.js
+dolphin/app/**/*.js.map
+dolphin/lib/**/*.js
+dolphin/lib/**/*.js.map
+dolphin/public/**/*.js
+dolphin/public/**/*.js.map
