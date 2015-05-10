@@ -1,4 +1,4 @@
-export module Dolphin.Events {
-    export interface Request<T> {
-    }
+interface Request<T> {
 }
+
+export = Request;

@@ -1,18 +1,12 @@
 ///<reference path="../../scripts/typings/express/express.d.ts"/>
 
-import _Event = require('./event');
-import _EventHandlerChain = require('./event-handler-chain');
-import _JsonProtocolHandler = require('./json-protocol-handler');
-import _OperationsHandler = require('./operations-handler');
+import Event = require('./event');
+import EventHandlerChain = require('./event-handler-chain');
+import JsonProtocolHandler = require('./json-protocol-handler');
+import OperationsHandler = require('./operations-handler');
 import express = require('express');
 
-import EventHandlerChain = _EventHandlerChain.Dolphin.Events.EventHandlerChain;
-import Event = _Event.Dolphin.Events.Event;
-import JsonProtocolHandler = _JsonProtocolHandler.Dolphin.Events.JsonProtocolHandler;
-import OperationsHandler = _OperationsHandler.Dolphin.Events.OperationsHandler;
-
-import _ListArticleSources = require('../../api/operations/list-article-sources');
-import ListArticleSources = _ListArticleSources.Dolphin.Api.Operations.ListArticleSources;
+import ListArticleSources = require('../../app/operations/list-article-sources');
 
 export module Dolphin.Events {
     export class Orchestrator {

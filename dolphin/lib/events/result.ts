@@ -1,5 +1,5 @@
-export module Dolphin.Events {
-    export interface Result<T> {
-        toJsonObject():any;
-    }
+interface Result<T> {
+    toJsonObject():any;
 }
+
+export = Result;
