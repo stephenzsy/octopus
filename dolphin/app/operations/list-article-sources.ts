@@ -1,5 +1,3 @@
-///<reference path="../models/article-source.ts"/>
-
 import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
 import ListArticleSourcesRequest = require('../models/list-article-sources-request');
