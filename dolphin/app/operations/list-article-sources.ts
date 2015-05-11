@@ -2,22 +2,25 @@ import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
 import ListArticleSourcesRequest = require('../models/list-article-sources-request');
 import ListArticleSourcesResult = require('../models/list-article-sources-result');
+import articleSources = require('../config/article-sources');
+
+'use strcit';
 
 class ListArticleSources implements Operation<ListArticleSourcesRequest, ListArticleSourcesResult> {
     name:string = 'ListArticleSources';
 
-    enact(request:ListArticleSourcesRequest):ListArticleSourcesResult {
-        var result:ListArticleSourcesResult = new ListArticleSourcesResult();
-        result.ArticleSources = this.createStaticArticleSourcesList();
-        return result;
+    private articleSourcesList:ArticleSource[] = [];
+
+    constructor() {
+        for(var key in articleSources) {
+           this.articleSourcesList.push(articleSources[key]);
+        }
     }
 
-    private createStaticArticleSourcesList():ArticleSource[] {
-        var asBi:ArticleSource = new ArticleSource();
-        asBi.Id = "bi";
-        asBi.Name = "Business Intelligence";
-        asBi.Url = "http://www.businessintelligence.com";
-        return [asBi];
+    enact(request:ListArticleSourcesRequest):ListArticleSourcesResult {
+        var result:ListArticleSourcesResult = new ListArticleSourcesResult();
+        result.ArticleSources = this.articleSourcesList;
+        return result;
     }
 
     private static EMPTY_REQUEST:ListArticleSourcesRequest = new ListArticleSourcesRequest();

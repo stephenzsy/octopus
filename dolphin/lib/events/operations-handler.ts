@@ -5,6 +5,7 @@ import EventHandler = require('./event-handler');
 import Operation = require('./operation');
 import Request = require('./request');
 import Result = require('./result');
+import UserException = require('./user-exception');
 
 class OperationsHandler implements EventHandler {
     private operations = {};
@@ -12,8 +13,16 @@ class OperationsHandler implements EventHandler {
     before(event:Event):void {
         var operation:Operation<any,any> = this.getOperation(event.operation);
         var request:Request<any> = operation.validateInput(event.request);
-        var result:Result<any> = operation.enact(request);
-        event.result = result.toJsonObject();
+        try {
+            var result:Result<any> = operation.enact(request);
+            event.result = result.toJsonObject();
+        } catch (e) {
+            if (e instanceof UserException) {
+                event.userException = e;
+                throw e;
+            }
+            throw e;
+        }
     }
 
     after(event:Event):void {

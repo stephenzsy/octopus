@@ -3,6 +3,8 @@ class ArticleSource {
     Name:string;
     Url:string;
 
+    defaultTimezone:string;
+
     toJsonObject():any {
         return {
             "Id": this.Id,

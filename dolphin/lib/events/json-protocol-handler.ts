@@ -1,7 +1,14 @@
-///----<reference path="../../scripts/typings/express/express.d.ts"/>
+///<reference path="../../scripts/typings/express/express.d.ts"/>
+///<reference path="../../scripts/typings/node-uuid/node-uuid.d.ts"/>
+var uuid = require('uuid');
 
 import Event = require('./event');
 import EventHandler = require('./event-handler');
+
+interface ResponseDataObject {
+    RequestId:string;
+    [s:string]:any;
+}
 
 class JsonProtocolHandler implements EventHandler {
     private operations = {};
@@ -12,6 +19,7 @@ class JsonProtocolHandler implements EventHandler {
     private static METHOD_SIGNATURE_HEADER:string = "x-dolphin-method";
 
     before(event:Event):void {
+        event.id = uuid.v4();
         // parse method signature
         var methodSignature:string = event.originalRequest.get(JsonProtocolHandler.METHOD_SIGNATURE_HEADER);
         event.operation = methodSignature;
@@ -20,7 +28,9 @@ class JsonProtocolHandler implements EventHandler {
     }
 
     after(event:Event):void {
-        event.originalResponse.send(event.result);
+        var responseData:ResponseDataObject = event.result;
+        responseData.RequestId = event.id;
+        event.originalResponse.send(responseData);
     }
 }
 
