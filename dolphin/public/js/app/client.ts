@@ -4,6 +4,13 @@
 'use strict';
 
 module Dolphin.Client {
+    export interface Request {
+
+    }
+
+    export interface Result {
+        RequestId:string;
+    }
 
     export module Models {
         export interface ArticleSource {
@@ -12,11 +19,25 @@ module Dolphin.Client {
             Url: string;
         }
 
-        export interface ListArticleSourcesRequest {
+        export interface DailyIndexMetadata {
+            Id:string;
+            LocalDate:string;
+            Url:string;
         }
 
-        export interface ListArticleSourcesResult {
+        export interface ListArticleSourcesRequest extends Request {
+        }
+
+        export interface ListArticleSourcesResult extends Result {
             ArticleSources: ArticleSource[];
+        }
+
+        export interface ListDailyIndicesRequest extends Request {
+            ArticleSourceId: string;
+        }
+
+        export interface ListDailyIndicesResult extends Result {
+            DailyIndicesMetadata:DailyIndexMetadata[];
         }
     }
 
@@ -29,18 +50,26 @@ module Dolphin.Client {
             this.$q = $q;
         }
 
-        ListArticleSources(request:Models.ListArticleSourcesRequest):ng.IPromise<Models.ListArticleSourcesResult> {
-            var deferred:ng.IDeferred<Models.ListArticleSourcesResult> = this.$q.defer();
-            this.$http.post('/api', {}, {
+        private makeRequest<T extends Request, U extends Result>(method:string, request:T):ng.IPromise<U> {
+            var deferred:ng.IDeferred<U> = this.$q.defer();
+            this.$http.post('/api', request, {
                 headers: {
-                    'x-dolphin-method': 'ListArticleSources'
+                    'x-dolphin-method': method
                 }
-            }).success((data:Models.ListArticleSourcesResult, status:number, headers:ng.IHttpHeadersGetter, config:ng.IRequestConfig):void=> {
+            }).success((data:U, status:number, headers:ng.IHttpHeadersGetter, config:ng.IRequestConfig):void=> {
                 deferred.resolve(data);
-            }).error((data:any, status:number, headers:ng.IHttpHeadersGetter, config:ng.IRequestConfig):void=> {
-                deferred.reject(data);
+            }).error((err:any, status:number, headers:ng.IHttpHeadersGetter, config:ng.IRequestConfig):void=> {
+                deferred.reject(err);
             });
             return deferred.promise;
+        }
+
+        ListArticleSources(request:Models.ListArticleSourcesRequest):ng.IPromise<Models.ListArticleSourcesResult> {
+            return this.makeRequest('ListArticleSources', request);
+        }
+
+        ListDailyIndices(request:Models.ListDailyIndicesRequest):ng.IPromise<Models.ListDailyIndicesResult> {
+            return this.makeRequest('ListDailyIndices', request);
         }
     }
 }

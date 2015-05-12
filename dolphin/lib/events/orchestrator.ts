@@ -7,6 +7,7 @@ import OperationsHandler = require('./operations-handler');
 import express = require('express');
 
 import ListArticleSources = require('../../app/operations/list-article-sources');
+import ListDailyIndices = require('../../app/operations/list-daily-indices');
 
 export module Dolphin.Events {
     export class Orchestrator {
@@ -14,7 +15,9 @@ export module Dolphin.Events {
 
         constructor() {
             var operationsHandler:OperationsHandler = new OperationsHandler();
+
             operationsHandler.registerOperation(new ListArticleSources());
+            operationsHandler.registerOperation(new ListDailyIndices());
 
             this.handlerChain = new EventHandlerChain([
                 new JsonProtocolHandler(),
@@ -22,7 +25,7 @@ export module Dolphin.Events {
             ]);
         }
 
-        orchestrate(req: express.Request, res: express.Response) {
+        orchestrate(req:express.Request, res:express.Response) {
             var event:Event = new Event();
             event.originalRequest = req;
             event.originalResponse = res;

@@ -12,6 +12,8 @@ class ArticleSource {
             "Url": this.Url
         }
     }
+
+    getDailyIndexUrl:(dateString:string)=>string;
 }
 
 export = ArticleSource;

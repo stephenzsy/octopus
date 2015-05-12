@@ -4,6 +4,8 @@ var eventsOrchestrator = require('../lib/events/orchestrator');
 
 var orchestrator = new eventsOrchestrator.Dolphin.Events.Orchestrator();
 
+'use strict';
+
 router.post('/api', function (req, res) {
     try {
         orchestrator.orchestrate(req, res);
@@ -14,10 +16,10 @@ router.post('/api', function (req, res) {
 });
 
 var handler = function (req, res) {
-    res.sendFile('index.html', {root: '../public'})
+    res.sendFile('index.html', {root: __dirname + '/../public'});
 };
 
 /* GET home page. */
-router.get('/', handler);
+router.all('*', handler);
 
 module.exports = router;

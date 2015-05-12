@@ -224,7 +224,7 @@ declare module moment {
         diff(b: Moment): number;
         diff(b: Moment, unitOfTime: string): number;
         diff(b: Moment, unitOfTime: string, round: boolean): number;
-        
+
         toArray(): number[];
         toDate(): Date;
         toISOString(): string;
@@ -304,6 +304,9 @@ declare module moment {
 
         get(unit: string): number;
         set(unit: string, value: number): Moment;
+
+        // timezone
+        tz(name:string): Moment;
 
     }
 
@@ -468,5 +471,9 @@ declare module moment {
 declare var moment: moment.MomentStatic;
 
 declare module 'moment' {
+    export = moment;
+}
+
+declare module 'moment-timezone' {
     export = moment;
 }
