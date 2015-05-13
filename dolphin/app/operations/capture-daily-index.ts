@@ -1,7 +1,10 @@
 import http = require('http');
+import crypto = require('crypto');
 
 ///<reference path="../scripts/typings/q/Q.d.ts"/>
+///<reference path="../scripts/typings/moment/moment.d.ts"/>
 import Q = require('q');
+import moment = require('moment');
 
 import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
@@ -23,13 +26,40 @@ class CaptureDailyIndex implements Operation<CaptureDailyIndexRequest, CaptureDa
     enactAsync(request: CaptureDailyIndexRequest): Q.Promise<CaptureDailyIndexResult> {
         var articleSource: ArticleSource = request.articleSource;
         var url: string = articleSource.getDailyIndexUrl(request.DailyIndexId);
-        var deferred: Q.Deferred<CaptureDailyIndexResult> = Q.defer<CaptureDailyIndexResult>();
+        var deferred: Q.Deferred<string> = Q.defer<string>();
         http.get(url, (res: http.IncomingMessage): void => {
+            var content: string = '';
+            var completed: boolean = false;
+            res.on('data', (chunk: string) => {
+                content += chunk;
+            });
+            res.on('end', () => {
+                completed = true;
+                deferred.resolve(content);
+            });
+            res.on('close', () => {
+                if (!completed) {
+                    deferred.reject({});
+                }
+            });
+            res.on('error', (err:any) => {
+                deferred.reject(err);
+            });
+        });
+        return deferred.promise.then((content: string): CaptureDailyIndexResult => {
             var result: CaptureDailyIndexResult = new CaptureDailyIndexResult();
             result.CapturedDocument = new CapturedDocument();
-            deferred.resolve(result);
+            result.CapturedDocument.ArticleSourceId = articleSource.Id;
+            result.CapturedDocument.OriginalUrl = url;
+            result.CapturedDocument.DocumentId = request.DailyIndexId;
+            var hashsum: crypto.Hash = crypto.createHash('sha256');
+            hashsum.update(content);            
+            result.CapturedDocument.ContentHash = hashsum.digest('base64');
+            result.CapturedDocument.Content = content;
+            result.CapturedDocument.CaptureTimestamp = moment().utc().toISOString();
+            console.dir(result);
+            return result;
         });
-        return deferred.promise;
     }
 
     validateInput(input: any): CaptureDailyIndexRequest {
