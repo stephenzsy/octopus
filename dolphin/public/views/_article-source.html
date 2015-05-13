@@ -4,8 +4,11 @@
     </div>
     <div>
         <div ng-repeat="metadata in dailyIndicesMetadata">
-            <div><a ng-href="/daily-index/{{metadata.Id}}">{{metadata.Id}}</a>
-                <a class="btn btn-link" ng-href="{{metadata.Url}}">Link</a></div>
+            <div>
+                <a ng-href="/daily-index/{{metadata.Id}}">{{metadata.Id}}</a>
+                <a class="btn btn-link" ng-href="{{metadata.Url}}">Link</a>
+                <span class="btn btn-link" ng-click="captureOriginal(metadata.Id)">Capture Original</span>
+            </div>
             <hr>
         </div>
     </div>

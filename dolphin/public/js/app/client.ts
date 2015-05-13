@@ -39,6 +39,11 @@ module Dolphin.Client {
         export interface ListDailyIndicesResult extends Result {
             DailyIndicesMetadata:DailyIndexMetadata[];
         }
+
+        export interface CaptureDailyIndexRequest extends Request {
+            ArticleSourceId: string;
+            DailyIndexId: string;
+        }
     }
 
     export class DolphinClient {
@@ -70,6 +75,10 @@ module Dolphin.Client {
 
         ListDailyIndices(request:Models.ListDailyIndicesRequest):ng.IPromise<Models.ListDailyIndicesResult> {
             return this.makeRequest('ListDailyIndices', request);
+        }
+
+        CaptureDailyIndex(request: Models.CaptureDailyIndexRequest): ng.IPromise<any> {
+            return this.makeRequest('CaptureDailyIndex', request);
         }
     }
 }

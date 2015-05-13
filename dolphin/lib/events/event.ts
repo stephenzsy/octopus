@@ -5,13 +5,15 @@ import express = require('express');
 import UserException = require('./user-exception');
 
 class Event {
-    id:string;
-    request:any; // request data object
-    result:any; // result data object
-    originalRequest:express.Request;
-    originalResponse:express.Response;
-    operation:string;
-    userException:UserException;
+    id: string;
+    request: any; // request data object
+    result: any; // result data object
+    originalRequest: express.Request;
+    originalResponse: express.Response;
+    operation: string;
+    userException: UserException;
+    isAsync: boolean = false;
+    asyncPromise: Q.Promise<void>;
 }
 
 export = Event;

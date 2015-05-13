@@ -27,10 +27,18 @@ class JsonProtocolHandler implements EventHandler {
         event.request = event.originalRequest.body;
     }
 
-    after(event:Event):void {
-        var responseData:ResponseDataObject = event.result;
-        responseData.RequestId = event.id;
-        event.originalResponse.send(responseData);
+    after(event: Event): void {
+        if (event.isAsync) {
+            event.asyncPromise.done((result: void): void=> {
+                var responseData: ResponseDataObject = event.result;
+                responseData.RequestId = event.id;
+                event.originalResponse.send(responseData);
+            });
+        } else {
+            var responseData: ResponseDataObject = event.result;
+            responseData.RequestId = event.id;
+            event.originalResponse.send(responseData);
+        }
     }
 }
 
