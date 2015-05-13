@@ -1,0 +1,5 @@
+interface DocumentStorage {
+
+}
+
+export = DocumentStorage;

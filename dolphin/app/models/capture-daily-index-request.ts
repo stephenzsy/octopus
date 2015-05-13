@@ -7,15 +7,15 @@ import ResourceNotFoundException = require('./resource-not-found-exception');
 import articleSources = require('../config/article-sources');
 import ArticleSource = require('./article-source');
 
-class ListDailyIndicesRequest implements Request<ListDailyIndicesRequest> {
+class CaptureDailyIndexRequest implements Request<CaptureDailyIndexRequest> {
     ArticleSourceId:string;
-    EndDateTime:string = null; // date time in ISO8601 ignored for now
-    Limit:number = 10; // settable in the future
+    DailyIndexId:string;
+    MetadataOnly:boolean = false;
 
     private _articleSource;
 
-    static validate(input:any):ListDailyIndicesRequest {
-        var req:ListDailyIndicesRequest = new ListDailyIndicesRequest();
+    static validate(input:any):CaptureDailyIndexRequest {
+        var req:CaptureDailyIndexRequest = new CaptureDailyIndexRequest();
         req.ArticleSourceId = validator.toString(input['ArticleSourceId']);
         if (req.ArticleSourceId) {
             if (articleSources[req.ArticleSourceId]) {
@@ -26,6 +26,17 @@ class ListDailyIndicesRequest implements Request<ListDailyIndicesRequest> {
         } else {
             throw InvalidRequestException.missingRequiredField('ArticleSourceId');
         }
+        req.DailyIndexId = validator.toString(input['DailyIndexId']);
+        if (req.DailyIndexId) {
+            if (!req.articleSource.isValidDailyIndexId(req.DailyIndexId)) {
+                throw new ResourceNotFoundException(ResourceNotFoundException.Code.InvalidDailyIndexId, 'Invalid Daily Index ID: ' + req.DailyIndexId);
+            }
+        } else {
+            throw InvalidRequestException.missingRequiredField('DailyIndexId');
+        }
+        if (validator.toBoolean(input['metadata'], true)) {
+            req.MetadataOnly = true;
+        }
         return req;
     }
 
@@ -34,4 +45,4 @@ class ListDailyIndicesRequest implements Request<ListDailyIndicesRequest> {
     }
 }
 
-export = ListDailyIndicesRequest;
+export = CaptureDailyIndexRequest;

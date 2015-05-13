@@ -1,3 +1,8 @@
+///<reference path="../../scripts/typings/validator/validator.d.ts"/>
+///<reference path="../../scripts/typings/moment/moment.d.ts"/>
+import validator = require('validator');
+import moment = require('moment-timezone');
+
 class ArticleSource {
     Id:string;
     Name:string;
@@ -14,6 +19,23 @@ class ArticleSource {
     }
 
     getDailyIndexUrl:(dateString:string)=>string;
+
+    isValidDailyIndexId(dailyIndexId:string):boolean {
+        if (!validator.isDate(dailyIndexId)) {
+            return false;
+        }
+        var parsedDate:moment.Moment = moment.tz(dailyIndexId, this.defaultTimezone);
+        if (parsedDate.isBefore(moment.tz('2010-01-01', this.defaultTimezone))) {
+            return false;
+        }
+        if (parsedDate.isAfter()) {
+            return false;
+        }
+        if (dailyIndexId != parsedDate.format('YYYY-MM-DD')) {
+            return false;
+        }
+        return true;
+    }
 }
 
 export = ArticleSource;

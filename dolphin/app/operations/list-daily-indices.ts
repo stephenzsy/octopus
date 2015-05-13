@@ -34,7 +34,6 @@ class ListArticleSources implements Operation<ListDailyIndicesRequest, ListDaily
         return result;
     }
 
-    // do not validate simply return empty request
     validateInput(input:any):ListDailyIndicesRequest {
         return ListDailyIndicesRequest.validate(input);
     }

@@ -31,6 +31,7 @@ node_modules
 *.iml
 kraken/config/index.js
 
+aws-config.json
 dolphin/app/**/*.js
 dolphin/app/**/*.js.map
 dolphin/lib/**/*.js

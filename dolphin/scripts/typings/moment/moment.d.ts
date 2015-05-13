@@ -464,6 +464,7 @@ declare module moment {
          */
         ISO_8601(): void;
 
+        tz(date: string, timezone: string): Moment;
     }
 
 }
