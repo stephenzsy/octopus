@@ -18,6 +18,7 @@
     "moment": "~2.10.2",
     "moment-timezone": "*",
     "validator": "*",
-    "uuid": "*"
+    "uuid": "*",
+    "cheerio": "0.19.0"
   }
 }

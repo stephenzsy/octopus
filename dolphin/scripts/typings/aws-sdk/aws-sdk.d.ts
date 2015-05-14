@@ -964,11 +964,15 @@ declare module "aws-sdk" {
             GrantReadACP?: string;
             GrantWriteACP?: string;
             Key: string;
-            Metadata?: string[];
+            Metadata?: {[s:string]:string};
             ServerSideEncryption?: string;
             StorageClass?: string;
             WebsiteRedirectLocation?: string;
         }
+
+		export interface PutObjectResult {
+			ETag:string;
+		}
 
         export interface GetObjectRequest {
             Bucket: string;
@@ -995,7 +999,8 @@ declare module "aws-sdk" {
     export class S3 {
         constructor(options?: S3Config);
 
-        putObject(params: Models.S3.PutObjectRequest, callback: (err: any, data: any) => void): void;
+        putObject(params: Models.S3.PutObjectRequest, callback: (err: any, data: Models.S3.PutObjectResult) => void): void;
+		getSignedUrl(operation:string, params:Models.S3.GetObjectRequest):string;
         getObject(params: Models.S3.GetObjectRequest, callback: (err: any, data: any) => void): void;
         listBuckets(params: Models.S3.ListBucketsRequest, callback: (err: any, data: any) => void): void;
     }

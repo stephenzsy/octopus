@@ -6,10 +6,10 @@ class ConfigurationManager {
     private static awsConfig: {
         credentials: {
             profile?: string
-        },
+        };
         s3: {
             bucket: { document: string }
-        },
+        };
         defaultRegion: string
     } = require('./aws-config.json');
 
