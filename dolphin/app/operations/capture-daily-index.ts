@@ -3,8 +3,10 @@ import crypto = require('crypto');
 
 ///<reference path="../../scripts/typings/q/Q.d.ts"/>
 ///<reference path="../../scripts/typings/moment/moment.d.ts"/>
+///<reference path="../../scripts/typings/cheerio/cheerio.d.ts"/>
 import Q = require('q');
 import moment = require('moment');
+import cheerio = require('cheerio');
 
 import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
@@ -48,7 +50,11 @@ class CaptureDailyIndex implements Operation<CaptureDailyIndexRequest, CaptureDa
                 deferred.reject(err);
             });
         });
-        return deferred.promise.then((content:string):Q.Promise<CapturedDocument> => {
+        return deferred.promise.then((content: string): Q.Promise<CapturedDocument> => {
+            content = articleSource.dailyIndexSanitizer.sanitize(cheerio.load(content, {
+                normalizeWhitespace: true
+            })).html();
+
             var doc = new CapturedDocument();
             doc.ArticleSourceId = articleSource.Id;
             doc.OriginalUrl = url;

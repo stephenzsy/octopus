@@ -16,12 +16,14 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>dolphin</Name>
-    <ToolsVersionPromptShown>1.4</ToolsVersionPromptShown>
+    <ToolsVersionPromptShown>1.5</ToolsVersionPromptShown>
     <TypeScriptToolsVersion>1.4</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Content Include="app\config\aws-config.json" />
+    <Content Include="app\vendor\business-insider\daily-index-sanitizer-config.json" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
     <Content Include="public\index.html" />
@@ -32,6 +34,7 @@
     <Content Include="views\layout.jade" />
     <TypeScriptCompile Include="app\config\article-sources.ts" />
     <TypeScriptCompile Include="app\config\configuration-manager.ts" />
+    <TypeScriptCompile Include="app\document\transform\html-sanitizer.ts" />
     <TypeScriptCompile Include="app\models\article-source.ts" />
     <TypeScriptCompile Include="app\models\capture-daily-index-request.ts" />
     <TypeScriptCompile Include="app\models\capture-daily-index-result.ts" />
@@ -83,9 +86,12 @@
     <Folder Include="app" />
     <Folder Include="app\config" />
     <Folder Include="app\document" />
+    <Folder Include="app\document\transform\" />
     <Folder Include="app\document\storage" />
     <Folder Include="app\models" />
+    <Folder Include="app\vendor\" />
     <Folder Include="app\operations" />
+    <Folder Include="app\vendor\business-insider\" />
     <Folder Include="bin" />
     <Folder Include="lib" />
     <Folder Include="lib\events" />

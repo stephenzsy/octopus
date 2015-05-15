@@ -82,6 +82,8 @@ interface Cheerio {
     filter(elements: CheerioElement[]): Cheerio;
     filter(func: (index: number) => boolean): Cheerio;
 
+    not(selector: string): Cheerio;
+
     first(): Cheerio;
     last(): Cheerio;
 
@@ -152,6 +154,7 @@ interface Cheerio {
     // Not Documented
 
     toArray(): CheerioElement[];
+    contents(): any;
 }
 
 interface CheerioOptionsInterface {

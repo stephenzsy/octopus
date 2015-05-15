@@ -1,0 +1,14 @@
+﻿{
+    "tTransform": {
+        "head": {
+            "_comments_": "remove",
+            "script, link, style": "remove"
+        },
+        "body": {
+            "_comments_": "remove",
+            "_only_:div.content": {
+                "> .filters, > .next-prev, > .archives-footer": "remove"
+            }
+        }
+    }
+}

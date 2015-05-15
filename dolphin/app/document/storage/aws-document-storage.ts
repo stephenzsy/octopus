@@ -34,7 +34,7 @@ class AwsDocumentStorage implements DocumentStorage {
     }
 
     storeCapturedDocumentAsync(doc:CapturedDocument):Q.Promise<any> {
-        var _this:AwsDocumentStorage = this;
+        var _cthis:AwsDocumentStorage = this;
         if (!doc.validateFields()) {
             throw new InternalException('InvalidCapturedDocument', 'Validation faild for captured document');
         }
@@ -44,11 +44,12 @@ class AwsDocumentStorage implements DocumentStorage {
         this.s3.putObject({
             Bucket: this.bucket,
             Key: documentKey,
-            ContentType: 'text/plain',
+            ContentType: 'text/html',
             Body: doc.Content,
             Metadata: {
                 "capture-timestamp": doc.CaptureTimestamp,
-                "original-url": doc.OriginalUrl
+                "original-url": doc.OriginalUrl,
+                "content-sha256": doc.ContentHash
             }
         }, (err:any, data:AWS.Models.S3.PutObjectResult):void => {
             console.dir(err);
@@ -57,7 +58,7 @@ class AwsDocumentStorage implements DocumentStorage {
                 deferred.reject(err);
             }
             deferred.resolve(data);
-            console.log(_this.s3.getSignedUrl('getObject', {Bucket: this.bucket, Key: documentKey}));
+            console.log(_cthis.s3.getSignedUrl('getObject', {Bucket: this.bucket, Key: documentKey}));
         });
         return deferred.promise;
     }

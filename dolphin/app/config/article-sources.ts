@@ -1,4 +1,5 @@
 import ArticleSource = require('../models/article-source');
+import HtmlSanitizer = require('../document/transform/html-sanitizer');
 
 var articleSources:{ [s: string]: ArticleSource; } = {};
 (()=> {
@@ -11,6 +12,7 @@ var articleSources:{ [s: string]: ArticleSource; } = {};
         as.getDailyIndexUrl = (dateStr:string):string => {
             return 'http://www.businessinsider.com/archives?date=' + dateStr;
         };
+        as.dailyIndexSanitizer = new HtmlSanitizer(require('../vendor/business-insider/daily-index-sanitizer-config.json'));
         articleSources[as.Id] = as;
     }
 })();

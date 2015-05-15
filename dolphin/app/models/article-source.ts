@@ -3,6 +3,8 @@
 import validator = require('validator');
 import moment = require('moment-timezone');
 
+import HtmlSanitizer = require('../document/transform/html-sanitizer');
+
 class ArticleSource {
     Id:string;
     Name:string;
@@ -18,7 +20,8 @@ class ArticleSource {
         }
     }
 
-    getDailyIndexUrl:(dateString:string)=>string;
+    getDailyIndexUrl: (dateString: string) => string;
+    dailyIndexSanitizer: HtmlSanitizer = null;
 
     isValidDailyIndexId(dailyIndexId:string):boolean {
         if (!validator.isDate(dailyIndexId)) {
