@@ -6,9 +6,15 @@ import moment = require('moment-timezone');
 import HtmlSanitizer = require('../document/transform/html-sanitizer');
 
 class ArticleSource {
+    static IndexType = {
+        'DailyIndex'
+    };
+
     Id:string;
     Name:string;
-    Url:string;
+    Url: string;
+    Version: string;
+    indexType: string;
 
     defaultTimezone:string;
 

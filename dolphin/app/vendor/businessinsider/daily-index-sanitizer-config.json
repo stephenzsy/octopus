@@ -1,4 +1,7 @@
 ﻿{
+    "compatible-versions": [
+        "2015-05-15"
+    ],
     "tTransform": {
         "head": {
             "_comments_": "remove",

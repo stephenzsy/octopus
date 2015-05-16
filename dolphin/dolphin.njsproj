@@ -23,7 +23,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Content Include="app\config\aws-config.json" />
-    <Content Include="app\vendor\business-insider\daily-index-sanitizer-config.json" />
+    <Content Include="app\vendor\businessinsider\daily-index-sanitizer-config.json" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
     <Content Include="public\index.html" />
@@ -36,20 +36,28 @@
     <TypeScriptCompile Include="app\config\configuration-manager.ts" />
     <TypeScriptCompile Include="app\document\transform\html-sanitizer.ts" />
     <TypeScriptCompile Include="app\models\article-source.ts" />
+    <TypeScriptCompile Include="app\models\article.ts" />
     <TypeScriptCompile Include="app\models\capture-daily-index-request.ts" />
     <TypeScriptCompile Include="app\models\capture-daily-index-result.ts" />
     <TypeScriptCompile Include="app\models\captured-document.ts" />
     <TypeScriptCompile Include="app\models\daily-index-metadata.ts" />
     <TypeScriptCompile Include="app\models\list-article-sources-request.ts" />
     <TypeScriptCompile Include="app\models\list-article-sources-result.ts" />
+    <TypeScriptCompile Include="app\models\list-articles-result.ts" />
+    <TypeScriptCompile Include="app\models\list-articles-request.ts" />
     <TypeScriptCompile Include="app\models\list-daily-indices-request.ts" />
     <TypeScriptCompile Include="app\models\list-daily-indices-result.ts" />
     <TypeScriptCompile Include="app\models\resource-not-found-exception.ts" />
+    <TypeScriptCompile Include="app\models\sync-article-index-request.ts" />
+    <TypeScriptCompile Include="app\models\sync-article-index-result.ts" />
     <TypeScriptCompile Include="app\operations\capture-daily-index.ts" />
     <TypeScriptCompile Include="app\operations\list-article-sources.ts" />
+    <TypeScriptCompile Include="app\operations\sync-article-index.ts" />
+    <TypeScriptCompile Include="app\operations\list-articles.ts" />
     <TypeScriptCompile Include="app\operations\list-daily-indices.ts" />
     <TypeScriptCompile Include="app\document\storage\aws-document-storage.ts" />
     <TypeScriptCompile Include="app\document\storage\document-storage.ts" />
+    <TypeScriptCompile Include="app\models\utils.ts" />
     <TypeScriptCompile Include="lib\events\event-handler-chain.ts" />
     <TypeScriptCompile Include="lib\events\event-handler.ts" />
     <TypeScriptCompile Include="lib\events\event.ts" />
@@ -91,7 +99,7 @@
     <Folder Include="app\models" />
     <Folder Include="app\vendor\" />
     <Folder Include="app\operations" />
-    <Folder Include="app\vendor\business-insider\" />
+    <Folder Include="app\vendor\businessinsider\" />
     <Folder Include="bin" />
     <Folder Include="lib" />
     <Folder Include="lib\events" />

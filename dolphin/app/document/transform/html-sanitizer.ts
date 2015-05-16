@@ -11,6 +11,8 @@ interface HtmlSanitizerConfig {
 
 class HtmlSanitizer {
 
+    static Version: string = '2015-05-15';
+
     private config: HtmlSanitizerConfig;
     constructor(config: HtmlSanitizerConfig) {
         this.config = config;
