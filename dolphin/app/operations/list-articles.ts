@@ -8,12 +8,21 @@ import cheerio = require('cheerio');
 import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
 import CapturedDocument = require('../models/captured-document');
-import CaptureDailyIndexRequest = require('../models/capture-daily-index-request');
-import CaptureDailyIndexResult = require('../models/capture-daily-index-result');
+import ListArticlesRequest = require('../models/list-articles-request');
+import ListArticlesResult = require('../models/list-articles-result');
 import articleSources = require('../config/article-sources');
 import AwsDocumentStorage = require('../document/storage/aws-document-storage');
 
-class ListArticles implements Operation<any, any> {
+class ListArticles implements Operation<ListArticlesRequest, ListArticlesResult> {
+    name: string = 'ListArticles';
+
+    enact(req: ListArticlesRequest): ListArticlesResult {
+        return null;
+    }
+
+    validateInput(input: any): ListArticlesRequest {
+        return ListArticlesRequest.validate(input);
+    }
 }
 
 export = ListArticles;

@@ -40,7 +40,7 @@ class AwsDocumentStorage implements DocumentStorage {
         }
         // formulate s3 key
         var documentKey = doc.ArticleSourceId + "/" + doc.ArchiveBucket + "/" + doc.DocumentId;
-        var deferred:Q.Deferred<AWS.Models.S3.PutObjectResult> = Q.defer<AWS.Models.S3.PutObjectResult>();
+        var deferred:Q.Deferred<AWS.S3.PutObjectResult> = Q.defer<AWS.S3.PutObjectResult>();
         this.s3.putObject({
             Bucket: this.bucket,
             Key: documentKey,
@@ -51,7 +51,7 @@ class AwsDocumentStorage implements DocumentStorage {
                 "original-url": doc.OriginalUrl,
                 "content-sha256": doc.ContentHash
             }
-        }, (err:any, data:AWS.Models.S3.PutObjectResult):void => {
+        }, (err:any, data:AWS.S3.PutObjectResult):void => {
             console.dir(err);
             console.dir(data);
             if (err) {

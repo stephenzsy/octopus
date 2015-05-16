@@ -10,6 +10,10 @@ class InvalidRequestException extends UserException {
     static missingRequiredField(field:string) {
         return new InvalidRequestException('Missing required field: \'' + field + '\'.');
     }
+
+    static invalidFieldValue(field: string) {
+        return new InvalidRequestException('Invalid value for field: \'' + field + '\'.');
+    }
 }
 
 export = InvalidRequestException;

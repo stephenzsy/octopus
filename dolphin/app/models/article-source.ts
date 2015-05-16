@@ -7,18 +7,18 @@ import HtmlSanitizer = require('../document/transform/html-sanitizer');
 
 class ArticleSource {
     static IndexType = {
-        'DailyIndex'
+        DailyIndex: 'DailyIndex'
     };
 
-    Id:string;
-    Name:string;
+    Id: string;
+    Name: string;
     Url: string;
     Version: string;
     indexType: string;
 
-    defaultTimezone:string;
+    defaultTimezone: string;
 
-    toJsonObject():any {
+    toJsonObject(): any {
         return {
             "Id": this.Id,
             "Name": this.Name,
@@ -29,11 +29,11 @@ class ArticleSource {
     getDailyIndexUrl: (dateString: string) => string;
     dailyIndexSanitizer: HtmlSanitizer = null;
 
-    isValidDailyIndexId(dailyIndexId:string):boolean {
+    isValidDailyIndexId(dailyIndexId: string): boolean {
         if (!validator.isDate(dailyIndexId)) {
             return false;
         }
-        var parsedDate:moment.Moment = moment.tz(dailyIndexId, this.defaultTimezone);
+        var parsedDate: moment.Moment = moment.tz(dailyIndexId, this.defaultTimezone);
         if (parsedDate.isBefore(moment.tz('2010-01-01', this.defaultTimezone))) {
             return false;
         }

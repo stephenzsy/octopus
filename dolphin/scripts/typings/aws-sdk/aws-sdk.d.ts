@@ -134,8 +134,19 @@ declare module "aws-sdk" {
 
     }
 
+    export module DynamoDB {
+        export interface QueryRequest {
+            TableName: string;
+        }
+
+        export interface QueryResult {
+        }
+    }
+
 	export class DynamoDB {
-		constructor(options?: any);
+        constructor(options?: Config);
+
+        query(params: DynamoDB.QueryRequest, callback: (err: any, data: DynamoDB.QueryResult) => void): void;
 	}
 
 	export module Sqs {
@@ -946,7 +957,7 @@ declare module "aws-sdk" {
 
 	}
 
-	export module Models.S3 {
+	export module S3 {
         export interface PutObjectRequest {
             ACL?: string;
             Body?: any;
@@ -999,10 +1010,10 @@ declare module "aws-sdk" {
     export class S3 {
         constructor(options?: S3Config);
 
-        putObject(params: Models.S3.PutObjectRequest, callback: (err: any, data: Models.S3.PutObjectResult) => void): void;
-		getSignedUrl(operation:string, params:Models.S3.GetObjectRequest):string;
-        getObject(params: Models.S3.GetObjectRequest, callback: (err: any, data: any) => void): void;
-        listBuckets(params: Models.S3.ListBucketsRequest, callback: (err: any, data: any) => void): void;
+        putObject(params: S3.PutObjectRequest, callback: (err: any, data: S3.PutObjectResult) => void): void;
+		getSignedUrl(operation:string, params:S3.GetObjectRequest):string;
+        getObject(params: S3.GetObjectRequest, callback: (err: any, data: any) => void): void;
+        listBuckets(params: S3.ListBucketsRequest, callback: (err: any, data: any) => void): void;
     }
 
 }

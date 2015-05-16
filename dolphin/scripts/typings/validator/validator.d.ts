@@ -82,7 +82,7 @@ interface IValidatorStatic {
   isUppercase(str: string): boolean;
 
   // check if the string is an integer.
-  isInt(str: string): boolean;
+  isInt(str: string, opt?: { min?: number; max?: number;}): boolean;
 
   // check if the string is a float.
   isFloat(str: string): boolean;

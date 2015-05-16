@@ -10,6 +10,11 @@ class ConfigurationManager {
         s3: {
             bucket: { document: string }
         };
+        dynamodb: {
+            table: {
+                articlesIndexMetadata: string;
+            };
+        };
         defaultRegion: string
     } = require('./aws-config.json');
 
@@ -26,6 +31,10 @@ class ConfigurationManager {
 
     static get documentS3Bucket(): string {
         return ConfigurationManager.awsConfig.s3.bucket.document;
+    }
+
+    static get articlesIndexMetadataDynamodbTableName(): string {
+        return ConfigurationManager.awsConfig.dynamodb.table.articlesIndexMetadata;
     }
 }
 

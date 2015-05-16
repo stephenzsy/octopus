@@ -34,6 +34,9 @@
     <Content Include="views\layout.jade" />
     <TypeScriptCompile Include="app\config\article-sources.ts" />
     <TypeScriptCompile Include="app\config\configuration-manager.ts" />
+    <TypeScriptCompile Include="app\document\articles-index-interval.ts" />
+    <TypeScriptCompile Include="app\document\articles-index.ts" />
+    <TypeScriptCompile Include="app\document\aws-dynamodb-articles-index.ts" />
     <TypeScriptCompile Include="app\document\transform\html-sanitizer.ts" />
     <TypeScriptCompile Include="app\models\article-source.ts" />
     <TypeScriptCompile Include="app\models\article.ts" />
