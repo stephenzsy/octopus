@@ -9,24 +9,28 @@ import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
 import CapturedDocument = require('../models/captured-document');
 import GenericArticlesRequest = require('../models/generic-articles-request');
-import GetArticlesIndexStatusResult = require('../models/get-articles-index-status-result'); import ArticlesIndex = require('../document/articles-index');
+import ImportArticlesIndexResult = require('../models/import-articles-index-result');
+import ArticlesIndex = require('../document/articles-index');
 import IndexInterval = require('../document/articles-index-interval');
+import ArticlesIndexImporter = require('../document/import/articles-index-importer');
 
-class GetArticlesIndexStatus implements Operation<GenericArticlesRequest, GetArticlesIndexStatusResult> {
-    name: string = 'GetArticlesIndexStatus';
+class ImportArticlesIndex implements Operation<GenericArticlesRequest, ImportArticlesIndexResult> {
+    name: string = 'ImportArticlesIndex';
     isAsync: boolean = true;
 
     private articlesIndex: ArticlesIndex;
+    private importer: ArticlesIndexImporter;
 
-    constructor(articlesIndex: ArticlesIndex) {
+    constructor(articlesIndex: ArticlesIndex, importer: ArticlesIndexImporter) {
         this.articlesIndex = articlesIndex;
+        this.importer = importer;
     }
 
-    enact(req: GenericArticlesRequest): GetArticlesIndexStatusResult {
+    enact(req: GenericArticlesRequest): ImportArticlesIndexResult {
         throw 'WTF';
     }
 
-    enactAsync(req: GenericArticlesRequest): Q.Promise<GetArticlesIndexStatusResult> {
+    enactAsync(req: GenericArticlesRequest): Q.Promise<ImportArticlesIndexResult> {
         // TODO to be refactored and shared
         var forward: boolean = false;
         var offset: moment.Moment = req.endTimestamp;
@@ -39,12 +43,10 @@ class GetArticlesIndexStatus implements Operation<GenericArticlesRequest, GetArt
             durationSeconds = req.endTimestamp.diff(req.startTimestamp, 'second');
         }
 
-        return this.articlesIndex.fetchIntervalsAsync(req.articleSource, offset, forward, durationSeconds)
-            .then(function (intervals: IndexInterval[]): GetArticlesIndexStatusResult {
-            var result: GetArticlesIndexStatusResult = new GetArticlesIndexStatusResult();
-            result.indexIntervals = intervals;
-            return result;
-        });
+        this.importer.captureArticlesIndexAsync(req.articleSource, offset) {
+        }
+
+        return null;
     }
 
     validateInput(input: any): GenericArticlesRequest {
@@ -52,4 +54,4 @@ class GetArticlesIndexStatus implements Operation<GenericArticlesRequest, GetArt
     }
 }
 
-export = GetArticlesIndexStatus;
+export = ImportArticlesIndex;

@@ -1017,6 +1017,10 @@ declare module "aws-sdk" {
             VersionId?: string;
         }
 
+        export interface GetObjectResult {
+            Body: string | NodeJS.ReadableStream;
+        }
+
         export interface ListBucketsRequest {
         }
 

@@ -2,7 +2,7 @@
     <div class="page-header">
         <h1>Article Source <small>{{articleSourceId}}</small></h1>
     </div>
-    <div>
+    <div class="col-lg-6">
         <div ng-repeat="metadata in dailyIndicesMetadata">
             <div>
                 <a ng-href="/daily-index/{{metadata.Id}}">{{metadata.Id}}</a>
@@ -10,6 +10,12 @@
                 <span class="btn btn-link" ng-click="captureOriginal(metadata.Id)">Capture Original</span>
             </div>
             <hr>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <h2>Index Status</h2>
+        <div ng-repeat="status in indexStatus">
+            Start: {{status.Start}}, End: {{status.End}}, Status: {{status.Status}}
         </div>
     </div>
 </div>

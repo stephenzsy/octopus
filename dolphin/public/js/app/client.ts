@@ -52,10 +52,14 @@ module Dolphin.Client {
             Limit?: number;
         }
 
-        export interface GetArticlesIndexStatusResult extends Result {
+        export interface ArticlesIndexStatusInterval {
             Start?: string;
             End?: string;
             Status?: string;
+        }
+
+        export interface GetArticlesIndexStatusResult extends Result {
+            Intervals: ArticlesIndexStatusInterval[];
         }
     }
 

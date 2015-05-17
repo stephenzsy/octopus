@@ -29,6 +29,14 @@ class ArticleSource {
     getDailyIndexUrl: (dateString: string) => string;
     dailyIndexSanitizer: HtmlSanitizer = null;
 
+    getDocumentInfoForTimestamp(timestamp: moment.Moment): { archiveBucket: string; documentId: string } {
+        var dateString = timestamp.tz(this.defaultTimezone).format('YYYY-MM-DD');
+        return {
+            archiveBucket: dateString.replace('-', '/'),
+            documentId: dateString
+        }
+    }
+
     isValidDailyIndexId(dailyIndexId: string): boolean {
         if (!validator.isDate(dailyIndexId)) {
             return false;

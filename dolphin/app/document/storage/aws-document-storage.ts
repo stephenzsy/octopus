@@ -4,6 +4,8 @@
 import AWS = require('aws-sdk');
 import validator = require('validator');
 import Q = require('q');
+import stream = require('stream');
+import utils = require('../utils');
 
 import DocumentStorage = require('./document-storage');
 import CapturedDocument = require('../../models/captured-document');
@@ -17,12 +19,12 @@ import InternalException = require('../../../lib/events/internal-exception');
  */
 class AwsDocumentStorage implements DocumentStorage {
 
-    static get engineVersion():string {
+    static get engineVersion(): string {
         return '2015-05-13';
     }
 
-    private s3:AWS.S3;
-    private bucket:string;
+    private s3: AWS.S3;
+    private bucket: string;
 
     constructor() {
         this.s3 = new AWS.S3({
@@ -33,14 +35,14 @@ class AwsDocumentStorage implements DocumentStorage {
         this.bucket = ConfigurationManager.documentS3Bucket;
     }
 
-    storeCapturedDocumentAsync(doc:CapturedDocument):Q.Promise<any> {
-        var _cthis:AwsDocumentStorage = this;
+    storeCapturedDocumentAsync(doc: CapturedDocument): Q.Promise<any> {
+        var _cthis: AwsDocumentStorage = this;
         if (!doc.validateFields()) {
             throw new InternalException('InvalidCapturedDocument', 'Validation faild for captured document');
         }
         // formulate s3 key
         var documentKey = doc.ArticleSourceId + "/" + doc.ArchiveBucket + "/" + doc.DocumentId;
-        var deferred:Q.Deferred<AWS.S3.PutObjectResult> = Q.defer<AWS.S3.PutObjectResult>();
+        var deferred: Q.Deferred<AWS.S3.PutObjectResult> = Q.defer<AWS.S3.PutObjectResult>();
         this.s3.putObject({
             Bucket: this.bucket,
             Key: documentKey,
@@ -51,17 +53,41 @@ class AwsDocumentStorage implements DocumentStorage {
                 "original-url": doc.OriginalUrl,
                 "content-sha256": doc.ContentHash
             }
-        }, (err:any, data:AWS.S3.PutObjectResult):void => {
-            console.dir(err);
-            console.dir(data);
-            if (err) {
-                deferred.reject(err);
-                return;
-            }
-            deferred.resolve(data);
-            console.log(_cthis.s3.getSignedUrl('getObject', {Bucket: this.bucket, Key: documentKey}));
-        });
+        }, (err: any, data: AWS.S3.PutObjectResult): void => {
+                console.dir(err);
+                console.dir(data);
+                if (err) {
+                    deferred.reject(err);
+                    return;
+                }
+                deferred.resolve(data);
+                console.log(_cthis.s3.getSignedUrl('getObject', { Bucket: this.bucket, Key: documentKey }));
+            });
         return deferred.promise;
+    }
+
+    getCapturedDocumentAsync(articleSourceId: string, archiveBucket: string, documentId: string): Q.Promise<CapturedDocument> {
+        var s3Key = articleSourceId + '/' + archiveBucket + '/' + documentId;
+        var deferred: Q.Deferred<string> = Q.defer<string>();
+        this.s3.getObject({
+            Bucket: this.bucket,
+            Key: s3Key
+        }, function (err: any, data: AWS.S3.GetObjectResult): void {
+                if (err) {
+                    deferred.reject(err);
+                    return;
+                }
+                if (typeof data.Body === 'string') {
+                    deferred.resolve(<string>data.Body);
+                } else {
+                    utils.readableToStringAsync(<stream.Readable> data.Body)
+                        .then(function (str: string) { deferred.resolve(str); }, deferred.reject);
+                }
+            });
+        deferred.promise.then(function (content: string) {
+            console.log(content);
+        });
+        return null;
     }
 
 }

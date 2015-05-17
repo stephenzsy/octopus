@@ -10,6 +10,7 @@ module Dolphin.Controller {
         dailyIndicesMetadata: Client.Models.DailyIndexMetadata[];
         articleSourceId: string;
         captureOriginal: (dailyIndexId: string) => void;
+        indexStatus: Client.Models.ArticlesIndexStatusInterval[];
     }
 
     export interface IArticleSourceRouteParams extends ng.route.IRouteParamsService {
@@ -19,17 +20,22 @@ module Dolphin.Controller {
 
 angular.module('dolphin').controller('ArticleSourceController', ['$scope', 'DolphinClient', '$routeParams',
     ($scope: Dolphin.Controller.IArticleSourceScope, client: Dolphin.Client.DolphinClient, $routeParams: Dolphin.Controller.IArticleSourceRouteParams) => {
-        $scope.articleSourceId = $routeParams.article_source_id;
-        client.ListDailyIndices({ ArticleSourceId: $routeParams.article_source_id }).then((result: Dolphin.Client.Models.ListDailyIndicesResult) => {
+        var articleSourceId: string = $routeParams.article_source_id;
+        $scope.articleSourceId = articleSourceId;
+        client.ListDailyIndices({ ArticleSourceId: articleSourceId }).then((result: Dolphin.Client.Models.ListDailyIndicesResult) => {
             $scope.dailyIndicesMetadata = result.DailyIndicesMetadata;
             console.log(result);
         });
         $scope.captureOriginal = (dailyIndexId: string) => {
             client.CaptureDailyIndex({
-                ArticleSourceId: $scope.articleSourceId,
+                ArticleSourceId: articleSourceId,
                 DailyIndexId: dailyIndexId
             }).then((result: any) => {
                 console.log(result);
             });
         };
+        client.GetArticlesIndexStatus({ ArticleSourceId: articleSourceId })
+            .then(function (result: Dolphin.Client.Models.GetArticlesIndexStatusResult) {
+            $scope.indexStatus = result.Intervals;
+        });
     }]);

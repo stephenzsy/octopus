@@ -6,6 +6,8 @@ import JsonProtocolHandler = require('./json-protocol-handler');
 import OperationsHandler = require('./operations-handler');
 import express = require('express');
 
+import DynamodbArticlesIndex = require('../../app/document/aws-dynamodb-articles-index');
+
 import ListArticleSources = require('../../app/operations/list-article-sources');
 import ListDailyIndices = require('../../app/operations/list-daily-indices');
 import CaptureDailyIndex = require('../../app/operations/capture-daily-index');
@@ -16,12 +18,14 @@ export module Dolphin.Events {
         private handlerChain:EventHandlerChain;
 
         constructor() {
-            var operationsHandler:OperationsHandler = new OperationsHandler();
+            var operationsHandler: OperationsHandler = new OperationsHandler();
+
+            var articlesIndex: DynamodbArticlesIndex = new DynamodbArticlesIndex();
 
             operationsHandler.registerOperation(new ListArticleSources());
             operationsHandler.registerOperation(new ListDailyIndices());
             operationsHandler.registerOperation(new CaptureDailyIndex());
-            operationsHandler.registerOperation(new GetArticlesIndexStatus());
+            operationsHandler.registerOperation(new GetArticlesIndexStatus(articlesIndex));
 
             this.handlerChain = new EventHandlerChain([
                 new JsonProtocolHandler(),
