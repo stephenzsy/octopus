@@ -4,7 +4,11 @@
     </div>
     <div class="row">
         <div ng-repeat="articleSource in ArticleSources">
-            <div>{{articleSource.Name}} <span class="btn btn-text"><a ng-href="/article-sources/{{articleSource.Id}}">Link</a></span></div>
+            <div>
+                {{articleSource.Name}}
+                <a class="btn btn-text" ng-href="/article-sources/{{articleSource.Id}}">Link</a>
+                <a class="btn btn-text" ng-click="getIndexStatus(articleSource.Id)">Index Status</a>
+            </div>
             <div><strong>URL:</strong> <a ng-href="{{articleSource.Url}}">{{articleSource.Url}}</a></div>
             <hr>
         </div>

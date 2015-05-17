@@ -4,14 +4,14 @@ import Request = require('../../lib/events/request');
 import utils = require('./utils');
 import ArticleSource = require('./article-source');
 
-class ListArticlesRequest implements Request<ListArticlesRequest> {
+class GenericArticlesRequest implements Request<GenericArticlesRequest> {
     articleSource: ArticleSource;
     startTimestamp: moment.Moment;
     endTimestamp: moment.Moment;
     limit: number;
 
-    static validate(input: any): ListArticlesRequest {
-        var req: ListArticlesRequest = new ListArticlesRequest();
+    static validate(input: any): GenericArticlesRequest {
+        var req: GenericArticlesRequest = new GenericArticlesRequest();
         req.articleSource = utils.validateArticleSourceId(input);
         req.startTimestamp = utils.validateTimestamp(input, 'StartTimestamp');
         req.endTimestamp = utils.validateTimestamp(input, 'EndTimestamp');
@@ -26,4 +26,4 @@ class ListArticlesRequest implements Request<ListArticlesRequest> {
     }
 }
 
-export = ListArticlesRequest;
+export = GenericArticlesRequest;

@@ -56,6 +56,7 @@ class AwsDocumentStorage implements DocumentStorage {
             console.dir(data);
             if (err) {
                 deferred.reject(err);
+                return;
             }
             deferred.resolve(data);
             console.log(_cthis.s3.getSignedUrl('getObject', {Bucket: this.bucket, Key: documentKey}));

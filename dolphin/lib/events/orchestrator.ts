@@ -9,6 +9,7 @@ import express = require('express');
 import ListArticleSources = require('../../app/operations/list-article-sources');
 import ListDailyIndices = require('../../app/operations/list-daily-indices');
 import CaptureDailyIndex = require('../../app/operations/capture-daily-index');
+import GetArticlesIndexStatus = require('../../app/operations/get-articles-index-status');
 
 export module Dolphin.Events {
     export class Orchestrator {
@@ -20,6 +21,7 @@ export module Dolphin.Events {
             operationsHandler.registerOperation(new ListArticleSources());
             operationsHandler.registerOperation(new ListDailyIndices());
             operationsHandler.registerOperation(new CaptureDailyIndex());
+            operationsHandler.registerOperation(new GetArticlesIndexStatus());
 
             this.handlerChain = new EventHandlerChain([
                 new JsonProtocolHandler(),

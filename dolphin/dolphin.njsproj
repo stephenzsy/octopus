@@ -47,14 +47,16 @@
     <TypeScriptCompile Include="app\models\list-article-sources-request.ts" />
     <TypeScriptCompile Include="app\models\list-article-sources-result.ts" />
     <TypeScriptCompile Include="app\models\list-articles-result.ts" />
-    <TypeScriptCompile Include="app\models\list-articles-request.ts" />
+    <TypeScriptCompile Include="app\models\generic-articles-request.ts" />
     <TypeScriptCompile Include="app\models\list-daily-indices-request.ts" />
+    <TypeScriptCompile Include="app\models\get-articles-index-status-result.ts" />
     <TypeScriptCompile Include="app\models\list-daily-indices-result.ts" />
     <TypeScriptCompile Include="app\models\resource-not-found-exception.ts" />
     <TypeScriptCompile Include="app\models\sync-article-index-request.ts" />
     <TypeScriptCompile Include="app\models\sync-article-index-result.ts" />
     <TypeScriptCompile Include="app\operations\capture-daily-index.ts" />
     <TypeScriptCompile Include="app\operations\list-article-sources.ts" />
+    <TypeScriptCompile Include="app\operations\get-articles-index-status.ts" />
     <TypeScriptCompile Include="app\operations\sync-article-index.ts" />
     <TypeScriptCompile Include="app\operations\list-articles.ts" />
     <TypeScriptCompile Include="app\operations\list-daily-indices.ts" />

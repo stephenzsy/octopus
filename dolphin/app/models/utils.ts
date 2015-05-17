@@ -29,6 +29,9 @@ export function validateTimestamp(input: any, field: string): moment.Moment {
 }
 
 export function validateNumber(input: any, field: string, min: number, max: number, defaultValue: number): number {
+    if (typeof input[field] === 'undefined' || input[field] === null) {
+        return defaultValue;
+    }
     if (!validator.isInt(validator.toString(input[field]), { min: min, max: max })) {
         throw InvalidRequestException.invalidFieldValue(field);
     }

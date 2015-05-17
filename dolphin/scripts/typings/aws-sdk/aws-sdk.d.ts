@@ -137,9 +137,24 @@ declare module "aws-sdk" {
     export module DynamoDB {
         export interface QueryRequest {
             TableName: string;
+            KeyConditions?: {
+                [key: string]: {
+                    ComparisonOperator: string;
+                    AttributeValueList?: {
+                        S?: string;
+                    }[]
+                }
+            }
         }
 
         export interface QueryResult {
+            Items?: {
+                [attributeName: string]: {
+                    S?: string;
+                }
+            }[];
+            Count?: number;
+            ScannedCount: number;
         }
     }
 
