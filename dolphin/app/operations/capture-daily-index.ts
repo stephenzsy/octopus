@@ -10,7 +10,7 @@ import cheerio = require('cheerio');
 
 import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
-import CapturedDocument = require('../models/captured-document');
+import CapturedDocument = require('../document/import/captured-document');
 import CaptureDailyIndexRequest = require('../models/capture-daily-index-request');
 import CaptureDailyIndexResult = require('../models/capture-daily-index-result');
 import articleSources = require('../config/article-sources');
@@ -29,7 +29,7 @@ class CaptureDailyIndex implements Operation<CaptureDailyIndexRequest, CaptureDa
     enactAsync(request:CaptureDailyIndexRequest):Q.Promise<CaptureDailyIndexResult> {
         var _this:CaptureDailyIndex = this;
         var articleSource:ArticleSource = request.articleSource;
-        var url:string = articleSource.getDailyIndexUrl(request.DailyIndexId);
+        var url:string = articleSource.getUrlForIndexId(request.DailyIndexId);
         var deferred:Q.Deferred<string> = Q.defer<string>();
         http.get(url, (res:http.IncomingMessage):void => {
             var content:string = '';
@@ -56,15 +56,12 @@ class CaptureDailyIndex implements Operation<CaptureDailyIndexRequest, CaptureDa
             })).html();
 
             var doc = new CapturedDocument();
-            doc.ArticleSourceId = articleSource.Id;
-            doc.OriginalUrl = url;
-            doc.DocumentId = request.DailyIndexId;
-            doc.ArchiveBucket = 'daily-index/' + request.DailyIndexId.substr(0, 4) + '/' + request.DailyIndexId.substr(5, 2);
-            var hashsum:crypto.Hash = crypto.createHash('sha256');
-            hashsum.update(content);
-            doc.ContentHash = hashsum.digest('base64');
-            doc.Content = content;
-            doc.CaptureTimestamp = moment().utc().toISOString();
+            doc.articleSourceId = articleSource.Id;
+            doc.sourceUrl = url;
+            doc.documentId = request.DailyIndexId;
+            doc.archiveBucket = 'daily-index/' + request.DailyIndexId.substr(0, 4) + '/' + request.DailyIndexId.substr(5, 2);
+            doc.content = content;
+            doc.timestamp = moment().utc().toISOString();
 
             // store the document
             return _this.documentStorage.storeCapturedDocumentAsync(doc)

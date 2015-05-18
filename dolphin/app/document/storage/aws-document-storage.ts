@@ -8,7 +8,7 @@ import stream = require('stream');
 import utils = require('../utils');
 
 import DocumentStorage = require('./document-storage');
-import CapturedDocument = require('../../models/captured-document');
+import CapturedDocument = require('../import/captured-document');
 import ConfigurationManager = require('../../config/configuration-manager');
 import InternalException = require('../../../lib/events/internal-exception');
 
@@ -41,53 +41,59 @@ class AwsDocumentStorage implements DocumentStorage {
             throw new InternalException('InvalidCapturedDocument', 'Validation faild for captured document');
         }
         // formulate s3 key
-        var documentKey = doc.ArticleSourceId + "/" + doc.ArchiveBucket + "/" + doc.DocumentId;
+        var documentKey = doc.articleSourceId + "/" + doc.archiveBucket + "/" + doc.documentId;
         var deferred: Q.Deferred<AWS.S3.PutObjectResult> = Q.defer<AWS.S3.PutObjectResult>();
+        var metadata: { [s: string]: string; } = doc.metadata || {};
+        metadata["capture-timestamp"] = doc.timestamp;
+        metadata["source-url"] = doc.sourceUrl;
         this.s3.putObject({
             Bucket: this.bucket,
             Key: documentKey,
             ContentType: 'text/html',
-            Body: doc.Content,
-            Metadata: {
-                "capture-timestamp": doc.CaptureTimestamp,
-                "original-url": doc.OriginalUrl,
-                "content-sha256": doc.ContentHash
-            }
+            Body: doc.content,
+            Metadata: metadata
         }, (err: any, data: AWS.S3.PutObjectResult): void => {
-                console.dir(err);
-                console.dir(data);
                 if (err) {
                     deferred.reject(err);
                     return;
                 }
                 deferred.resolve(data);
-                console.log(_cthis.s3.getSignedUrl('getObject', { Bucket: this.bucket, Key: documentKey }));
+                //console.log(_cthis.s3.getSignedUrl('getObject', { Bucket: this.bucket, Key: documentKey }));
             });
         return deferred.promise;
     }
 
     getCapturedDocumentAsync(articleSourceId: string, archiveBucket: string, documentId: string): Q.Promise<CapturedDocument> {
         var s3Key = articleSourceId + '/' + archiveBucket + '/' + documentId;
-        var deferred: Q.Deferred<string> = Q.defer<string>();
+        var deferred: Q.Deferred<AWS.S3.GetObjectResult> = Q.defer<AWS.S3.GetObjectResult>();
         this.s3.getObject({
             Bucket: this.bucket,
             Key: s3Key
-        }, function (err: any, data: AWS.S3.GetObjectResult): void {
+        }, function (err: AWS.Error, data: AWS.S3.GetObjectResult): void {
                 if (err) {
-                    deferred.reject(err);
+                    if (err.code === 'NoSuchKey') {
+                        deferred.resolve(null);
+                    } else {
+                        deferred.reject(err);
+                    }
                     return;
                 }
-                if (typeof data.Body === 'string') {
-                    deferred.resolve(<string>data.Body);
-                } else {
-                    utils.readableToStringAsync(<stream.Readable> data.Body)
-                        .then(function (str: string) { deferred.resolve(str); }, deferred.reject);
-                }
+                deferred.resolve(data);
             });
-        deferred.promise.then(function (content: string) {
-            console.log(content);
+        return deferred.promise.then(function (res: AWS.S3.GetObjectResult): CapturedDocument {
+            if (res == null) {
+                return null;
+            }
+            var doc: CapturedDocument = new CapturedDocument;
+            doc.articleSourceId = articleSourceId;
+            doc.archiveBucket = archiveBucket;
+            doc.documentId = documentId;
+            doc.metadata = res.Metadata;
+            doc.timestamp = res.Metadata["capture-timestamp"];
+            doc.sourceUrl = res.Metadata["source-url"];
+            doc.content = res.Body.toString();
+            return doc;
         });
-        return null;
     }
 
 }

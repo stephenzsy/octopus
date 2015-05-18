@@ -7,7 +7,6 @@ import cheerio = require('cheerio');
 
 import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
-import CapturedDocument = require('../models/captured-document');
 import ListArticlesRequest = require('../models/generic-articles-request');
 import ListArticlesResult = require('../models/list-articles-result');
 import articleSources = require('../config/article-sources');

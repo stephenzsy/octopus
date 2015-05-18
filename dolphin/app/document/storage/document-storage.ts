@@ -1,4 +1,4 @@
-import CapturedDocument = require('../../models/captured-document');
+import CapturedDocument = require('../import/captured-document');
 
 interface DocumentStorage {
     storeCapturedDocumentAsync(doc: CapturedDocument): Q.Promise<any>;

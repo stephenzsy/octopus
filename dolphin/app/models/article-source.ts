@@ -4,6 +4,13 @@ import validator = require('validator');
 import moment = require('moment-timezone');
 
 import HtmlSanitizer = require('../document/transform/html-sanitizer');
+import CapturedDocument = require('../document/import/captured-document');
+
+module ArticleSource {
+    export interface IndexInfo {
+        archiveBucket: string; indexId: string;
+    }
+}
 
 class ArticleSource {
     static IndexType = {
@@ -13,7 +20,7 @@ class ArticleSource {
     Id: string;
     Name: string;
     Url: string;
-    Version: string;
+    version: string;
     indexType: string;
 
     defaultTimezone: string;
@@ -26,15 +33,20 @@ class ArticleSource {
         }
     }
 
-    getDailyIndexUrl: (dateString: string) => string;
+    getUrlForIndexId: (dateString: string) => string;
     dailyIndexSanitizer: HtmlSanitizer = null;
 
-    getDocumentInfoForTimestamp(timestamp: moment.Moment): { archiveBucket: string; documentId: string } {
-        var dateString = timestamp.tz(this.defaultTimezone).format('YYYY-MM-DD');
+    getIndexInfoForTimestamp(timestamp: moment.Moment): ArticleSource.IndexInfo {
+        var tzTime:moment.Moment = timestamp.tz(this.defaultTimezone);
         return {
-            archiveBucket: dateString.replace('-', '/'),
-            documentId: dateString
+            archiveBucket: tzTime.format('YYYY/MM/DD'),
+            indexId: tzTime.format('YYYY-MM-DD')
         }
+    }
+
+    isCapturedDocumentUpToDate(doc: CapturedDocument): boolean {
+        var cutoff: moment.Moment = moment().tz(this.defaultTimezone).endOf('day').add(15, 'minute');
+        return moment(doc.timestamp).isAfter(cutoff);
     }
 
     isValidDailyIndexId(dailyIndexId: string): boolean {

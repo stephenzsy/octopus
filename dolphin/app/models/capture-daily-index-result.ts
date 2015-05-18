@@ -1,5 +1,5 @@
 import Result = require('../../lib/events/result');
-import CapturedDocument = require('./captured-document');
+import CapturedDocument = require('../document/import/captured-document');
 
 class CaptureDailyIndexResult implements Result<CaptureDailyIndexResult> {
     CapturedDocument:CapturedDocument;

@@ -61,6 +61,9 @@ module Dolphin.Client {
         export interface GetArticlesIndexStatusResult extends Result {
             Intervals: ArticlesIndexStatusInterval[];
         }
+
+        export interface ImportArticlesIndexResult extends Result {
+        }
     }
 
     export class DolphinClient {
@@ -100,6 +103,10 @@ module Dolphin.Client {
 
         GetArticlesIndexStatus(request: Models.GenericArticlesRequest): ng.IPromise<Models.GetArticlesIndexStatusResult> {
             return this.makeRequest('GetArticlesIndexStatus', request);
+        }
+
+        ImportArticlesIndex(request: Models.GenericArticlesRequest): ng.IPromise<Models.ImportArticlesIndexResult> {
+            return this.makeRequest('ImportArticlesIndex', request);
         }
     }
 }

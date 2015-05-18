@@ -16,6 +16,7 @@
         <h2>Index Status</h2>
         <div ng-repeat="status in indexStatus">
             Start: {{status.Start}}, End: {{status.End}}, Status: {{status.Status}}
+            <span ng-show="status.Status == 'None'" class="btn btn-link" ng-click="importArticlesIndex(status.End)">Import</span>
         </div>
     </div>
 </div>

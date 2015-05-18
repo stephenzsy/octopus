@@ -35,9 +35,10 @@ class AwsDynamodbArticlesIndex implements ArticlesIndex {
             }
         }, function (err, data: AWS.DynamoDB.QueryResult) {
                 if (err) {
+                    console.log(err);
                     deferred.reject(err);
                     return;
-            }
+                }
                 deferred.resolve(data);
             });
         return deferred.promise.then((r: AWS.DynamoDB.QueryResult): IndexInterval[]=> {

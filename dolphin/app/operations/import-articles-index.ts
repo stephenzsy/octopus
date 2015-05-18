@@ -7,7 +7,7 @@ import cheerio = require('cheerio');
 
 import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
-import CapturedDocument = require('../models/captured-document');
+import CapturedDocument = require('../document/import/captured-document');
 import GenericArticlesRequest = require('../models/generic-articles-request');
 import ImportArticlesIndexResult = require('../models/import-articles-index-result');
 import ArticlesIndex = require('../document/articles-index');
@@ -43,10 +43,9 @@ class ImportArticlesIndex implements Operation<GenericArticlesRequest, ImportArt
             durationSeconds = req.endTimestamp.diff(req.startTimestamp, 'second');
         }
 
-        this.importer.captureArticlesIndexAsync(req.articleSource, offset) {
-        }
-
-        return null;
+        return this.importer.importArticlesIndexAsync(req.articleSource, offset).then(function (capturedDoc: CapturedDocument): ImportArticlesIndexResult {
+            return new ImportArticlesIndexResult();
+        });
     }
 
     validateInput(input: any): GenericArticlesRequest {

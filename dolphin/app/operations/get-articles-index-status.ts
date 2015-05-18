@@ -7,7 +7,7 @@ import cheerio = require('cheerio');
 
 import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
-import CapturedDocument = require('../models/captured-document');
+import CapturedDocument = require('../document/import/captured-document');
 import GenericArticlesRequest = require('../models/generic-articles-request');
 import GetArticlesIndexStatusResult = require('../models/get-articles-index-status-result'); import ArticlesIndex = require('../document/articles-index');
 import IndexInterval = require('../document/articles-index-interval');

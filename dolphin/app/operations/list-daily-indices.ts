@@ -23,7 +23,7 @@ class ListArticleSources implements Operation<ListDailyIndicesRequest, ListDaily
             metadata.ArticleSourceId = articleSource.Id;
             metadata.LocalDate = ts.toISOString();
             metadata.Timezone = articleSource.defaultTimezone;
-            metadata.Url = articleSource.getDailyIndexUrl(localDate);
+            metadata.Url = articleSource.getUrlForIndexId(localDate);
 
             metadataList.push(metadata);
             ts.subtract(1, 'day');

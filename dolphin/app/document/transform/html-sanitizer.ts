@@ -6,16 +6,19 @@ interface TTransform {
 }
 
 interface HtmlSanitizerConfig {
+    version: string;
     tTransform: TTransform;
 }
 
 class HtmlSanitizer {
 
     static Version: string = '2015-05-15';
-
+    private definitionVersion: string;
     private config: HtmlSanitizerConfig;
+
     constructor(config: HtmlSanitizerConfig) {
         this.config = config;
+        this.definitionVersion = config.version;
     }
 
     private purgeComments($:Cheerio) {
@@ -52,6 +55,10 @@ class HtmlSanitizer {
     sanitize($: CheerioStatic) {
         this.tTransform($.root(), this.config.tTransform);
         return $;
+    }
+
+    get version(): string {
+        return HtmlSanitizer.Version + ':' + this.definitionVersion;
     }
 }
 

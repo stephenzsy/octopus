@@ -158,6 +158,11 @@ declare module "aws-sdk" {
         }
     }
 
+    export interface Error {
+        code: string;
+        message: string;
+    }
+
 	export class DynamoDB {
         constructor(options?: Config);
 
@@ -1018,7 +1023,10 @@ declare module "aws-sdk" {
         }
 
         export interface GetObjectResult {
-            Body: string | NodeJS.ReadableStream;
+            Body: any;
+            Metadata: {
+                [s: string]: string;
+            }
         }
 
         export interface ListBucketsRequest {

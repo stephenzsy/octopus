@@ -2,6 +2,7 @@
     "compatible-versions": [
         "2015-05-15"
     ],
+    "version" :  "2015-05-18",
     "tTransform": {
         "head": {
             "_comments_": "remove",

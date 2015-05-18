@@ -11,6 +11,7 @@ module Dolphin.Controller {
         articleSourceId: string;
         captureOriginal: (dailyIndexId: string) => void;
         indexStatus: Client.Models.ArticlesIndexStatusInterval[];
+        importArticlesIndex: (startTs:string, endTs: string) => void;
     }
 
     export interface IArticleSourceRouteParams extends ng.route.IRouteParamsService {
@@ -38,4 +39,13 @@ angular.module('dolphin').controller('ArticleSourceController', ['$scope', 'Dolp
             .then(function (result: Dolphin.Client.Models.GetArticlesIndexStatusResult) {
             $scope.indexStatus = result.Intervals;
         });
+        $scope.importArticlesIndex = function (startTs: string, endTs: string) {
+            client.ImportArticlesIndex({
+                ArticleSourceId: articleSourceId,
+                StartTimestamp: startTs,
+                EndTimestamp: endTs
+            }).then(function (result: Dolphin.Client.Models.ImportArticlesIndexResult) {
+                console.log(result);
+            });
+        };
     }]);

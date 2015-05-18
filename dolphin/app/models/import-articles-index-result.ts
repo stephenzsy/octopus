@@ -5,7 +5,7 @@ class SyncArticleIndexResult implements Result<SyncArticleIndexResult> {
     toJsonObject(): any {
         return {
             "ArticlesMetadata": []
-        }
+        };
     }
 }
 
