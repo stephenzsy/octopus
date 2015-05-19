@@ -1,0 +1,24 @@
+﻿{
+    "compatible-versions": [
+        "2015-05-18"
+    ],
+    "version": "2015-05-18",
+    "dataInit": {
+        "items": "[]"
+    },
+    "tParse": {
+        "body": {
+            "div.content div.river table tr": {
+                "_each_": {
+                    "td > a": {
+                        "_data_": {
+                            "link": "attr:href",
+                            "title": "text",
+                            "_append_" :  "items"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

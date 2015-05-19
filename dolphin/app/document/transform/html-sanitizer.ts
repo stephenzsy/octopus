@@ -13,12 +13,10 @@ interface HtmlSanitizerConfig {
 class HtmlSanitizer {
 
     static Version: string = '2015-05-15';
-    private definitionVersion: string;
     private config: HtmlSanitizerConfig;
 
     constructor(config: HtmlSanitizerConfig) {
         this.config = config;
-        this.definitionVersion = config.version;
     }
 
     private purgeComments($:Cheerio) {
@@ -58,7 +56,7 @@ class HtmlSanitizer {
     }
 
     get version(): string {
-        return HtmlSanitizer.Version + ':' + this.definitionVersion;
+        return HtmlSanitizer.Version + ':' + this.config.version;
     }
 }
 

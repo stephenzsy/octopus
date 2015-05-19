@@ -23,6 +23,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Content Include="app\config\aws-config.json" />
+    <Content Include="app\vendor\businessinsider\daily-index-parser-config.json" />
     <Content Include="app\vendor\businessinsider\daily-index-sanitizer-config.json" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
@@ -34,10 +35,11 @@
     <Content Include="views\layout.jade" />
     <TypeScriptCompile Include="app\config\article-sources.ts" />
     <TypeScriptCompile Include="app\config\configuration-manager.ts" />
-    <TypeScriptCompile Include="app\document\articles-index-interval.ts" />
+    <TypeScriptCompile Include="app\document\articles-index-document.ts" />
     <TypeScriptCompile Include="app\document\articles-index.ts" />
     <TypeScriptCompile Include="app\document\aws-dynamodb-articles-index.ts" />
     <TypeScriptCompile Include="app\document\import\articles-index-importer.ts" />
+    <TypeScriptCompile Include="app\document\transform\html-parser.ts" />
     <TypeScriptCompile Include="app\document\transform\html-sanitizer.ts" />
     <TypeScriptCompile Include="app\document\utils.ts" />
     <TypeScriptCompile Include="app\models\article-source.ts" />

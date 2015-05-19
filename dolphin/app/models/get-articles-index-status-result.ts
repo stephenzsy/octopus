@@ -1,13 +1,12 @@
 import Result = require('../../lib/events/result');
-import IndexInterval = require('../document/articles-index-interval');
-
+import ArticlesIndex = require('../document/articles-index');
 
 class GetArticlesIndexStatusResult implements Result<GetArticlesIndexStatusResult> {
-    indexIntervals: IndexInterval[];
+    indexIntervals: ArticlesIndex.Interval[];
 
     toJsonObject(): any {
         return {
-            "Intervals": this.indexIntervals.map(function (interval: IndexInterval) {
+            "Intervals": this.indexIntervals.map(function (interval: ArticlesIndex.Interval) {
                 return {
                     "Start": interval.start.utc().toISOString(),
                     "End": interval.end.utc().toISOString(),

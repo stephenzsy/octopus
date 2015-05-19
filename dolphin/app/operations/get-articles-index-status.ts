@@ -9,8 +9,8 @@ import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
 import CapturedDocument = require('../document/import/captured-document');
 import GenericArticlesRequest = require('../models/generic-articles-request');
-import GetArticlesIndexStatusResult = require('../models/get-articles-index-status-result'); import ArticlesIndex = require('../document/articles-index');
-import IndexInterval = require('../document/articles-index-interval');
+import GetArticlesIndexStatusResult = require('../models/get-articles-index-status-result');
+import ArticlesIndex = require('../document/articles-index');
 
 class GetArticlesIndexStatus implements Operation<GenericArticlesRequest, GetArticlesIndexStatusResult> {
     name: string = 'GetArticlesIndexStatus';
@@ -40,7 +40,7 @@ class GetArticlesIndexStatus implements Operation<GenericArticlesRequest, GetArt
         }
 
         return this.articlesIndex.fetchIntervalsAsync(req.articleSource, offset, forward, durationSeconds)
-            .then(function (intervals: IndexInterval[]): GetArticlesIndexStatusResult {
+            .then(function (intervals: ArticlesIndex.Interval[]): GetArticlesIndexStatusResult {
             var result: GetArticlesIndexStatusResult = new GetArticlesIndexStatusResult();
             result.indexIntervals = intervals;
             return result;
