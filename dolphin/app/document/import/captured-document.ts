@@ -4,10 +4,14 @@ class CapturedDocument {
     articleSourceId: string;
     documentId: string;
     archiveBucket: string;
-    content: string;
+    private _content: string;
     sourceUrl: string;
     timestamp: string;
-    metadata: { [s: string]: string };
+    metadata: { [s: string]: string } = {};
+
+    get contentType(): string {
+        return 'text/html';
+    }
 
     toJsonObject(): any {
         return {
@@ -26,6 +30,22 @@ class CapturedDocument {
             return false;
         }
         return true;
+    }
+
+    get content(): string {
+        return this.getContent();
+    }
+
+    set content(value: string) {
+        this.setContent(value);
+    }
+
+    getContent(): string {
+        return this._content;
+    }
+
+    setContent(value: string): void {
+        this._content = value;
     }
 }
 

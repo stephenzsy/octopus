@@ -1,6 +1,7 @@
 import ArticleSource = require('../models/article-source');
 import HtmlSanitizer = require('../document/transform/html-sanitizer');
 import HtmlParser = require('../document/transform/html-parser');
+import ArticlesIndexDocument = require('../document/index/articles-index-document');
 
 var articleSources: { [s: string]: ArticleSource; } = {};
 (() => {
@@ -13,6 +14,14 @@ var articleSources: { [s: string]: ArticleSource; } = {};
         as.getUrlForIndexId = (indexId: string): string => {
             return 'http://www.businessinsider.com/archives?date=' + indexId;
         };
+        as.toArticlesIndexDocumentItems = function (obj: string): ArticlesIndexDocument.Item[] {
+            return obj['items'].map(function (itemObj: any): ArticlesIndexDocument.Item {
+                return {
+                    url: as.Url + itemObj['link'],
+                    title: itemObj['title']
+                };
+            });
+        }
         as.version = '2015-05-15';
         as.indexType = ArticleSource.IndexType.DailyIndex;
         as.dailyIndexSanitizer = new HtmlSanitizer(require('../vendor/businessinsider/daily-index-sanitizer-config.json'));

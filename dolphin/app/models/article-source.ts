@@ -6,6 +6,7 @@ import moment = require('moment-timezone');
 import HtmlSanitizer = require('../document/transform/html-sanitizer');
 import HtmlParser = require('../document/transform/html-parser');
 import CapturedDocument = require('../document/import/captured-document');
+import ArticlesIndexDocument = require('../document/index/articles-index-document');
 
 module ArticleSource {
     export interface IndexInfo {
@@ -38,6 +39,7 @@ class ArticleSource {
     }
 
     getUrlForIndexId: (dateString: string) => string;
+    toArticlesIndexDocumentItems: (obj: any) => ArticlesIndexDocument.Item[];
     dailyIndexSanitizer: HtmlSanitizer = null;
     dailyIndexParser: HtmlParser = null;
 

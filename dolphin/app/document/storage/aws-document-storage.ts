@@ -7,8 +7,10 @@ import Q = require('q');
 import stream = require('stream');
 import utils = require('../utils');
 
+import ArticleSource = require('../../models/article-source');
 import DocumentStorage = require('./document-storage');
 import CapturedDocument = require('../import/captured-document');
+import ArticlesIndexDocument = require('../index/articles-index-document');
 import ConfigurationManager = require('../../config/configuration-manager');
 import InternalException = require('../../../lib/events/internal-exception');
 
@@ -49,7 +51,7 @@ class AwsDocumentStorage implements DocumentStorage {
         this.s3.putObject({
             Bucket: this.bucket,
             Key: documentKey,
-            ContentType: 'text/html',
+            ContentType: doc.contentType,
             Body: doc.content,
             Metadata: metadata
         }, (err: any, data: AWS.S3.PutObjectResult): void => {
@@ -63,12 +65,11 @@ class AwsDocumentStorage implements DocumentStorage {
         return deferred.promise;
     }
 
-    getCapturedDocumentAsync(articleSourceId: string, archiveBucket: string, documentId: string): Q.Promise<CapturedDocument> {
-        var s3Key = articleSourceId + '/' + archiveBucket + '/' + documentId;
+    private getS3Object(key: string): Q.Promise<AWS.S3.GetObjectResult> {
         var deferred: Q.Deferred<AWS.S3.GetObjectResult> = Q.defer<AWS.S3.GetObjectResult>();
         this.s3.getObject({
             Bucket: this.bucket,
-            Key: s3Key
+            Key: key
         }, function (err: AWS.Error, data: AWS.S3.GetObjectResult): void {
                 if (err) {
                     if (err.code === 'NoSuchKey') {
@@ -80,11 +81,16 @@ class AwsDocumentStorage implements DocumentStorage {
                 }
                 deferred.resolve(data);
             });
-        return deferred.promise.then(function (res: AWS.S3.GetObjectResult): CapturedDocument {
+        return deferred.promise;
+    }
+
+    getCapturedDocumentAsync(articleSourceId: string, archiveBucket: string, documentId: string): Q.Promise<CapturedDocument> {
+        var s3Key = articleSourceId + '/' + archiveBucket + '/' + documentId;
+        return this.getS3Object(s3Key).then(function (res: AWS.S3.GetObjectResult): CapturedDocument {
             if (res == null) {
                 return null;
             }
-            var doc: CapturedDocument = new CapturedDocument;
+            var doc: CapturedDocument = new CapturedDocument();
             doc.articleSourceId = articleSourceId;
             doc.archiveBucket = archiveBucket;
             doc.documentId = documentId;
@@ -94,6 +100,24 @@ class AwsDocumentStorage implements DocumentStorage {
             doc.content = res.Body.toString();
             return doc;
         });
+    }
+
+    getArticlesIndexAsync(articleSource: ArticleSource, archiveBucket: string, indexId: string): Q.Promise<ArticlesIndexDocument> {
+        var s3Key = articleSource.Id + '/' + archiveBucket + '/' + indexId;
+        return this.getS3Object(s3Key).then(function (res: AWS.S3.GetObjectResult): ArticlesIndexDocument {
+            if (res == null) {
+                return null;
+            }
+            var doc: ArticlesIndexDocument = new ArticlesIndexDocument(articleSource);
+            doc.archiveBucket = archiveBucket;
+            doc.documentId = indexId;
+            doc.metadata = res.Metadata;
+            doc.timestamp = res.Metadata["capture-timestamp"];
+            doc.sourceUrl = res.Metadata["source-url"];
+            doc.content = res.Body.toString();
+            return doc;
+        });
+
     }
 
 }

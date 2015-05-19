@@ -55,6 +55,7 @@ class AwsDynamodbArticlesIndex implements ArticlesIndex {
                     result.push(interval);
                 }
             }
+            console.log("fetch complete");
             return result;
         });
     }
