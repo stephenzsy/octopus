@@ -1,5 +1,6 @@
 ﻿import stream = require('stream');
 import Q = require('q');
+import AWS = require('aws-sdk');
 
 export function readableToStringAsync(readable: stream.Readable): Q.Promise<string> {
     var deferred: Q.Deferred<string> = Q.defer<string>();

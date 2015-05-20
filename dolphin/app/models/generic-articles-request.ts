@@ -13,8 +13,8 @@ class GenericArticlesRequest implements Request<GenericArticlesRequest> {
     static validate(input: any): GenericArticlesRequest {
         var req: GenericArticlesRequest = new GenericArticlesRequest();
         req.articleSource = utils.validateArticleSourceId(input);
-        req.startTimestamp = utils.validateTimestamp(input, 'StartTimestamp');
-        req.endTimestamp = utils.validateTimestamp(input, 'EndTimestamp');
+        req.startTimestamp = utils.validateTimestamp(input, 'Start');
+        req.endTimestamp = utils.validateTimestamp(input, 'End');
         req.limit = utils.validateNumber(input, 'Limit', 10, 500, 20);
 
         // if both not set, use now as end timestamp

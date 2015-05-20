@@ -39,11 +39,10 @@ angular.module('dolphin').controller('ArticleSourceController', ['$scope', 'Dolp
             .then(function (result: Dolphin.Client.Models.GetArticlesIndexStatusResult) {
             $scope.indexStatus = result.Intervals;
         });
-        $scope.importArticlesIndex = function (startTs: string, endTs: string) {
+        $scope.importArticlesIndex = function (endTs: string) {
             client.ImportArticlesIndex({
                 ArticleSourceId: articleSourceId,
-                StartTimestamp: startTs,
-                EndTimestamp: endTs
+                End: endTs
             }).then(function (result: Dolphin.Client.Models.ImportArticlesIndexResult) {
                 console.log(result);
             });

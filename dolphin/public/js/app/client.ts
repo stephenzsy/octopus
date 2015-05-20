@@ -47,8 +47,8 @@ module Dolphin.Client {
 
         export interface GenericArticlesRequest extends Request {
             ArticleSourceId: string;
-            StartTimestamp?: string;
-            EndTimestamp?: string;
+            Start?: string;
+            End?: string;
             Limit?: number;
         }
 

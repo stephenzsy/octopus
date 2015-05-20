@@ -43,7 +43,7 @@ class AwsDocumentStorage implements DocumentStorage {
             throw new InternalException('InvalidCapturedDocument', 'Validation faild for captured document');
         }
         // formulate s3 key
-        var documentKey = doc.articleSourceId + "/" + doc.archiveBucket + "/" + doc.documentId;
+        var documentKey = doc.articleSourceId + '/' + doc.documentType + "/" + doc.archiveBucket + "/" + doc.documentId;
         var deferred: Q.Deferred<AWS.S3.PutObjectResult> = Q.defer<AWS.S3.PutObjectResult>();
         var metadata: { [s: string]: string; } = doc.metadata || {};
         metadata["capture-timestamp"] = doc.timestamp;
@@ -84,8 +84,8 @@ class AwsDocumentStorage implements DocumentStorage {
         return deferred.promise;
     }
 
-    getCapturedDocumentAsync(articleSourceId: string, archiveBucket: string, documentId: string): Q.Promise<CapturedDocument> {
-        var s3Key = articleSourceId + '/' + archiveBucket + '/' + documentId;
+    getCapturedDocumentAsync(articleSourceId: string, documentType: string, archiveBucket: string, documentId: string): Q.Promise<CapturedDocument> {
+        var s3Key = articleSourceId + '/' + documentType + '/' + archiveBucket + '/' + documentId;
         return this.getS3Object(s3Key).then(function (res: AWS.S3.GetObjectResult): CapturedDocument {
             if (res == null) {
                 return null;
@@ -93,6 +93,7 @@ class AwsDocumentStorage implements DocumentStorage {
             var doc: CapturedDocument = new CapturedDocument();
             doc.articleSourceId = articleSourceId;
             doc.archiveBucket = archiveBucket;
+            doc.documentType = documentType;
             doc.documentId = documentId;
             doc.metadata = res.Metadata;
             doc.timestamp = res.Metadata["capture-timestamp"];
@@ -103,7 +104,7 @@ class AwsDocumentStorage implements DocumentStorage {
     }
 
     getArticlesIndexAsync(articleSource: ArticleSource, archiveBucket: string, indexId: string): Q.Promise<ArticlesIndexDocument> {
-        var s3Key = articleSource.Id + '/' + archiveBucket + '/' + indexId;
+        var s3Key = articleSource.Id + '/' + CapturedDocument.DocumentType.IndexJson + '/' + archiveBucket + '/' + indexId;
         return this.getS3Object(s3Key).then(function (res: AWS.S3.GetObjectResult): ArticlesIndexDocument {
             if (res == null) {
                 return null;

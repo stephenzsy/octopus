@@ -4,7 +4,7 @@ import ArticleSource = require('../../models/article-source');
 
 interface DocumentStorage {
     storeCapturedDocumentAsync(doc: CapturedDocument): Q.Promise<any>;
-    getCapturedDocumentAsync(articleSourceId: string, archiveBucket: string, documentId: string): Q.Promise<CapturedDocument>;
+    getCapturedDocumentAsync(articleSourceId: string, documentType: string, archiveBucket: string, documentId: string): Q.Promise<CapturedDocument>;
     getArticlesIndexAsync(articleSource: ArticleSource, archiveBucket: string, indexId: string): Q.Promise<ArticlesIndexDocument>;
 }
 

@@ -14,7 +14,8 @@ module ArticlesIndex {
 
 interface ArticlesIndex {
     fetchIntervalsAsync(articleSource: ArticleSource,
-        offset: moment.Moment /*offset inclusive*/, forward: boolean, durationSeconds: number): Q.Promise<ArticlesIndex.Interval[]>;
+        offset: moment.Moment /*offset inclusive*/, limit: number): Q.Promise<ArticlesIndex.Interval[]>;
+    markSourceStatusAsync(doc: ArticlesIndexDocument): Q.Promise<ArticlesIndex.Interval>;
     syncArticlesIndexDocumentAsync(doc: ArticlesIndexDocument): Q.Promise<ArticlesIndex.Interval[]>;
 }
 

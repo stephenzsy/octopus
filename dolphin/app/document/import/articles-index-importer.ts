@@ -32,7 +32,8 @@ class ArticlesIndexImporter {
             })).html();
             var doc = new CapturedDocument();
             doc.articleSourceId = articleSource.Id;
-            doc.archiveBucket = 'index/raw/' + indexInfo.archiveBucket;
+            doc.archiveBucket = indexInfo.archiveBucket;
+            doc.documentType = CapturedDocument.DocumentType.IndexRaw;
             doc.documentId = indexInfo.indexId;
             doc.timestamp = timestamp;
             doc.content = content;
@@ -55,27 +56,23 @@ class ArticlesIndexImporter {
         return true;
     }
 
-    private getParsedArchiveBucket(archiveBucket: string): string {
-        return 'index/json/' + archiveBucket;
-    }
-
     getImportedArticlesIndexDocumentAsync(articleSource: ArticleSource, archiveBucket: string, indexId: string): Q.Promise<ArticlesIndexDocument> {
         var docStore = this.docStore;
 
-        return docStore.getArticlesIndexAsync(articleSource, this.getParsedArchiveBucket(archiveBucket), indexId);
+        return docStore.getArticlesIndexAsync(articleSource, archiveBucket, indexId);
     }
 
     importArticlesIndexAsync(articleSource: ArticleSource, timestamp: moment.Moment): Q.Promise<ArticlesIndexDocument> {
         var indexInfo: ArticleSource.IndexInfo = articleSource.getIndexInfoForTimestamp(timestamp);
         var importer: ArticlesIndexImporter = this;
         var docStore = this.docStore;
-        return docStore.getArticlesIndexAsync(articleSource, this.getParsedArchiveBucket(indexInfo.archiveBucket), indexInfo.indexId).then(
+        return docStore.getArticlesIndexAsync(articleSource, indexInfo.archiveBucket, indexInfo.indexId).then(
             function (indexDoc: ArticlesIndexDocument): ArticlesIndexDocument | Q.Promise<ArticlesIndexDocument> {
                 if (indexDoc != null && importer.isCapturedDocumentUpToDate(indexDoc)) {
                     return indexDoc;
                 }
                 // not found or up-to-date, parse it from source
-                return docStore.getCapturedDocumentAsync(articleSource.Id, 'index/raw/' + indexInfo.archiveBucket, indexInfo.indexId).then(
+                return docStore.getCapturedDocumentAsync(articleSource.Id, CapturedDocument.DocumentType.IndexRaw, indexInfo.archiveBucket, indexInfo.indexId).then(
                     function (capturedDocument: CapturedDocument): CapturedDocument|Q.Promise<CapturedDocument> {
                         if (capturedDocument != null && importer.isCapturedDocumentUpToDate(capturedDocument)) {
                             return capturedDocument;
@@ -92,7 +89,7 @@ class ArticlesIndexImporter {
                     var parsed: any = articleSource.dailyIndexParser.parse(cheerio.load(capturedDoc.content));
                     // create ArticlesIndexDocument
                     var indexDoc = new ArticlesIndexDocument(articleSource);
-                    indexDoc.archiveBucket = 'index/json/' + indexInfo.archiveBucket;
+                    indexDoc.archiveBucket = capturedDoc.archiveBucket;
                     indexDoc.documentId = capturedDoc.documentId;
                     for (var k in capturedDoc.metadata) {
                         indexDoc.metadata[k] = indexDoc.metadata[k] || capturedDoc.metadata[k];
@@ -100,8 +97,6 @@ class ArticlesIndexImporter {
                     indexDoc.parserVersion = articleSource.dailyIndexParser.version;
                     indexDoc.parseTimestamp = moment().utc().toISOString();
                     indexDoc.setContentObject(parsed);
-                    indexDoc.sourceUrl = capturedDoc.sourceUrl;
-                    indexDoc.timestamp = capturedDoc.timestamp;
                     return indexDoc;
                 }).then(function (indexDoc: ArticlesIndexDocument): Q.Promise<ArticlesIndexDocument> {
                     // store

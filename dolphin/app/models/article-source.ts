@@ -41,6 +41,23 @@ class ArticleSource {
     dailyIndexSanitizer: HtmlSanitizer = null;
     dailyIndexParser: HtmlParser = null;
 
+    getCoverage(doc: ArticlesIndexDocument): ArticlesIndexDocument.Coverage {
+        var status: string = ArticlesIndexDocument.Status.Unknown;
+        var start: moment.Moment = moment.tz(doc.documentId, this.defaultTimezone).startOf('day');
+        var end: moment.Moment = start.clone().add(1, 'day');
+        if (doc.validBeforeTimestamp) {
+            status = ArticlesIndexDocument.Status.Partial;
+        } else {
+            status = ArticlesIndexDocument.Status.Complete;
+        }
+        return {
+            start: start,
+            end: end,
+            status: status,
+            partition: this.Id + ':daily'
+        }
+    }
+
     getIndexInfoForTimestamp(docTime: moment.Moment): ArticleSource.IndexInfo {
         var tzTime: moment.Moment = docTime.tz(this.defaultTimezone);
         var r: ArticleSource.IndexInfo = {

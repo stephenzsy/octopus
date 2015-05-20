@@ -1,18 +1,24 @@
 import validator = require('validator');
 
 class CapturedDocument {
+    static DocumentType = {
+        IndexRaw: 'index:raw',
+        IndexJson: 'index:json'
+    }
+
     articleSourceId: string;
     documentId: string;
+    documentType: string;
     archiveBucket: string;
     private _content: string;
     metadata: { [s: string]: string } = {};
 
     get timestamp(): string {
-        return this.metadata['capture-time'];
+        return this.metadata['capture-timestamp'];
     }
 
     set timestamp(value: string) {
-        this.metadata['capture-time'] = value;
+        this.metadata['capture-timestamp'] = value;
     }
 
     get sourceUrl(): string {

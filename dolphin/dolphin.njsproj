@@ -48,6 +48,7 @@
     <TypeScriptCompile Include="app\models\capture-daily-index-result.ts" />
     <TypeScriptCompile Include="app\document\import\captured-document.ts" />
     <TypeScriptCompile Include="app\models\daily-index-metadata.ts" />
+    <TypeScriptCompile Include="app\models\sync-articles-index-result.ts" />
     <TypeScriptCompile Include="app\models\sync-articles-index-request.ts" />
     <TypeScriptCompile Include="app\models\list-article-sources-request.ts" />
     <TypeScriptCompile Include="app\models\list-article-sources-result.ts" />

@@ -135,6 +135,20 @@ declare module "aws-sdk" {
     }
 
     export module DynamoDB {
+        export interface PutItemRequest {
+            Item: {
+                [someKey: string]: {
+                    S?: string;
+                };
+            };
+            TableName: string;
+        }
+
+        export interface PutItemResult {
+            Attributes: any;
+            ConsumedCapacity: any;
+        }
+
         export interface QueryRequest {
             TableName: string;
             KeyConditions?: {
@@ -167,6 +181,7 @@ declare module "aws-sdk" {
         constructor(options?: Config);
 
         query(params: DynamoDB.QueryRequest, callback: (err: any, data: DynamoDB.QueryResult) => void): void;
+        putItem(params: DynamoDB.PutItemRequest, callback: (err: any, data: DynamoDB.PutItemResult) => void): void;
 	}
 
 	export module Sqs {

@@ -28,18 +28,10 @@ class GetArticlesIndexStatus implements Operation<GenericArticlesRequest, GetArt
 
     enactAsync(req: GenericArticlesRequest): Q.Promise<GetArticlesIndexStatusResult> {
         // TODO to be refactored and shared
-        var forward: boolean = false;
-        var offset: moment.Moment = req.endTimestamp;
-        if (req.startTimestamp && !req.endTimestamp) {
-            forward = false;
-            offset = req.startTimestamp;
-        }
-        var durationSeconds: number = null;
-        if (req.startTimestamp && req.endTimestamp) {
-            durationSeconds = req.endTimestamp.diff(req.startTimestamp, 'second');
-        }
+        var offset: moment.Moment = req.endTimestamp || moment();
+        var limit = req.limit;
 
-        return this.articlesIndex.fetchIntervalsAsync(req.articleSource, offset, forward, durationSeconds)
+        return this.articlesIndex.fetchIntervalsAsync(req.articleSource, offset, limit)
             .then(function (intervals: ArticlesIndex.Interval[]): GetArticlesIndexStatusResult {
             var result: GetArticlesIndexStatusResult = new GetArticlesIndexStatusResult();
             result.indexIntervals = intervals;

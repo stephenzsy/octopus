@@ -31,23 +31,15 @@ class ImportArticlesIndex implements Operation<GenericArticlesRequest, ImportArt
     }
 
     enactAsync(req: GenericArticlesRequest): Q.Promise<ImportArticlesIndexResult> {
-        // TODO to be refactored and shared
-        var forward: boolean = false;
         var offset: moment.Moment = req.endTimestamp;
-        if (req.startTimestamp && !req.endTimestamp) {
-            forward = false;
-            offset = req.startTimestamp;
-        }
-        var durationSeconds: number = null;
-        if (req.startTimestamp && req.endTimestamp) {
-            durationSeconds = req.endTimestamp.diff(req.startTimestamp, 'second');
-        }
-
-        return this.importer.importArticlesIndexAsync(req.articleSource, offset).then(
-            function (indexDoc: ArticlesIndexDocument): ImportArticlesIndexResult {
-                //console.log(indexDoc);
-                return new ImportArticlesIndexResult();
-            });
+        var articlesIndex: ArticlesIndex = this.articlesIndex;
+        return this.importer.importArticlesIndexAsync(req.articleSource, offset)
+            .then(function (doc: ArticlesIndexDocument): Q.Promise<ArticlesIndex.Interval> {
+            return articlesIndex.markSourceStatusAsync(doc);
+        }).then(function (interval: ArticlesIndex.Interval): ImportArticlesIndexResult {
+            var result: ImportArticlesIndexResult = new ImportArticlesIndexResult();
+            return result;
+        });
     }
 
     validateInput(input: any): GenericArticlesRequest {
