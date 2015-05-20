@@ -23,3 +23,7 @@ export function readableToStringAsync(readable: stream.Readable): Q.Promise<stri
     });
     return deferred.promise;
 }
+
+export function awsQInvoke<Req, Res>(service: any, methodName: string, params: Req): Q.Promise<Res> {
+    return <Q.Promise<Res>>Q.ninvoke(service, methodName, params);
+}

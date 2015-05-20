@@ -9,6 +9,15 @@ module ArticlesIndex {
         start: moment.Moment;
         end: moment.Moment;
         status: string;
+        articleSourceId: string;
+        archiveBucket: string;
+        indexId: string;
+    }
+
+    export var Status = {
+        None: 'None',
+        SourcePartial: 'SourcePartial',
+        SourceReady: 'SourceReady'
     }
 }
 
@@ -17,6 +26,7 @@ interface ArticlesIndex {
         offset: moment.Moment /*offset inclusive*/, limit: number): Q.Promise<ArticlesIndex.Interval[]>;
     markSourceStatusAsync(doc: ArticlesIndexDocument): Q.Promise<ArticlesIndex.Interval>;
     syncArticlesIndexDocumentAsync(doc: ArticlesIndexDocument): Q.Promise<ArticlesIndex.Interval[]>;
+    getIntervalAsync(articleSource: ArticleSource, startTimestamp: moment.Moment): Q.Promise<ArticlesIndex.Interval>;
 }
 
 export = ArticlesIndex;

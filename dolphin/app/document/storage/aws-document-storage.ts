@@ -96,8 +96,6 @@ class AwsDocumentStorage implements DocumentStorage {
             doc.documentType = documentType;
             doc.documentId = documentId;
             doc.metadata = res.Metadata;
-            doc.timestamp = res.Metadata["capture-timestamp"];
-            doc.sourceUrl = res.Metadata["source-url"];
             doc.content = res.Body.toString();
             return doc;
         });
@@ -113,8 +111,6 @@ class AwsDocumentStorage implements DocumentStorage {
             doc.archiveBucket = archiveBucket;
             doc.documentId = indexId;
             doc.metadata = res.Metadata;
-            doc.timestamp = res.Metadata["capture-timestamp"];
-            doc.sourceUrl = res.Metadata["source-url"];
             doc.content = res.Body.toString();
             return doc;
         });

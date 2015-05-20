@@ -64,6 +64,9 @@ module Dolphin.Client {
 
         export interface ImportArticlesIndexResult extends Result {
         }
+
+        export interface SyncArticlesIndexResult extends Result {
+        }
     }
 
     export class DolphinClient {
@@ -107,6 +110,10 @@ module Dolphin.Client {
 
         ImportArticlesIndex(request: Models.GenericArticlesRequest): ng.IPromise<Models.ImportArticlesIndexResult> {
             return this.makeRequest('ImportArticlesIndex', request);
+        }
+
+        SyncArticlesIndex(request: Models.GenericArticlesRequest): ng.IPromise<Models.SyncArticlesIndexResult> {
+            return this.makeRequest('SyncArticlesIndex', request);
         }
     }
 }

@@ -14,6 +14,7 @@ import ListDailyIndices = require('./operations/list-daily-indices');
 import CaptureDailyIndex = require('./operations/capture-daily-index');
 import GetArticlesIndexStatus = require('./operations/get-articles-index-status');
 import ImportArticlesIndex = require('./operations/import-articles-index');
+import SyncArticlesIndex = require('./operations/sync-articles-index');
 
 export module Dolphin.Events {
     export class Orchestrator {
@@ -24,12 +25,14 @@ export module Dolphin.Events {
 
             var articlesIndex: DynamodbArticlesIndex = new DynamodbArticlesIndex();
             var documentStorage: AwsDocumentStorage = new AwsDocumentStorage();
+            var indexImporter: ArticlesIndexImporter = new ArticlesIndexImporter(documentStorage);
 
             operationsHandler.registerOperation(new ListArticleSources());
             operationsHandler.registerOperation(new ListDailyIndices());
             operationsHandler.registerOperation(new CaptureDailyIndex());
             operationsHandler.registerOperation(new GetArticlesIndexStatus(articlesIndex));
-            operationsHandler.registerOperation(new ImportArticlesIndex(articlesIndex, new ArticlesIndexImporter(documentStorage)));
+            operationsHandler.registerOperation(new ImportArticlesIndex(articlesIndex, indexImporter));
+            operationsHandler.registerOperation(new SyncArticlesIndex(articlesIndex, indexImporter));
 
             this.handlerChain = new EventHandlerChain([
                 new JsonProtocolHandler(),

@@ -54,8 +54,12 @@ class ArticleSource {
             start: start,
             end: end,
             status: status,
-            partition: this.Id + ':daily'
+            partition: this.Id
         }
+    }
+
+    get indexPartition(): string {
+        return this.Id + ':daily';
     }
 
     getIndexInfoForTimestamp(docTime: moment.Moment): ArticleSource.IndexInfo {

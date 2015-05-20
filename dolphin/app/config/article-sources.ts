@@ -16,10 +16,23 @@ var articleSources: { [s: string]: ArticleSource; } = {};
         };
         as.toArticlesIndexDocumentItems = function (obj: string): ArticlesIndexDocument.Item[] {
             return obj['items'].map(function (itemObj: any): ArticlesIndexDocument.Item {
-                return {
-                    url: as.Url + itemObj['link'],
-                    title: itemObj['title']
-                };
+                var link: string = itemObj['link'];
+                var m: RegExpMatchArray = link.match(/^\/(.*-(\d+)-(\d+))$/);
+                if (m) {
+                    return {
+                        id: m[1],
+                        archiveBucket: m[2] + '/' + m[3],
+                        url: as.Url + link,
+                        title: itemObj['title']
+                    };
+                } else {
+                    return {
+                        id: link.substr(1),
+                        archiveBucket: 'default',
+                        url: as.Url + itemObj['link'],
+                        title: itemObj['title']
+                    };
+                }
             });
         }
         as.version = '2015-05-15';

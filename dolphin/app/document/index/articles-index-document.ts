@@ -5,6 +5,11 @@ import CapturedDocument = require('../import/captured-document');
 
 module ArticlesIndexDocument {
     export interface Item {
+        // indexed
+        archiveBucket: string;
+        id: string;
+
+        // not indexed
         url: string;
         title: string;
     }

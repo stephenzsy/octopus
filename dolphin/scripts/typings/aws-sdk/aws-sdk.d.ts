@@ -135,10 +135,28 @@ declare module "aws-sdk" {
     }
 
     export module DynamoDB {
+        export interface AttributeValue {
+            S?: string;
+        }
+
+        export interface Item {
+            [someKey: string]: AttributeValue;
+        }
+
+        export interface GetItemRequest {
+            Key: Item;
+            TableName: string;
+        }
+
+        export interface GetItemResult {
+            Item: Item
+        }
+
         export interface PutItemRequest {
-            Item: {
+            Item: Item
+            Expected?: {
                 [someKey: string]: {
-                    S?: string;
+                    Exists?: boolean;
                 };
             };
             TableName: string;
@@ -154,20 +172,16 @@ declare module "aws-sdk" {
             KeyConditions?: {
                 [key: string]: {
                     ComparisonOperator: string;
-                    AttributeValueList?: {
-                        S?: string;
-                    }[]
+                    AttributeValueList?: AttributeValue[];
                 }
-            }
+            };
+            Limit?: number;
+            ScanIndexForward?: boolean;
         }
 
         export interface QueryResult {
-            Items?: {
-                [attributeName: string]: {
-                    S?: string;
-                }
-            }[];
-            Count?: number;
+            Items: Item[];
+            Count: number;
             ScannedCount: number;
         }
     }
@@ -182,6 +196,7 @@ declare module "aws-sdk" {
 
         query(params: DynamoDB.QueryRequest, callback: (err: any, data: DynamoDB.QueryResult) => void): void;
         putItem(params: DynamoDB.PutItemRequest, callback: (err: any, data: DynamoDB.PutItemResult) => void): void;
+        getItem(params: DynamoDB.GetItemRequest, callback: (err: any, data: DynamoDB.GetItemResult) => void): void;
 	}
 
 	export module Sqs {
