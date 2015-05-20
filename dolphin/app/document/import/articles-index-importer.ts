@@ -37,40 +37,39 @@ class ArticlesIndexImporter {
             doc.timestamp = timestamp;
             doc.content = content;
             doc.sourceUrl = url;
-            doc.metadata = {
-                'source-version': articleSource.version,
-                'sanitizer-version': articleSource.dailyIndexSanitizer.version,
-            }
-            if (indexInfo.validAfter) {
-                doc.metadata['valid-after'] = indexInfo.validAfter.utc().toISOString();
-            }
-            if (indexInfo.validBefore) {
-                doc.metadata['valid-before'] = indexInfo.validBefore.utc().toISOString();
-            }
+            doc.metadata['source-version'] = articleSource.version;
+            doc.metadata['sanitizer-version'] = articleSource.dailyIndexSanitizer.version;
+            articleSource.validateDocument(doc);
             return doc;
         });
     }
 
     private isCapturedDocumentUpToDate(doc: CapturedDocument): boolean {
-
-        var validAfter: string = doc.metadata['valid-after'];
-        var validBefore: string = doc.metadata['valid-before'];
-        if (validAfter || validBefore) {
-            if (validAfter && moment(doc.timestamp).isAfter(moment(validAfter))) {
+        var validBefore: string = doc.validBeforeTimestamp;
+        if (validBefore) {
+            if (moment().isBefore(moment(validBefore))) {
                 return true;
             }
-            if (validBefore && moment().isBefore(moment(validBefore))) {
-                return true;
-            }
+            return false;
         }
         return true;
+    }
+
+    private getParsedArchiveBucket(archiveBucket: string): string {
+        return 'index/json/' + archiveBucket;
+    }
+
+    getImportedArticlesIndexDocumentAsync(articleSource: ArticleSource, archiveBucket: string, indexId: string): Q.Promise<ArticlesIndexDocument> {
+        var docStore = this.docStore;
+
+        return docStore.getArticlesIndexAsync(articleSource, this.getParsedArchiveBucket(archiveBucket), indexId);
     }
 
     importArticlesIndexAsync(articleSource: ArticleSource, timestamp: moment.Moment): Q.Promise<ArticlesIndexDocument> {
         var indexInfo: ArticleSource.IndexInfo = articleSource.getIndexInfoForTimestamp(timestamp);
         var importer: ArticlesIndexImporter = this;
         var docStore = this.docStore;
-        return docStore.getArticlesIndexAsync(articleSource, 'index/json/' + indexInfo.archiveBucket, indexInfo.indexId).then(
+        return docStore.getArticlesIndexAsync(articleSource, this.getParsedArchiveBucket(indexInfo.archiveBucket), indexInfo.indexId).then(
             function (indexDoc: ArticlesIndexDocument): ArticlesIndexDocument | Q.Promise<ArticlesIndexDocument> {
                 if (indexDoc != null && importer.isCapturedDocumentUpToDate(indexDoc)) {
                     return indexDoc;

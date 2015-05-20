@@ -4,6 +4,7 @@ import Q = require('q');
 import ArticlesIndex = require('./articles-index');
 import config = require('../config/configuration-manager');
 import ArticleSource = require('../models/article-source');
+import ArticlesIndexDocument = require('./index/articles-index-document');
 
 class AwsDynamodbArticlesIndex implements ArticlesIndex {
     private dynamodb: AWS.DynamoDB;
@@ -59,6 +60,11 @@ class AwsDynamodbArticlesIndex implements ArticlesIndex {
             return result;
         });
     }
+
+    syncArticlesIndexDocumentAsync(doc: ArticlesIndexDocument): Q.Promise<ArticlesIndex.Interval[]> {
+        return null;
+    }
+
 }
 
 export = AwsDynamodbArticlesIndex;

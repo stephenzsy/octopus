@@ -12,8 +12,6 @@ module ArticleSource {
     export interface IndexInfo {
         archiveBucket: string;
         indexId: string;
-        validBefore?: moment.Moment;
-        validAfter?: moment.Moment;
     }
 }
 
@@ -43,20 +41,21 @@ class ArticleSource {
     dailyIndexSanitizer: HtmlSanitizer = null;
     dailyIndexParser: HtmlParser = null;
 
-    getIndexInfoForTimestamp(timestamp: moment.Moment): ArticleSource.IndexInfo {
-        var tzTime: moment.Moment = timestamp.tz(this.defaultTimezone);
+    getIndexInfoForTimestamp(docTime: moment.Moment): ArticleSource.IndexInfo {
+        var tzTime: moment.Moment = docTime.tz(this.defaultTimezone);
         var r: ArticleSource.IndexInfo = {
             archiveBucket: tzTime.format('YYYY/MM'),
             indexId: tzTime.format('YYYY-MM-DD'),
         };
-        var validAfter: moment.Moment = tzTime.clone().endOf('day').add(15, 'minute');
-        var validBefore: moment.Moment = timestamp.clone().add(10, 'minute');
-        var now: moment.Moment = moment();
-        if (!now.isAfter(validAfter)) {
-            r.validAfter = validAfter;
-            r.validBefore = validBefore;
-        }
         return r;
+    }
+
+    validateDocument(doc: CapturedDocument) {
+        var cutoff: moment.Moment = moment.tz(doc.documentId, this.defaultTimezone).endOf('day').add(1, 'hour');
+        var captureTime: moment.Moment = moment(doc.timestamp);
+        if (!captureTime.isAfter(cutoff)) {
+            doc.validBeforeTimestamp = captureTime.clone().add(10, 'minute').utc().toISOString();
+        }
     }
 
     isValidDailyIndexId(dailyIndexId: string): boolean {

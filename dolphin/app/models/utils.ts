@@ -37,3 +37,14 @@ export function validateNumber(input: any, field: string, min: number, max: numb
     }
     return validator.toInt(input[field]);
 }
+
+export function validateString(input: any, field: string): string {
+    if (typeof input[field] !== 'string')
+        throw InvalidRequestException.invalidFieldValue(field);
+    var value = validator.toString(input[field]);
+    if (!validator.isLength(value, 1, 1024)) {
+        throw InvalidRequestException.invalidFieldValue(field);
+    }
+    return value;
+}
+

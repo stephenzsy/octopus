@@ -5,12 +5,34 @@ class CapturedDocument {
     documentId: string;
     archiveBucket: string;
     private _content: string;
-    sourceUrl: string;
-    timestamp: string;
     metadata: { [s: string]: string } = {};
+
+    get timestamp(): string {
+        return this.metadata['capture-time'];
+    }
+
+    set timestamp(value: string) {
+        this.metadata['capture-time'] = value;
+    }
+
+    get sourceUrl(): string {
+        return this.metadata['source-url'];
+    }
+
+    set sourceUrl(value: string) {
+        this.metadata['source-url'] = value;
+    }
 
     get contentType(): string {
         return 'text/html';
+    }
+
+    get validBeforeTimestamp(): string {
+        return this.metadata['valid-before'];
+    }
+
+    set validBeforeTimestamp(value: string) {
+        this.metadata['valid-before'] = value;
     }
 
     toJsonObject(): any {
