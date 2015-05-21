@@ -54,7 +54,7 @@ class ArticleSource {
             start: start,
             end: end,
             status: status,
-            partition: this.Id
+            partition: this.indexPartition
         }
     }
 

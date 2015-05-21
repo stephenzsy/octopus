@@ -16,7 +16,7 @@
         <h2>Index Status</h2>
         <div ng-repeat="status in indexStatus">
             Start: {{status.Start}}, End: {{status.End}}, Status: {{status.Status}}
-            <span ng-show="status.Status === 'None' || status.Status === 'SourcePartial'" class="btn btn-link" ng-click="importArticlesIndex(status.End)">Import</span>
+            <span ng-show="status.Status === 'None' || status.Status === 'SourcePartial'" class="btn btn-link" ng-click="importArticlesIndex(status.Start)">Import</span>
             <span ng-show="status.Status === 'SourceReady'" class="btn btn-link" ng-click="syncArticlesIndex(status.Start)">Sync</span>
         </div>
     </div>

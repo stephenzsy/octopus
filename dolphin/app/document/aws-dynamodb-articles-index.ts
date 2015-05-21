@@ -66,17 +66,39 @@ class AwsDynamodbArticlesIndex implements ArticlesIndex {
                     var interval: ArticlesIndex.Interval = {
                         start: start,
                         end: end,
-                        status: 'None',
+                        status: ArticlesIndex.Status.None,
                         articleSourceId: articleSource.Id,
                         archiveBucket: null,
                         indexId: null
-                    }
+                    };
                     result.push(interval);
                 }
             } else {
-                result = queryResult.Items.map(AwsDynamodbArticlesIndex.itemToInterval);
+                result = [];
+                for (var i: number = 0, ii: number = 0; i < limit; ++i) {
+                    var interval: ArticlesIndex.Interval = (ii >= queryResult.Items.length) ? null : AwsDynamodbArticlesIndex.itemToInterval(queryResult.Items[ii]);
+                    if (interval == null || offset.isAfter(interval.end)) {
+                        var start: moment.Moment = interval.end;
+                        var previousDay: moment.Moment = offset.clone().subtract(1, 'day');
+                        if (start.isBefore(previousDay)) {
+                            start = previousDay;
+                        }
+                        result.push({
+                            start: start,
+                            end: offset,
+                            status: ArticlesIndex.Status.None,
+                            articleSourceId: articleSource.Id,
+                            archiveBucket: null,
+                            indexId: null
+                        });
+                        offset = start;
+                    } else {
+                        result.push(interval);
+                        offset = interval.start;
+                        ++ii;
+                    }
+                }
             }
-            console.log("fetch complete");
             return result;
         });
     }
