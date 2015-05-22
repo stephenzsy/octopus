@@ -1,8 +1,9 @@
-﻿import moment = require('moment');
+﻿///<reference path="../../../scripts/typings/q/Q.d.ts"/>
+import moment = require('moment');
 import Q = require('q');
 
-import ArticleSource = require('../models/article-source');
-import ArticlesIndexDocument = require('./index/articles-index-document');
+import ArticleSource = require('../../models/article-source');
+import ArticlesIndexDocument = require('./articles-index-document');
 
 module ArticlesIndex {
     export interface Interval {

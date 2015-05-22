@@ -10,7 +10,7 @@ import ArticleSource = require('../models/article-source');
 import CapturedDocument = require('../document/import/captured-document');
 import GenericArticlesRequest = require('../models/generic-articles-request');
 import GetArticlesIndexStatusResult = require('../models/get-articles-index-status-result');
-import ArticlesIndex = require('../document/articles-index');
+import ArticlesIndex = require('../document/index/articles-index');
 
 class GetArticlesIndexStatus implements Operation<GenericArticlesRequest, GetArticlesIndexStatusResult> {
     name: string = 'GetArticlesIndexStatus';

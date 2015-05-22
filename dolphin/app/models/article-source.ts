@@ -63,7 +63,7 @@ class ArticleSource {
     }
 
     getIndexInfoForTimestamp(docTime: moment.Moment): ArticleSource.IndexInfo {
-        var tzTime: moment.Moment = docTime.tz(this.defaultTimezone);
+        var tzTime:moment.Moment = moment.tz(docTime.toISOString(), this.defaultTimezone);
         var r: ArticleSource.IndexInfo = {
             archiveBucket: tzTime.format('YYYY/MM'),
             indexId: tzTime.format('YYYY-MM-DD'),

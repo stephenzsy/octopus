@@ -1,3 +1,5 @@
+///<reference path="../../scripts/typings/node/node.d.ts"/>
+
 import ArticleSource = require('../models/article-source');
 import HtmlSanitizer = require('../document/transform/html-sanitizer');
 import HtmlParser = require('../document/transform/html-parser');
@@ -34,7 +36,7 @@ var articleSources: { [s: string]: ArticleSource; } = {};
                     };
                 }
             });
-        }
+        };
         as.version = '2015-05-15';
         as.indexType = ArticleSource.IndexType.DailyIndex;
         as.dailyIndexSanitizer = new HtmlSanitizer(require('../vendor/businessinsider/daily-index-sanitizer-config.json'));

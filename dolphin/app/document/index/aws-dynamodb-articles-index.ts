@@ -2,12 +2,12 @@
 import Q = require('q');
 import moment = require('moment');
 
-import Article = require('./article');
+import Article = require('../article');
 import ArticlesIndex = require('./articles-index');
-import config = require('../config/configuration-manager');
-import ArticleSource = require('../models/article-source');
-import ArticlesIndexDocument = require('./index/articles-index-document');
-import utils = require('./utils');
+import config = require('../../config/configuration-manager');
+import ArticleSource = require('../../models/article-source');
+import ArticlesIndexDocument = require('./articles-index-document');
+import utils = require('../utils');
 
 class AwsDynamodbArticlesIndex implements ArticlesIndex {
     private dynamodb: AWS.DynamoDB;

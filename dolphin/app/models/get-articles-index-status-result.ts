@@ -1,5 +1,5 @@
 import Result = require('../../lib/events/result');
-import ArticlesIndex = require('../document/articles-index');
+import ArticlesIndex = require('../document/index/articles-index');
 
 class GetArticlesIndexStatusResult implements Result<GetArticlesIndexStatusResult> {
     indexIntervals: ArticlesIndex.Interval[];

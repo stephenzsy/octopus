@@ -4,6 +4,9 @@ import AWS = require('aws-sdk');
 class ConfigurationManager {
 
     private static awsConfig: {
+        gcloud: {
+            projectId:string;
+        };
         credentials: {
             profile?: string
         };
@@ -40,6 +43,10 @@ class ConfigurationManager {
 
     static get articlesDynamodbTableName(): string {
         return ConfigurationManager.awsConfig.dynamodb.table.articles;
+    }
+
+    static get gcloudProjectId(): string {
+        return ConfigurationManager.awsConfig.gcloud.projectId;
     }
 }
 

@@ -5,7 +5,8 @@ import EventHandlerChain = require('../lib/events/event-handler-chain');
 import JsonProtocolHandler = require('../lib/events/json-protocol-handler');
 import OperationsHandler = require('../lib/events/operations-handler');
 
-import DynamodbArticlesIndex = require('./document/aws-dynamodb-articles-index');
+import DynamodbArticlesIndex = require('./document/index/aws-dynamodb-articles-index');
+import DatastoreArticlesIndex = require('./document/index/gcloud-datastore-articles-index');
 import AwsDocumentStorage = require('./document/storage/aws-document-storage');
 import ArticlesIndexImporter = require('./document/import/articles-index-importer');
 
@@ -23,7 +24,7 @@ export module Dolphin.Events {
         constructor() {
             var operationsHandler: OperationsHandler = new OperationsHandler();
 
-            var articlesIndex: DynamodbArticlesIndex = new DynamodbArticlesIndex();
+            var articlesIndex: DatastoreArticlesIndex = new DatastoreArticlesIndex();
             var documentStorage: AwsDocumentStorage = new AwsDocumentStorage();
             var indexImporter: ArticlesIndexImporter = new ArticlesIndexImporter(documentStorage);
 

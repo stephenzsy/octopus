@@ -11,7 +11,7 @@ import CapturedDocument = require('../document/import/captured-document');
 import ArticlesIndexDocument = require('../document/index/articles-index-document');
 import GenericArticlesRequest = require('../models/generic-articles-request');
 import SyncArticlesIndexResult = require('../models/import-articles-index-result');
-import ArticlesIndex = require('../document/articles-index');
+import ArticlesIndex = require('../document/index/articles-index');
 import ArticlesIndexImporter = require('../document/import/articles-index-importer');
 import ResourceNotFoundException = require('../models/resource-not-found-exception');
 
