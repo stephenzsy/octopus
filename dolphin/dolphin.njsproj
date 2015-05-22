@@ -43,7 +43,7 @@
     <TypeScriptCompile Include="app\document\transform\html-sanitizer.ts" />
     <TypeScriptCompile Include="app\document\utils.ts" />
     <TypeScriptCompile Include="app\models\article-source.ts" />
-    <TypeScriptCompile Include="app\models\article.ts" />
+    <TypeScriptCompile Include="app\document\article.ts" />
     <TypeScriptCompile Include="app\models\capture-daily-index-request.ts" />
     <TypeScriptCompile Include="app\models\capture-daily-index-result.ts" />
     <TypeScriptCompile Include="app\document\import\captured-document.ts" />

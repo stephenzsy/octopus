@@ -12,6 +12,7 @@ module ArticlesIndex {
         articleSourceId: string;
         archiveBucket: string;
         indexId: string;
+        indexedCount?: number;
     }
 
     export var Status = {
@@ -25,8 +26,9 @@ interface ArticlesIndex {
     fetchIntervalsAsync(articleSource: ArticleSource,
         offset: moment.Moment /*offset inclusive*/, limit: number): Q.Promise<ArticlesIndex.Interval[]>;
     markSourceStatusAsync(doc: ArticlesIndexDocument): Q.Promise<ArticlesIndex.Interval>;
-    syncArticlesIndexDocumentAsync(doc: ArticlesIndexDocument): Q.Promise<ArticlesIndex.Interval[]>;
+    syncArticlesIndexDocumentAsync(articleSource: ArticleSource, doc: ArticlesIndexDocument, offset: number): Q.Promise<number>;
     getIntervalAsync(articleSource: ArticleSource, startTimestamp: moment.Moment): Q.Promise<ArticlesIndex.Interval>;
+    updateIntervalIndexedCountAsync(articleSource: ArticleSource, interval: ArticlesIndex.Interval, newCount: number): Q.Promise<ArticlesIndex.Interval>;
 }
 
 export = ArticlesIndex;

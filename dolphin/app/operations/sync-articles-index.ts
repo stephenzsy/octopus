@@ -34,14 +34,21 @@ class SyncArticlesIndex implements Operation<GenericArticlesRequest, SyncArticle
     enactAsync(req: GenericArticlesRequest): Q.Promise<SyncArticlesIndexResult> {
         var importer: ArticlesIndexImporter = this.importer;
         var articleSource: ArticleSource = req.articleSource;
-        return this.articlesIndex.getIntervalAsync(articleSource, req.startTimestamp)
+        var articlesIndex: ArticlesIndex = this.articlesIndex;
+
+        var indexInterval: ArticlesIndex.Interval;
+        return articlesIndex.getIntervalAsync(articleSource, req.startTimestamp)
             .then(function (interval: ArticlesIndex.Interval): Q.Promise<ArticlesIndexDocument> {
+            indexInterval = interval;
             if (interval.status !== ArticlesIndex.Status.SourcePartial && interval.status !== ArticlesIndex.Status.SourceReady) {
                 throw 'Not supported yet';
             }
             return importer.getImportedArticlesIndexDocumentAsync(articleSource, interval.archiveBucket, interval.indexId);
-        }).then(function (doc: ArticlesIndexDocument): SyncArticlesIndexResult {
-            console.log(doc);
+        }).then(function (doc: ArticlesIndexDocument): any {
+            return articlesIndex.syncArticlesIndexDocumentAsync(articleSource, doc, indexInterval.indexedCount || 0);
+        }).then(function (value: number): Q.Promise<ArticlesIndex.Interval> {
+            return articlesIndex.updateIntervalIndexedCountAsync(articleSource, indexInterval, (indexInterval.indexedCount || 0) + value);
+        }).then(function (value: any): SyncArticlesIndexResult {
             return new SyncArticlesIndexResult();
         });
     }

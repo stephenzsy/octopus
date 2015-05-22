@@ -137,6 +137,7 @@ declare module "aws-sdk" {
     export module DynamoDB {
         export interface AttributeValue {
             S?: string;
+            N?: string;
         }
 
         export interface Item {
@@ -184,6 +185,37 @@ declare module "aws-sdk" {
             Count: number;
             ScannedCount: number;
         }
+
+        export interface BatchWriteItemRequest {
+            RequestItems: {
+                [someKey: string]: {
+                    PutRequest?: {
+                        Item: Item;
+                    };
+                }[];
+            };
+        }
+
+        export interface BatchWriteItemResult {
+            UnprocessedItems: {
+                [someKey: string]: {
+                    PutRequest?: {
+                        Item: Item;
+                    };
+                }[];
+            };
+        }
+
+        export interface UpdateItemRequest {
+            AttributeUpdates: {
+                [someKey: string]: {
+                    Action: string;
+                    Value: AttributeValue
+                }
+            }
+            Key: Item;
+            TableName: string;
+        }
     }
 
     export interface Error {
@@ -197,6 +229,7 @@ declare module "aws-sdk" {
         query(params: DynamoDB.QueryRequest, callback: (err: any, data: DynamoDB.QueryResult) => void): void;
         putItem(params: DynamoDB.PutItemRequest, callback: (err: any, data: DynamoDB.PutItemResult) => void): void;
         getItem(params: DynamoDB.GetItemRequest, callback: (err: any, data: DynamoDB.GetItemResult) => void): void;
+        batchWriteItem(params: DynamoDB.BatchWriteItemRequest, callback: (err: any, data: DynamoDB.BatchWriteItemResult) => void): void;
 	}
 
 	export module Sqs {

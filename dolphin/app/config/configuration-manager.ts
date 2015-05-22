@@ -13,6 +13,7 @@ class ConfigurationManager {
         dynamodb: {
             table: {
                 articlesIndexMetadata: string;
+                articles: string
             };
         };
         defaultRegion: string
@@ -35,6 +36,10 @@ class ConfigurationManager {
 
     static get articlesIndexMetadataDynamodbTableName(): string {
         return ConfigurationManager.awsConfig.dynamodb.table.articlesIndexMetadata;
+    }
+
+    static get articlesDynamodbTableName(): string {
+        return ConfigurationManager.awsConfig.dynamodb.table.articles;
     }
 }
 
