@@ -1,6 +1,6 @@
 ﻿import AWS = require('aws-sdk');
 import Q = require('q');
-import moment = require('moment');
+import moment = require('moment-timezone');
 
 import Article = require('../article');
 import ArticlesIndex = require('./articles-index');
@@ -221,12 +221,13 @@ class AwsDynamodbArticlesIndex implements ArticlesIndex {
         });
     }
 
-    getIntervalAsync(articleSource: ArticleSource, startTimestamp: moment.Moment): Q.Promise<ArticlesIndex.Interval> {
+    getIntervalAsync(articleSource:ArticleSource, indesId:string):Q.Promise<ArticlesIndex.Interval> {
+        var startTimestamp:string = moment.tz(articleSource.defaultTimezone, articleSource.defaultTimezone).utc().toISOString();
         var params: AWS.DynamoDB.GetItemRequest = {
             TableName: this.indexMetadataTableName,
             Key: {
                 "Partition": { S: articleSource.indexPartition },
-                "StartTs": { S: startTimestamp.utc().toISOString() }
+                "StartTs": {S: startTimestamp}
             }
         };
         return utils.awsQInvoke<AWS.DynamoDB.GetItemRequest, AWS.DynamoDB.GetItemResult>(this.dynamodb, 'getItem', params)

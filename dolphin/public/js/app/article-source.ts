@@ -48,10 +48,10 @@ angular.module('dolphin').controller('ArticleSourceController', ['$scope', 'Dolp
                 console.log(result);
             });
         };
-        $scope.syncArticlesIndex = function (startTs: string) {
+        $scope.syncArticlesIndex = function (indexId: string) {
             client.SyncArticlesIndex({
                 ArticleSourceId: articleSourceId,
-                Start: startTs
+                IndexId: indexId
             }).then(function (result: Dolphin.Client.Models.SyncArticlesIndexResult) {
                 console.log(result);
             });

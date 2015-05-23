@@ -14,13 +14,13 @@ import ArticleSource = require('../../models/article-source');
 import ArticlesIndexDocument = require('./articles-index-document');
 import utils = require('../utils');
 
-class GcloudDatastoreArticlesIndex extends AwsDynamodbArticlesIndex {
+class GcloudDatastoreArticlesIndex implements ArticlesIndex {
     private dataset:gcloud.Datastore.Dataset;
 
     private static KIND:string = "ArticlesIndex";
+    private static ARTICLES_KIND:string = 'Articles';
 
     constructor() {
-        super();
         this.dataset = gcloud.datastore.dataset({
             keyFilename: process.env['HOME'] + "/.gcloud/dolphin-creds.json",
             projectId: config.gcloudProjectId
@@ -39,6 +39,23 @@ class GcloudDatastoreArticlesIndex extends AwsDynamodbArticlesIndex {
             indexedCount: data['IndexedCount'],
             totalCount: data['TotalCount']
         };
+    }
+
+    private intervalToEntity(articleSource:ArticleSource, interval:ArticlesIndex.Interval):gcloud.Datastore.Entity {
+        return {
+            key: this.dataset.key([GcloudDatastoreArticlesIndex.KIND, articleSource.indexPartition + '/' + interval.indexId]),
+            data: {
+                "Partition": articleSource.indexPartition,
+                "StartTs": interval.start.utc().toISOString(),
+                "EndTs": interval.end.utc().toISOString(),
+                "Status": interval.status,
+                "ArticleSourceId": interval.articleSourceId,
+                "ArchiveBucket": interval.archiveBucket,
+                "IndexId": interval.indexId,
+                "IndexedCount": gcloud.datastore.int(interval.indexedCount),
+                "TotalCount": gcloud.datastore.int(interval.totalCount)
+            }
+        }
     }
 
     markSourceStatusAsync(doc:ArticlesIndexDocument):Q.Promise<ArticlesIndex.Interval> {
@@ -128,6 +145,45 @@ class GcloudDatastoreArticlesIndex extends AwsDynamodbArticlesIndex {
             });
     }
 
+    private articleToEntity(article:Article):gcloud.Datastore.Entity {
+        return {
+            key: this.dataset.key([GcloudDatastoreArticlesIndex.ARTICLES_KIND, article.archiveBucketId + '/' + article.articleId]),
+            data: {
+                "ArticleSourceId": article.articleSourceId,
+                "ArchiveBucket": article.archiveBucket,
+                "ArticleId": article.articleId,
+                "SourceUrl": article.sourceUrl,
+                "Status": 'Init'
+            }
+        };
+    }
+
+    syncArticlesIndexDocumentAsync(articleSource:ArticleSource, doc:ArticlesIndexDocument, offset:number):Q.Promise<number> {
+        var entities:gcloud.Datastore.Entity[] = [];
+        for (var i:number = offset, j:number = 0; i < doc.items.length && j < 25; ++i, ++j) {
+            var item:ArticlesIndexDocument.Item = doc.items[i];
+            var article:Article = new Article(articleSource);
+            article.archiveBucket = item.archiveBucket;
+            article.articleId = item.id;
+            article.sourceUrl = item.url;
+            article.properties.title = item.title;
+            entities.push(this.articleToEntity(article));
+        }
+        return Q.ninvoke(this.dataset, 'save', entities).then(function ():number {
+            return entities.length;
+        });
+    }
+
+    updateIntervalIndexedCountAsync(articleSource:ArticleSource, interval:ArticlesIndex.Interval, newCount:number/*not used*/):Q.Promise<ArticlesIndex.Interval> {
+        return Q.ninvoke(this.dataset, 'update', this.intervalToEntity(articleSource, interval)).then(function ():ArticlesIndex.Interval {
+            return interval;
+        });
+    }
+
+    getIntervalAsync(articleSource:ArticleSource, indexId:string):Q.Promise<ArticlesIndex.Interval> {
+        return Q.ninvoke(this.dataset, 'get', this.dataset.key([GcloudDatastoreArticlesIndex.KIND, articleSource.indexPartition + '/' + indexId]))
+            .then(GcloudDatastoreArticlesIndex.entityToInterval);
+    }
 }
 
 export = GcloudDatastoreArticlesIndex;

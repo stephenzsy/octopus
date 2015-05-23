@@ -9,13 +9,13 @@ import Operation = require('../../lib/events/operation');
 import ArticleSource = require('../models/article-source');
 import CapturedDocument = require('../document/import/captured-document');
 import ArticlesIndexDocument = require('../document/index/articles-index-document');
-import GenericArticlesRequest = require('../models/generic-articles-request');
+import SyncArticlesIndexRequest = require('../models/sync-articles-index-request');
 import SyncArticlesIndexResult = require('../models/import-articles-index-result');
 import ArticlesIndex = require('../document/index/articles-index');
 import ArticlesIndexImporter = require('../document/import/articles-index-importer');
 import ResourceNotFoundException = require('../models/resource-not-found-exception');
 
-class SyncArticlesIndex implements Operation<GenericArticlesRequest, SyncArticlesIndexResult> {
+class SyncArticlesIndex implements Operation<SyncArticlesIndexRequest, SyncArticlesIndexResult> {
     name: string = 'SyncArticlesIndex';
     isAsync: boolean = true;
 
@@ -27,17 +27,17 @@ class SyncArticlesIndex implements Operation<GenericArticlesRequest, SyncArticle
         this.importer = importer;
     }
 
-    enact(req: GenericArticlesRequest): SyncArticlesIndexResult {
+    enact(req:SyncArticlesIndexRequest):SyncArticlesIndexResult {
         throw 'WTF';
     }
 
-    enactAsync(req: GenericArticlesRequest): Q.Promise<SyncArticlesIndexResult> {
+    enactAsync(req:SyncArticlesIndexRequest):Q.Promise<SyncArticlesIndexResult> {
         var importer: ArticlesIndexImporter = this.importer;
         var articleSource: ArticleSource = req.articleSource;
         var articlesIndex: ArticlesIndex = this.articlesIndex;
 
         var indexInterval: ArticlesIndex.Interval;
-        return articlesIndex.getIntervalAsync(articleSource, req.startTimestamp)
+        return articlesIndex.getIntervalAsync(articleSource, req.indexId)
             .then(function (interval: ArticlesIndex.Interval): Q.Promise<ArticlesIndexDocument> {
             indexInterval = interval;
             if (interval.status !== ArticlesIndex.Status.SourcePartial && interval.status !== ArticlesIndex.Status.SourceReady) {
@@ -47,14 +47,15 @@ class SyncArticlesIndex implements Operation<GenericArticlesRequest, SyncArticle
         }).then(function (doc: ArticlesIndexDocument): any {
             return articlesIndex.syncArticlesIndexDocumentAsync(articleSource, doc, indexInterval.indexedCount || 0);
         }).then(function (value: number): Q.Promise<ArticlesIndex.Interval> {
+                indexInterval.indexedCount = (indexInterval.indexedCount || 0) + value;
             return articlesIndex.updateIntervalIndexedCountAsync(articleSource, indexInterval, (indexInterval.indexedCount || 0) + value);
         }).then(function (value: any): SyncArticlesIndexResult {
             return new SyncArticlesIndexResult();
         });
     }
 
-    validateInput(input: any): GenericArticlesRequest {
-        return GenericArticlesRequest.validate(input);
+    validateInput(input:any):SyncArticlesIndexRequest {
+        return SyncArticlesIndexRequest.validate(input);
     }
 }
 

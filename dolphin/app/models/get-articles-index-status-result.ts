@@ -10,7 +10,8 @@ class GetArticlesIndexStatusResult implements Result<GetArticlesIndexStatusResul
                 return {
                     "Start": interval.start.utc().toISOString(),
                     "End": interval.end.utc().toISOString(),
-                    "Status": interval.status
+                    "Status": interval.status,
+                    "IndexId": interval.indexId
                 };
             })
         };

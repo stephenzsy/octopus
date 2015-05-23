@@ -29,7 +29,7 @@ interface ArticlesIndex {
         offset: moment.Moment /*offset inclusive*/, limit: number): Q.Promise<ArticlesIndex.Interval[]>;
     markSourceStatusAsync(doc: ArticlesIndexDocument): Q.Promise<ArticlesIndex.Interval>;
     syncArticlesIndexDocumentAsync(articleSource: ArticleSource, doc: ArticlesIndexDocument, offset: number): Q.Promise<number>;
-    getIntervalAsync(articleSource: ArticleSource, startTimestamp: moment.Moment): Q.Promise<ArticlesIndex.Interval>;
+    getIntervalAsync(articleSource: ArticleSource, indexId: string): Q.Promise<ArticlesIndex.Interval>;
     updateIntervalIndexedCountAsync(articleSource: ArticleSource, interval: ArticlesIndex.Interval, newCount: number): Q.Promise<ArticlesIndex.Interval>;
 }
 
