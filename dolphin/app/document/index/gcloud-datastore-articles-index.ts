@@ -17,7 +17,7 @@ import utils = require('../utils');
 class GcloudDatastoreArticlesIndex extends AwsDynamodbArticlesIndex {
     private dataset:gcloud.Datastore.Dataset;
 
-    private static KIND:string = "articles-index";
+    private static KIND:string = "ArticlesIndex";
 
     constructor() {
         super();
@@ -25,6 +25,20 @@ class GcloudDatastoreArticlesIndex extends AwsDynamodbArticlesIndex {
             keyFilename: process.env['HOME'] + "/.gcloud/dolphin-creds.json",
             projectId: config.gcloudProjectId
         });
+    }
+
+    private static entityToInterval(entity:gcloud.Datastore.Entity):ArticlesIndex.Interval {
+        var data:any = entity.data;
+        return {
+            start: moment(data['StartTs']),
+            end: moment(data['EndTs']),
+            status: data['Status'],
+            articleSourceId: data['ArticleSourceId'],
+            archiveBucket: data['ArchiveBucket'],
+            indexId: data['IndexId'],
+            indexedCount: data['IndexedCount'],
+            totalCount: data['TotalCount']
+        };
     }
 
     markSourceStatusAsync(doc:ArticlesIndexDocument):Q.Promise<ArticlesIndex.Interval> {
@@ -44,7 +58,7 @@ class GcloudDatastoreArticlesIndex extends AwsDynamodbArticlesIndex {
                 throw ('WTF');
         }
         var entity:gcloud.Datastore.Entity = {
-            key: dataset.key([GcloudDatastoreArticlesIndex.KIND, coverage.partition + '/' + doc.archiveBucket + '/' + doc.documentId]),
+            key: dataset.key([GcloudDatastoreArticlesIndex.KIND, coverage.partition + '/' + doc.documentId]),
             data: {
                 "Partition": coverage.partition,
                 "StartTs": startTs,
@@ -65,9 +79,53 @@ class GcloudDatastoreArticlesIndex extends AwsDynamodbArticlesIndex {
                 articleSourceId: doc.articleSourceId,
                 archiveBucket: doc.archiveBucket,
                 indexId: doc.documentId,
-                indexedCount: 0
+                indexedCount: 0,
+                totalCount: doc.items.length
             };
         });
+    }
+
+    fetchIntervalsAsync(articleSource:ArticleSource,
+                        offset:moment.Moment /*offset inclusive*/, limit:number):Q.Promise<ArticlesIndex.Interval[]> {
+        var articlesIndex:GcloudDatastoreArticlesIndex = this;
+
+        var query:gcloud.Datastore.Query = this.dataset.createQuery(GcloudDatastoreArticlesIndex.KIND)
+            .filter('Partition =', articleSource.indexPartition)
+            .filter('StartTs <', offset.utc().toISOString())
+            .order('-StartTs')
+            .limit(limit);
+        return Q.ninvoke(this.dataset, 'runQuery', query)
+            .then(function (entities:gcloud.Datastore.Entity[]):ArticlesIndex.Interval[] {
+                var result:ArticlesIndex.Interval[] = [];
+                offset = offset.clone();
+                for (var i:number = 0, ii:number = 0; i < limit; ++i) {
+                    var interval:ArticlesIndex.Interval = (ii >= entities.length) ? null : GcloudDatastoreArticlesIndex.entityToInterval(entities[ii]);
+                    if (interval == null || offset.isAfter(interval.end)) {
+                        var start:moment.Moment;
+                        var previousDay:moment.Moment = offset.clone().subtract(1, 'day');
+                        if (interval == null || interval.end.isBefore(previousDay)) {
+                            start = previousDay;
+                        } else {
+                            start = interval.end;
+                        }
+                        result.push({
+                            start: start,
+                            end: offset,
+                            status: ArticlesIndex.Status.None,
+                            articleSourceId: articleSource.Id,
+                            archiveBucket: null,
+                            indexId: null
+                        });
+                        offset = start;
+                    } else {
+                        result.push(interval);
+                        offset = interval.start;
+                        ++ii;
+                    }
+                }
+
+                return result;
+            });
     }
 
 }

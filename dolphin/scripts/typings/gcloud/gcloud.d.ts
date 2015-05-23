@@ -22,9 +22,17 @@ declare module gcloud {
             data:any;
         }
 
+        export interface Query {
+            filter(filter:string, value:any):Query;
+            order(property:string):Query;
+            limit(n:number):Query;
+        }
+
         export interface Dataset {
             key(path:string[]): Key;
             save(entity:Entity, callback:(err:any)=>any):void;
+            createQuery(kind:string):Query;
+            runQuery(q:Query, callback:(err:any, entities:Entity[], endCursor:any)=>any):void;
         }
     }
 

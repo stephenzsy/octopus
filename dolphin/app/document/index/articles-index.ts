@@ -14,6 +14,7 @@ module ArticlesIndex {
         archiveBucket: string;
         indexId: string;
         indexedCount?: number;
+        totalCount?:number;
     }
 
     export var Status = {
