@@ -2,14 +2,12 @@
     <div class="page-header">
         <h1>Article Source <small>{{articleSourceId}}</small></h1>
     </div>
-    <div class="col-lg-6">
-        <div ng-repeat="metadata in dailyIndicesMetadata">
-            <div>
-                <a ng-href="/daily-index/{{metadata.Id}}">{{metadata.Id}}</a>
-                <a class="btn btn-link" ng-href="{{metadata.Url}}">Link</a>
-                <span class="btn btn-link" ng-click="captureOriginal(metadata.Id)">Capture Original</span>
+    <div class="col-lg-6 container">
+        <div class="row">
+            <div ng-repeat="article in initArticles">
+                ID: {{article.ArticleId}}
+                URL: <a ng-href="{{article.SourceUrl}}">{{article.SourceUrl}}</a>
             </div>
-            <hr>
         </div>
     </div>
     <div class="col-lg-6">

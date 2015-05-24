@@ -9,6 +9,7 @@ module Dolphin.Controller {
     export interface IArticleSourceScope extends ng.IScope {
         dailyIndicesMetadata: Client.Models.DailyIndexMetadata[];
         articleSourceId: string;
+        initArticles: Client.Models.Article[];
         captureOriginal: (dailyIndexId: string) => void;
         indexStatus: Client.Models.ArticlesIndexStatusInterval[];
         importArticlesIndex: (endTs: string) => void;
@@ -27,6 +28,12 @@ angular.module('dolphin').controller('ArticleSourceController', ['$scope', 'Dolp
         client.ListDailyIndices({ ArticleSourceId: articleSourceId }).then((result: Dolphin.Client.Models.ListDailyIndicesResult) => {
             $scope.dailyIndicesMetadata = result.DailyIndicesMetadata;
             console.log(result);
+        });
+        client.ListArticles({
+            ArticleSourceId: articleSourceId,
+            Status:'Init'
+        }).then(function (result:Dolphin.Client.Models.ListArticlesResult){
+            $scope.initArticles = result.Articles;
         });
         $scope.captureOriginal = (dailyIndexId: string) => {
             client.CaptureDailyIndex({

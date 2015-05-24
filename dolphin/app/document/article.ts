@@ -14,6 +14,10 @@ class Article {
     }
     archiveBucket: string;
     articleId: string;
+    indexLastUpdated: moment.Moment;
+    status: string;
+    uniqueId: string;
+
     get archiveBucketId(): string {
         return this.articleSourceId + ':' + this.archiveBucket;
     }

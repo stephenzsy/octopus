@@ -38,7 +38,10 @@ export function validateNumber(input: any, field: string, min: number, max: numb
     return validator.toInt(input[field]);
 }
 
-export function validateString(input: any, field: string): string {
+export function validateString(input: any, field: string, required?:boolean): string {
+    if(!required && !input[field]) {
+        return null;
+    }
     if (typeof input[field] !== 'string')
         throw InvalidRequestException.invalidFieldValue(field);
     var value = validator.toString(input[field]);

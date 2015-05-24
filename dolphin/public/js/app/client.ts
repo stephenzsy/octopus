@@ -67,6 +67,20 @@ module Dolphin.Client {
 
         export interface SyncArticlesIndexResult extends Result {
         }
+
+        export interface ListArticlesRequest extends Request {
+            ArticleSourceId: string;
+            Status?: string;
+            Limit?:number;
+        }
+        export interface Article {
+            ArticleId: string;
+            Status:string;
+            SourceUrl:string;
+        }
+        export interface ListArticlesResult extends Result {
+            Articles: Article[];
+        }
     }
 
     export class DolphinClient {
@@ -114,6 +128,10 @@ module Dolphin.Client {
 
         SyncArticlesIndex(request: Models.GenericArticlesRequest): ng.IPromise<Models.SyncArticlesIndexResult> {
             return this.makeRequest('SyncArticlesIndex', request);
+        }
+
+        ListArticles(request:Models.ListArticlesRequest):ng.IPromise<Models.ListArticlesResult> {
+            return this.makeRequest('ListArticles', request);
         }
     }
 }

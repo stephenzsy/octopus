@@ -4,6 +4,7 @@ import Q = require('q');
 
 import ArticleSource = require('../../models/article-source');
 import ArticlesIndexDocument = require('./articles-index-document');
+import Article = require('../article');
 
 module ArticlesIndex {
     export interface Interval {
@@ -31,6 +32,7 @@ interface ArticlesIndex {
     syncArticlesIndexDocumentAsync(articleSource: ArticleSource, doc: ArticlesIndexDocument, offset: number): Q.Promise<number>;
     getIntervalAsync(articleSource: ArticleSource, indexId: string): Q.Promise<ArticlesIndex.Interval>;
     updateIntervalIndexedCountAsync(articleSource: ArticleSource, interval: ArticlesIndex.Interval, newCount: number): Q.Promise<ArticlesIndex.Interval>;
+    fetchArticlesByStatusAsync(articleSource:ArticleSource, status:string, limit:number): Q.Promise<Article[]>;
 }
 
 export = ArticlesIndex;

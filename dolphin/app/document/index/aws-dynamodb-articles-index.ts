@@ -9,7 +9,8 @@ import ArticleSource = require('../../models/article-source');
 import ArticlesIndexDocument = require('./articles-index-document');
 import utils = require('../utils');
 
-class AwsDynamodbArticlesIndex implements ArticlesIndex {
+// deprecated
+class AwsDynamodbArticlesIndex {
     private dynamodb: AWS.DynamoDB;
     private indexMetadataTableName: string;
     private articlesTableName: string;

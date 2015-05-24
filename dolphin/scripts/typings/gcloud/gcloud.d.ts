@@ -44,6 +44,8 @@ declare module gcloud {
         }
 
         export interface Key {
+            namespace?:string;
+            path: string[]
         }
 
         export interface Entity {

@@ -11,10 +11,10 @@ import ArticlesIndexImporter = require('./document/import/articles-index-importe
 
 import ListArticleSources = require('./operations/list-article-sources');
 import ListDailyIndices = require('./operations/list-daily-indices');
-import CaptureDailyIndex = require('./operations/capture-daily-index');
 import GetArticlesIndexStatus = require('./operations/get-articles-index-status');
 import ImportArticlesIndex = require('./operations/import-articles-index');
 import SyncArticlesIndex = require('./operations/sync-articles-index');
+import ListArticles = require('./operations/list-articles');
 
 export module Dolphin.Events {
     export class Orchestrator {
@@ -29,7 +29,7 @@ export module Dolphin.Events {
 
             operationsHandler.registerOperation(new ListArticleSources());
             operationsHandler.registerOperation(new ListDailyIndices());
-            operationsHandler.registerOperation(new CaptureDailyIndex());
+            operationsHandler.registerOperation(new ListArticles(articlesIndex));
             operationsHandler.registerOperation(new GetArticlesIndexStatus(articlesIndex));
             operationsHandler.registerOperation(new ImportArticlesIndex(articlesIndex, indexImporter));
             operationsHandler.registerOperation(new SyncArticlesIndex(articlesIndex, indexImporter));

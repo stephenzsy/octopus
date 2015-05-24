@@ -1,10 +1,12 @@
 ﻿///<reference path="../../../scripts/typings/gcloud/gcloud.d.ts"/>
 ///<reference path="../../../scripts/typings/node/node.d.ts"/>
+///<reference path="../../../scripts/typings/node-uuid/node-uuid.d.ts"/>
 
 import AWS = require('aws-sdk');
 import gcloud = require('gcloud');
 import Q = require('q');
 import moment = require('moment');
+var uuid = require('uuid');
 
 import Article = require('../article');
 import ArticlesIndex = require('./articles-index');
@@ -145,19 +147,6 @@ class GcloudDatastoreArticlesIndex implements ArticlesIndex {
             });
     }
 
-    private articleToEntity(article:Article):gcloud.Datastore.Entity {
-        return {
-            key: this.dataset.key([GcloudDatastoreArticlesIndex.ARTICLES_KIND, article.archiveBucketId + '/' + article.articleId]),
-            data: {
-                "ArticleSourceId": article.articleSourceId,
-                "ArchiveBucket": article.archiveBucket,
-                "ArticleId": article.articleId,
-                "SourceUrl": article.sourceUrl,
-                "Status": 'Init'
-            }
-        };
-    }
-
     syncArticlesIndexDocumentAsync(articleSource:ArticleSource, doc:ArticlesIndexDocument, offset:number):Q.Promise<number> {
         var entities:gcloud.Datastore.Entity[] = [];
         for (var i:number = offset, j:number = 0; i < doc.items.length && j < 25; ++i, ++j) {
@@ -167,6 +156,8 @@ class GcloudDatastoreArticlesIndex implements ArticlesIndex {
             article.articleId = item.id;
             article.sourceUrl = item.url;
             article.properties.title = item.title;
+            article.uniqueId = uuid.v4();
+            article.status = 'Init';
             entities.push(this.articleToEntity(article));
         }
         return Q.ninvoke(this.dataset, 'save', entities).then(function ():number {
@@ -183,6 +174,47 @@ class GcloudDatastoreArticlesIndex implements ArticlesIndex {
     getIntervalAsync(articleSource:ArticleSource, indexId:string):Q.Promise<ArticlesIndex.Interval> {
         return Q.ninvoke(this.dataset, 'get', this.dataset.key([GcloudDatastoreArticlesIndex.KIND, articleSource.indexPartition + '/' + indexId]))
             .then(GcloudDatastoreArticlesIndex.entityToInterval);
+    }
+
+    private articleToEntity(article:Article):gcloud.Datastore.Entity {
+        return {
+            key: this.dataset.key([GcloudDatastoreArticlesIndex.ARTICLES_KIND, article.uniqueId]),
+            data: {
+                "ArticleSourceId": article.articleSourceId,
+                "ArchiveBucket": article.archiveBucket,
+                "ArticleId": article.articleId,
+                "SourceUrl": article.sourceUrl,
+                "Status": article.status,
+                "LastUpdated": moment().utc().toISOString()
+            }
+        };
+    }
+
+    private entityToArticle(articleSource:ArticleSource, entity:gcloud.Datastore.Entity):Article {
+        var data:any = entity.data;
+        var article:Article = new Article(articleSource);
+        article.articleId = data['ArticleId'];
+        article.archiveBucket = data['ArchiveBucket'];
+        article.sourceUrl = data['SourceUrl'];
+        article.indexLastUpdated = moment(data['LastUpdated']);
+        article.status = data['Status'];
+        article.uniqueId = entity.key.path[1];
+        return article;
+    }
+
+    fetchArticlesByStatusAsync(articleSource:ArticleSource, status:string, limit:number):Q.Promise<Article[]> {
+        var _cthis:GcloudDatastoreArticlesIndex = this;
+        var query:gcloud.Datastore.Query = this.dataset.createQuery(GcloudDatastoreArticlesIndex.ARTICLES_KIND)
+            .filter('ArticleSourceId =', articleSource.Id)
+            .filter('Status =', status)
+            .order('+LastUpdated')
+            .limit(limit);
+        return Q.ninvoke(this.dataset, 'runQuery', query)
+            .then(function (entities:gcloud.Datastore.Entity[]):Article[] {
+                return entities.map(function (entity:gcloud.Datastore.Entity) {
+                    return _cthis.entityToArticle(articleSource, entity);
+                });
+            });
     }
 }
 
