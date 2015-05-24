@@ -1,3 +1,5 @@
+/// <reference path="../node/node.d.ts"/>
+
 declare module gcloud {
     export interface Config {
         keyFilename:string;
@@ -5,6 +7,33 @@ declare module gcloud {
     }
 
     export interface Service {
+    }
+
+    export module Storage {
+
+        export interface Bucket {
+            file(name:string):File;
+        }
+
+        export interface FileMetadata {
+            contentType?: string;
+            mediaLink?:string;
+            metadata?: {[s:string]:string};
+        }
+
+        export interface File {
+            createWriteStream(options:{
+                metadata: FileMetadata;
+                resumable?: boolean;
+                validation?:boolean|string;
+            }):NodeJS.WritableStream;
+
+            createReadStream():NodeJS.ReadableStream;
+        }
+    }
+
+    export interface Storage extends Service {
+        bucket(buckentName:string): Storage.Bucket;
     }
 
     export module Datastore {
@@ -36,7 +65,7 @@ declare module gcloud {
         }
     }
 
-    export interface Datastore extends Service {
+    export interface DatastoreStatic {
         dataset(config:Config): Datastore.Dataset;
 
         int(value:number):Datastore.Integer;
@@ -44,15 +73,20 @@ declare module gcloud {
     }
 
     export interface GCloud {
-        (config:Config):GCloud;
+        dataset():Datastore.Dataset;
+        storage():Storage;
+    }
 
-        datastore:Datastore;
+
+    export interface GCloudStatic {
+        (config:Config):GCloud;
+        datastore:DatastoreStatic;
     }
 }
 
 declare
-var gcloud:gcloud.GCloud;
+var gcloud:gcloud.GCloudStatic;
 
 declare module "gcloud" {
-    export = gcloud;
+    export  = gcloud;
 }

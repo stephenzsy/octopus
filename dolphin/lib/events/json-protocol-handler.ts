@@ -33,6 +33,10 @@ class JsonProtocolHandler implements EventHandler {
                 var responseData: ResponseDataObject = event.result;
                 responseData.RequestId = event.id;
                 event.originalResponse.send(responseData);
+            }, function(err){
+                console.error(err);
+                console.error(err.stack);
+                throw err;
             });
         } else {
             var responseData: ResponseDataObject = event.result;

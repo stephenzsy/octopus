@@ -6,6 +6,7 @@ class ConfigurationManager {
     private static awsConfig: {
         gcloud: {
             projectId:string;
+            documentBucket: string;
         };
         credentials: {
             profile?: string
@@ -47,6 +48,10 @@ class ConfigurationManager {
 
     static get gcloudProjectId(): string {
         return ConfigurationManager.awsConfig.gcloud.projectId;
+    }
+
+    static get documentGcloudBucket(): string {
+        return ConfigurationManager.awsConfig.gcloud.documentBucket;
     }
 }
 

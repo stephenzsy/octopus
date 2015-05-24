@@ -1,3 +1,6 @@
 [submodule "hydra/bootstrap-sass"]
 	path = hydra/bootstrap-sass
 	url = git@github.com:stephenzsy/bootstrap-sass.git
+[submodule "gcloud-node"]
+	path = gcloud-node
+	url = git@github.com:stephenzsy/gcloud-node.git
