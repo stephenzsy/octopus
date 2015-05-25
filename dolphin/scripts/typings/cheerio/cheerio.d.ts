@@ -211,6 +211,7 @@ interface CheerioElement {
     prev: CheerioElement;
     parent: CheerioElement;
     root: CheerioElement;
+    data?: string;
 }
 
 declare module "cheerio" {

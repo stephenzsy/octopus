@@ -5,7 +5,8 @@
   "version": "2015-05-18",
   "dataInit": {
     "meta": "{}",
-    "category": "{}"
+    "category": "{}",
+    "content": "[]"
   },
   "tParse": {
     "head": {
@@ -46,6 +47,42 @@
             "target": "category"
           }
         ]
+      },
+      "_required_:.byline .date": {
+        "_entry_": [
+          {
+            "key": "date",
+            "value": "secondsFromEpoch:attr:rel"
+          }
+        ]
+      },
+      "div.post-content": {
+        "_traverse_": {
+          "__properties__": {
+            "newScope": "content",
+            "exhaustive": true
+          },
+          "_text_": {
+            "_data_": {
+              "text": "text",
+              "_append_": "."
+            }
+          },
+          "p": {
+            "_data_": {
+              "p": "value:[]",
+              "_newScope_": "p",
+              "_append_": "."
+            }
+          },
+          "a": {
+            "_data_": {
+              "link": "attr:href",
+              "text": "text",
+              "_append_": "."
+            }
+          }
+        }
       }
     }
   }

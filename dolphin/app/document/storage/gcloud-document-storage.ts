@@ -61,6 +61,7 @@ class GcloudDocumentStorage implements DocumentStorage {
                 contentType = 'text/html';
                 break;
             case CapturedDocument.DocumentType.IndexJson:
+            case CapturedDocument.DocumentType.ArticleJson:
                 contentType = 'application/json';
                 break;
         }

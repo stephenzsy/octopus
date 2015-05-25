@@ -3,6 +3,7 @@
 import validator = require('validator');
 import moment = require('moment-timezone');
 
+import Article = require('../document/article');
 import HtmlSanitizer = require('../document/transform/html-sanitizer');
 import HtmlParser = require('../document/transform/html-parser');
 import CapturedDocument = require('../document/import/captured-document');
@@ -38,6 +39,8 @@ class ArticleSource {
 
     getUrlForIndexId: (dateString: string) => string;
     toArticlesIndexDocumentItems: (obj: any) => ArticlesIndexDocument.Item[];
+    populateArticleData:(article:Article, obj:any) => Article;
+
     dailyIndexSanitizer: HtmlSanitizer = null;
     dailyIndexParser: HtmlParser = null;
     articleSanitizer: HtmlSanitizer = null;

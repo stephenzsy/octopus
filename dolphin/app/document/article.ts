@@ -17,6 +17,7 @@ class Article {
     indexLastUpdated: moment.Moment;
     status: string;
     uniqueId: string;
+    content:string;
 
     get archiveBucketId(): string {
         return this.articleSourceId + ':' + this.archiveBucket;
@@ -49,6 +50,43 @@ class Article {
 
     get articleSource():ArticleSource {
         return this._articleSource;
+    }
+
+    pupulateData(data:any) {
+        this._articleSource.populateArticleData(this, data);
+    }
+
+    get timestamp():string {
+        return this.metadata['article-timestamp'];
+    }
+
+    set timestamp(value:string) {
+        this.metadata['article-timestamp'] = value;
+    }
+
+    get parserVersion():string {
+        return this.metadata['parser-version'];
+    }
+
+    set parserVersion(value:string) {
+        this.metadata['parser-version'] = value;
+    }
+
+    get parseTimestamp():string {
+        return this.metadata['parse-timestamp'];
+    }
+
+    set parseTimestamp(value:string) {
+        this.metadata['parse-timestamp'] = value;
+    }
+
+
+    get title():string {
+        return this.properties.title;
+    }
+
+    set title(value:string) {
+        this.properties.title = value;
     }
 }
 

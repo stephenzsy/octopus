@@ -129,7 +129,7 @@ class DocumentImporter {
             });
     }
 
-    importArticleAsync(article:Article):Q.Promise<any> {
+    importArticleAsync(article:Article):Q.Promise<Article> {
         var _cthis = this;
         return this.captureArticleAsync(article)
             .then(function (doc:CapturedDocument):Q.Promise<CapturedDocument> {
@@ -137,18 +137,23 @@ class DocumentImporter {
                     .then(function (r:any):CapturedDocument {
                         return doc;
                     });
-            }).then(function (capturedDoc:CapturedDocument):any {
+            }).then(function (capturedDoc:CapturedDocument):Q.Promise<Article> {
                 var parsed:any = article.articleSource.articleParser.parse(cheerio.load(capturedDoc.content));
-                console.log(parsed);
-                // set fields for article
-
+                article.pupulateData(parsed);
                 DocumentImporter.mergeMetadata(article.metadata, capturedDoc.metadata);
-                /*
-                indexDoc.parserVersion = articleSource.dailyIndexParser.version;
-                indexDoc.parseTimestamp = moment().utc().toISOString();
-                indexDoc.setContentObject(parsed);
-                */
-                return article;
+                article.parserVersion = article.articleSource.articleParser.version;
+                article.parseTimestamp = moment().utc().toISOString();
+                var articleDoc:CapturedDocument = new CapturedDocument();
+                articleDoc.articleSourceId = article.articleSourceId;
+                articleDoc.archiveBucket = article.archiveBucket;
+                articleDoc.documentId = article.articleId;
+                articleDoc.metadata = article.metadata;
+                articleDoc.documentType = CapturedDocument.DocumentType.ArticleJson;
+                articleDoc.content = JSON.stringify(article.content);
+                return _cthis.docStore.storeCapturedDocumentAsync(articleDoc)
+                    .then(function (r:any):Article {
+                        return article;
+                    });
             });
     }
 }

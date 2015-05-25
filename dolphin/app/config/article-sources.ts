@@ -1,5 +1,6 @@
 ///<reference path="../../scripts/typings/node/node.d.ts"/>
 
+import Article = require('../document/article');
 import ArticleSource = require('../models/article-source');
 import HtmlSanitizer = require('../document/transform/html-sanitizer');
 import HtmlParser = require('../document/transform/html-parser');
@@ -36,6 +37,12 @@ var articleSources: { [s: string]: ArticleSource; } = {};
                     };
                 }
             });
+        };
+        as.populateArticleData = function (article:Article, data:any):Article {
+            article.timestamp = data['date'];
+            article.title = data['meta']['title'];
+            article.content = data;
+            return article;
         };
         as.version = '2015-05-15';
         as.indexType = ArticleSource.IndexType.DailyIndex;

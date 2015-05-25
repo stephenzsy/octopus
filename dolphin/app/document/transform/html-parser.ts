@@ -1,16 +1,34 @@
 ﻿///<reference path="../../../scripts/typings/cheerio/cheerio.d.ts"/>
+///<reference path="../../../scripts/typings/validator/validator.d.ts"/>
+///<reference path="../../../scripts/typings/moment/moment.d.ts"/>
+
 import cheerio = require('cheerio');
+import validator = require('validator');
+import moment = require("moment");
 
 interface TParse {
     [selector: string]: TParse|string|any;
     _entry_?: TParseEntry[];
     _each_?: TParse;
+    _data_?: TData;
+    _traverse_?: TTraverse;
+}
+
+interface TData {
+    [key:string] :string;
+    _append_?: string;
+    _newScope_?: string;
+}
+
+interface TTraverse {
+    [selectorMatch: string]: TParse;
+    __properties__?: {[selector: string]:string};
 }
 
 interface TParseEntry {
     key:string;
     value:string;
-    target:string;
+    target?:string;
 }
 
 interface HtmlParserConfig {
@@ -31,7 +49,7 @@ class HtmlParser {
     private handleEntry(nodes:Cheerio, ts:TParseEntry[], data:any):void {
         var _cthis = this;
         ts.forEach(function (t:TParseEntry) {
-            var target = _cthis.getEntryData(data, t.target);
+            var target = t.target ? _cthis.getEntryData(data, t.target) : data;
             var key = null;
             var value = null;
             {
@@ -43,9 +61,17 @@ class HtmlParser {
                 }
             }
             {
-                var m:RegExpMatchArray = t.value.match(/^attr:(.*)$/);
+                var m:RegExpMatchArray = t.value.match(/^(\w+:)?attr:(.*)$/);
                 if (m) {
-                    value = nodes.attr(m[1]).trim();
+                    value = nodes.attr(m[2]).trim();
+                    if (m[1]) {
+                        var func:string = m[1];
+                        switch (func) {
+                            case 'secondsFromEpoch:':
+                                value = moment.unix(validator.toInt(value)).utc().toISOString();
+                                break;
+                        }
+                    }
                 } else {
                     switch (t.value) {
                         case 'text':
@@ -55,6 +81,103 @@ class HtmlParser {
             }
             target[key] = value;
         });
+    }
+
+    private handleText(text:string, tp:TParse, data:any) {
+        text = text.trim();
+        if (text.length == 0) return;
+        if (tp._data_) {
+            this.handleData(null, tp._data_, data, text);
+        }
+    }
+
+    private handleTraverse($:CheerioStatic, nodes:Cheerio, tt:TTraverse, data:any) {
+        var parser:HtmlParser = this;
+        nodes.contents().each(function (index:number, element:CheerioElement) {
+            var matched:boolean = false;
+            for (var selectorMather in tt) {
+                var metaMatcher:RegExpMatchArray = selectorMather.match(/^_(\w+)_$/);
+                if (metaMatcher) {
+                    switch (metaMatcher[1]) {
+                        case 'data':
+                            // skip
+                            break;
+                        case 'text':
+                            if (element.type === 'text') {
+                                matched = true;
+                                var elementText = element.data.trim();
+                                parser.handleText(element.data, tt[selectorMather], data);
+                            } // else skip
+                            break;
+                    }
+                } else {
+                    var node:Cheerio = $(element);
+                    if (node.is(selectorMather)) {
+                        matched = true;
+                        var newScope:any = data;
+                        if (tt[selectorMather]._data_) {
+                            newScope = parser.handleData(node, tt[selectorMather]._data_, data);
+                        }
+                        parser.handleTraverse($, node, tt, newScope);
+                    }
+                }
+                if (matched) {
+                    break;
+                }
+            }
+            if (!matched) {
+                if(tt.__properties__['exhaustive']) {
+                    console.error('Unmatched element');
+                    console.error(element);
+                    throw 'Unmatched element';
+                }
+            }
+        });
+    }
+
+    private handleData(nodes:Cheerio, td:TData, data:any, plainText?:string):any {
+        var scopeData = {};
+        for (var key in td) {
+            var metaMatcher:RegExpMatchArray = key.match(/^_\w+_$/);
+            if (!metaMatcher) {
+                var directive:string = td[key];
+                if (directive === 'text') {
+                    if (plainText) {
+                        scopeData[key] = plainText;
+                    } else {
+                        scopeData[key] = nodes.text();
+                    }
+                } else {
+                    var mm:RegExpMatchArray = directive.match(/^(\w+):(.*)$/);
+                    if (mm) {
+                        switch (mm[1]) {
+                            case 'attr':
+                                scopeData[key] = nodes.attr(mm[2]);
+                                break;
+                            case 'value':
+                                switch (mm[2]) {
+                                    case '[]':
+                                        scopeData[key] = [];
+                                        break;
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        if (td._append_) {
+            var dataKey = td._append_;
+            if (dataKey === '.') {
+                data.push(scopeData);
+            } else {
+                this.getEntryData(data, dataKey).push(scopeData);
+            }
+        }
+        if (td._newScope_) {
+            return this.getEntryData(scopeData, td._newScope_);
+        }
+        return data;
     }
 
     private tParse($:CheerioStatic, nodes:Cheerio, t:TParse, data:any, required?:boolean):void {
@@ -79,29 +202,15 @@ class HtmlParser {
                 case '_entry_':
                     parser.handleEntry(nodes, t._entry_, data);
                     break;
-                case '_data_':
-                    var scopeData = {};
-                    var dataDirective: TParse = <TParse>t[selector];
-                    for (var key in dataDirective) {
-                        switch (key) {
-                            case '_append_':
-                                var dataKey = <string>dataDirective[key];
-                                var dataKeyParts = dataKey.split('.');
-                                parser.getEntryData(data, dataKey).push(scopeData);
-                                break;
-                            default:
-                                var directive: string = <string>dataDirective[key];
-                                if (directive === 'text') {
-                                    scopeData[key] = nodes.text();
-                                    break;
-                                }
-                                var m: RegExpMatchArray = directive.match(/^attr:(.*)$/);
-                                if (m) {
-                                    scopeData[key] = nodes.attr(m[1]);
-                                    break;
-                                }
-                        }
+                case '_traverse_':
+                    var traverseScopedDta = data;
+                    if (t._traverse_.__properties__['newScope']) {
+                        traverseScopedDta = this.getEntryData(data, t._traverse_.__properties__['newScope']);
                     }
+                    this.handleTraverse($, nodes, t._traverse_, traverseScopedDta);
+                    break;
+                case '_data_':
+                    parser.handleData(nodes, t._data_, data);
                     break;
                 default:
                     this.tParse($, nodes.find(selector), <TParse>t[selectorKey], data, nextLevelRequired);

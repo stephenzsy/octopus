@@ -4,7 +4,8 @@ class CapturedDocument {
     static DocumentType = {
         IndexRaw: 'index:raw',
         IndexJson: 'index:json',
-        ArticleRaw: 'a:r'
+        ArticleRaw: 'a:r',
+        ArticleJson: 'a:j'
     };
 
     articleSourceId: string;
