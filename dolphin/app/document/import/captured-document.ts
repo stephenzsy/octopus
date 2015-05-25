@@ -3,8 +3,9 @@ import validator = require('validator');
 class CapturedDocument {
     static DocumentType = {
         IndexRaw: 'index:raw',
-        IndexJson: 'index:json'
-    }
+        IndexJson: 'index:json',
+        ArticleRaw: 'a:r'
+    };
 
     articleSourceId: string;
     documentId: string;

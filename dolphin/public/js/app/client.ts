@@ -81,6 +81,13 @@ module Dolphin.Client {
         export interface ListArticlesResult extends Result {
             Articles: Article[];
         }
+        export interface ImportArticleRequest extends Request {
+            ArticleSourceId:string;
+            ArticleId:string;
+        }
+        export interface ImportArticleResult extends Result {
+        }
+
     }
 
     export class DolphinClient {
@@ -132,6 +139,10 @@ module Dolphin.Client {
 
         ListArticles(request:Models.ListArticlesRequest):ng.IPromise<Models.ListArticlesResult> {
             return this.makeRequest('ListArticles', request);
+        }
+
+        ImportArticle(request:Models.ImportArticleRequest):ng.IPromise<Models.ImportArticleResult> {
+            return this.makeRequest('ImportArticle', request);
         }
     }
 }

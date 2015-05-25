@@ -57,6 +57,7 @@ class GcloudDocumentStorage implements DocumentStorage {
         var contentType:string = 'text/plain';
         switch(doc.documentType) {
             case CapturedDocument.DocumentType.IndexRaw:
+            case CapturedDocument.DocumentType.ArticleRaw:
                 contentType = 'text/html';
                 break;
             case CapturedDocument.DocumentType.IndexJson:

@@ -12,6 +12,7 @@ class OperationsHandler implements EventHandler {
 
     before(event: Event): void {
         var operation: Operation<Request<any>, Result<any>> = this.getOperation(event.operation);
+        console.log(operation.name);
         var request: Request<any> = operation.validateInput(event.request);
         if (operation.isAsync) {
             event.isAsync = true;

@@ -13,6 +13,7 @@ module Dolphin.Controller {
         captureOriginal: (dailyIndexId: string) => void;
         indexStatus: Client.Models.ArticlesIndexStatusInterval[];
         importArticlesIndex: (endTs: string) => void;
+        importArticle:(articleId: string) => void;
         syncArticlesIndex: (startTs: string) => void;
     }
 
@@ -63,4 +64,10 @@ angular.module('dolphin').controller('ArticleSourceController', ['$scope', 'Dolp
                 console.log(result);
             });
         };
+        $scope.importArticle = function(articleId:string) {
+            client.ImportArticle({ArticleSourceId: articleSourceId, ArticleId: articleId})
+                .then(function (result: Dolphin.Client.Models.ImportArticleResult) {
+                console.log(result);
+            });
+        }
     }]);

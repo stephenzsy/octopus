@@ -40,6 +40,7 @@ class ArticleSource {
     toArticlesIndexDocumentItems: (obj: any) => ArticlesIndexDocument.Item[];
     dailyIndexSanitizer: HtmlSanitizer = null;
     dailyIndexParser: HtmlParser = null;
+    articleSanitizer: HtmlSanitizer = null;
 
     getCoverage(doc: ArticlesIndexDocument): ArticlesIndexDocument.Coverage {
         var status: string = ArticlesIndexDocument.Status.Unknown;

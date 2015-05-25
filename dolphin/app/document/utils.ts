@@ -1,4 +1,7 @@
-﻿import stream = require('stream');
+﻿///<reference path="../../scripts/typings/aws-sdk/aws-sdk.d.ts"/>
+///<reference path="../../scripts/typings/q/Q.d.ts"/>
+
+import stream = require('stream');
 import Q = require('q');
 import AWS = require('aws-sdk');
 

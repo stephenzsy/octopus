@@ -1,0 +1,18 @@
+﻿{
+    "compatible-versions": [
+        "2015-05-15"
+    ],
+    "version" :  "2015-05-24",
+    "tTransform": {
+        "head": {
+            "_comments_": "remove",
+            "script, link, style": "remove"
+        },
+        "body": {
+            "_comments_": "remove",
+            "_only_:div.content.post > div.sl-layout-post": {
+                "div.share": "remove"
+            }
+        }
+    }
+}

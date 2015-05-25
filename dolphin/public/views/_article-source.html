@@ -4,9 +4,12 @@
     </div>
     <div class="col-lg-6 container">
         <div class="row">
+            <h2>Unimported Articles</h2>
             <div ng-repeat="article in initArticles">
-                ID: {{article.ArticleId}}
-                URL: <a ng-href="{{article.SourceUrl}}">{{article.SourceUrl}}</a>
+                <div>ID: {{article.ArticleId}}</div>
+                <div>URL: <a ng-href="{{article.SourceUrl}}">{{article.SourceUrl}}</a></div>
+                <div><span class="btn btn-link" ng-click="importArticle(article.ArticleId)">Import</span></div>
+                <hr>
             </div>
         </div>
     </div>

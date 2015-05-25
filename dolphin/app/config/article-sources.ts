@@ -41,6 +41,7 @@ var articleSources: { [s: string]: ArticleSource; } = {};
         as.indexType = ArticleSource.IndexType.DailyIndex;
         as.dailyIndexSanitizer = new HtmlSanitizer(require('../vendor/businessinsider/daily-index-sanitizer-config.json'));
         as.dailyIndexParser = new HtmlParser(require('../vendor/businessinsider/daily-index-parser-config.json'));
+        as.articleSanitizer = new HtmlSanitizer(require('../vendor/businessinsider/article-sanitizer-config.json'));
         articleSources[as.Id] = as;
     }
 })();

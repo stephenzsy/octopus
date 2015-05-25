@@ -33,6 +33,7 @@ interface ArticlesIndex {
     getIntervalAsync(articleSource: ArticleSource, indexId: string): Q.Promise<ArticlesIndex.Interval>;
     updateIntervalIndexedCountAsync(articleSource: ArticleSource, interval: ArticlesIndex.Interval, newCount: number): Q.Promise<ArticlesIndex.Interval>;
     fetchArticlesByStatusAsync(articleSource:ArticleSource, status:string, limit:number): Q.Promise<Article[]>;
+    getArticleAsync(articleSource:ArticleSource, articleId:string): Q.Promise<Article>;
 }
 
 export = ArticlesIndex;

@@ -1,11 +1,11 @@
 ﻿import ArticleSource = require('../models/article-source');
 
 class Article {
-    private articleSource: ArticleSource;
+    private _articleSource: ArticleSource;
     private _metadata: { [name: string]: string } = {};
 
     constructor(articleSource: ArticleSource) {
-        this.articleSource = articleSource;
+        this._articleSource = articleSource;
     }
 
     // data representation
@@ -42,6 +42,14 @@ class Article {
     properties: {
         title?: string;
     } = {};
+
+    toJsonObject():any {
+        return {};
+    }
+
+    get articleSource():ArticleSource {
+        return this._articleSource;
+    }
 }
 
 export = Article;

@@ -12,7 +12,7 @@ import ArticlesIndexDocument = require('../document/index/articles-index-documen
 import GenericArticlesRequest = require('../models/generic-articles-request');
 import ImportArticlesIndexResult = require('../models/import-articles-index-result');
 import ArticlesIndex = require('../document/index/articles-index');
-import ArticlesIndexImporter = require('../document/import/articles-index-importer');
+import ArticlesIndexImporter = require('../document/import/document-importer');
 
 class ImportArticlesIndex implements Operation<GenericArticlesRequest, ImportArticlesIndexResult> {
     name: string = 'ImportArticlesIndex';

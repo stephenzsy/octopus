@@ -12,7 +12,7 @@ import ArticlesIndexDocument = require('../document/index/articles-index-documen
 import SyncArticlesIndexRequest = require('../models/sync-articles-index-request');
 import SyncArticlesIndexResult = require('../models/import-articles-index-result');
 import ArticlesIndex = require('../document/index/articles-index');
-import ArticlesIndexImporter = require('../document/import/articles-index-importer');
+import ArticlesIndexImporter = require('../document/import/document-importer');
 import ResourceNotFoundException = require('../models/resource-not-found-exception');
 
 class SyncArticlesIndex implements Operation<SyncArticlesIndexRequest, SyncArticlesIndexResult> {

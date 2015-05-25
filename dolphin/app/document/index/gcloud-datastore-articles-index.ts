@@ -1,6 +1,7 @@
 ﻿///<reference path="../../../scripts/typings/gcloud/gcloud.d.ts"/>
 ///<reference path="../../../scripts/typings/node/node.d.ts"/>
 ///<reference path="../../../scripts/typings/node-uuid/node-uuid.d.ts"/>
+///<reference path="../../../scripts/typings/q/Q.d.ts"/>
 
 import AWS = require('aws-sdk');
 import gcloud = require('gcloud');
@@ -214,6 +215,31 @@ class GcloudDatastoreArticlesIndex implements ArticlesIndex {
                 return entities.map(function (entity:gcloud.Datastore.Entity) {
                     return _cthis.entityToArticle(articleSource, entity);
                 });
+            });
+    }
+
+    private resolveArticlesAsync(articles:Article[]):Q.Promise<Article> {
+        var deferred:Q.Deferred<Article> = Q.defer<Article>();
+        if (articles.length == 1) {
+            deferred.resolve(articles[0]);
+        }
+        else {
+            deferred.reject("Not supported yet");
+        }
+        return deferred.promise;
+    }
+
+    getArticleAsync(articleSource:ArticleSource, articleId:string):Q.Promise<Article> {
+        var _cthis:GcloudDatastoreArticlesIndex = this;
+        var query:gcloud.Datastore.Query = this.dataset.createQuery(GcloudDatastoreArticlesIndex.ARTICLES_KIND)
+            .filter('ArticleSourceId =', articleSource.Id)
+            .filter('ArticleId =', articleId)
+            .limit(20);
+        return Q.ninvoke(this.dataset, 'runQuery', query)
+            .then(function (entities:gcloud.Datastore.Entity[]):Q.Promise<Article> {
+                return _cthis.resolveArticlesAsync(entities.map(function (entity:gcloud.Datastore.Entity) {
+                    return _cthis.entityToArticle(articleSource, entity);
+                }));
             });
     }
 }
