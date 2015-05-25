@@ -1,0 +1,52 @@
+﻿{
+  "compatible-versions": [
+    "2015-05-18"
+  ],
+  "version": "2015-05-18",
+  "dataInit": {
+    "meta": "{}",
+    "category": "{}"
+  },
+  "tParse": {
+    "head": {
+      "meta[name]": {
+        "_each_": {
+          "_entry_": [
+            {
+              "key": "attr:name",
+              "value": "attr:content",
+              "target": "meta"
+            }
+          ]
+        }
+      },
+      "meta[property]": {
+        "_each_": {
+          "_entry_": [
+            {
+              "key": "attr:property",
+              "value": "attr:content",
+              "target": "meta"
+            }
+          ]
+        }
+      }
+    },
+    "body": {
+      "_required_:.category-wrapper .category-link a": {
+        "_entry_": [
+          {
+            "key": "link",
+            "value": "attr:href",
+            "target": "category"
+          },
+          {
+            "key": "text",
+            "value": "text",
+            "target": "category"
+          }
+        ]
+      }
+    }
+  }
+}

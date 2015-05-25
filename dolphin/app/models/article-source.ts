@@ -41,6 +41,7 @@ class ArticleSource {
     dailyIndexSanitizer: HtmlSanitizer = null;
     dailyIndexParser: HtmlParser = null;
     articleSanitizer: HtmlSanitizer = null;
+    articleParser: HtmlParser = null;
 
     getCoverage(doc: ArticlesIndexDocument): ArticlesIndexDocument.Coverage {
         var status: string = ArticlesIndexDocument.Status.Unknown;

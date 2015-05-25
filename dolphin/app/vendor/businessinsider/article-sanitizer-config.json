@@ -11,7 +11,13 @@
         "body": {
             "_comments_": "remove",
             "_only_:div.content.post > div.sl-layout-post": {
-                "div.share": "remove"
+              "div.share": "remove",
+              "div.feed-footer-wrapper": "remove",
+              "div.alert": "remove",
+              "li.pageviews": "remove",
+              "[style]": {
+                "_attr_:style": "remove"
+              }
             }
         }
     }

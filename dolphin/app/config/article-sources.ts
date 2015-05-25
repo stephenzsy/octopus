@@ -42,6 +42,7 @@ var articleSources: { [s: string]: ArticleSource; } = {};
         as.dailyIndexSanitizer = new HtmlSanitizer(require('../vendor/businessinsider/daily-index-sanitizer-config.json'));
         as.dailyIndexParser = new HtmlParser(require('../vendor/businessinsider/daily-index-parser-config.json'));
         as.articleSanitizer = new HtmlSanitizer(require('../vendor/businessinsider/article-sanitizer-config.json'));
+        as.articleParser = new HtmlParser(require('../vendor/businessinsider/article-parser-config.json'));
         articleSources[as.Id] = as;
     }
 })();

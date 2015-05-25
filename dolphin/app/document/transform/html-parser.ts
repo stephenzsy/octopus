@@ -2,7 +2,15 @@
 import cheerio = require('cheerio');
 
 interface TParse {
-    [selector: string]: TParse|string;
+    [selector: string]: TParse|string|any;
+    _entry_?: TParseEntry[];
+    _each_?: TParse;
+}
+
+interface TParseEntry {
+    key:string;
+    value:string;
+    target:string;
 }
 
 interface HtmlParserConfig {
@@ -20,15 +28,56 @@ class HtmlParser {
         this.config = config;
     }
 
-    private tParse($: CheerioStatic, nodes: Cheerio, t: TParse, data: any): void {
+    private handleEntry(nodes:Cheerio, ts:TParseEntry[], data:any):void {
+        var _cthis = this;
+        ts.forEach(function (t:TParseEntry) {
+            var target = _cthis.getEntryData(data, t.target);
+            var key = null;
+            var value = null;
+            {
+                var m:RegExpMatchArray = t.key.match(/^attr:(.*)$/);
+                if (m) {
+                    key = nodes.attr(m[1]).trim();
+                } else {
+                    key = t.key;
+                }
+            }
+            {
+                var m:RegExpMatchArray = t.value.match(/^attr:(.*)$/);
+                if (m) {
+                    value = nodes.attr(m[1]).trim();
+                } else {
+                    switch (t.value) {
+                        case 'text':
+                            value = nodes.text().trim();
+                    }
+                }
+            }
+            target[key] = value;
+        });
+    }
+
+    private tParse($:CheerioStatic, nodes:Cheerio, t:TParse, data:any, required?:boolean):void {
+        if (nodes.length == 0 && required) {
+            throw 'Need developer';
+        }
         var parser: HtmlParser = this;
-        for (var selector in t) {
+        for (var selectorKey in t) {
+            var nextLevelRequired = false;
+            var selector = selectorKey;
+            var m = selectorKey.match(/^_required_:(.*)$/);
+            if (m) {
+                selector = m[1];
+                nextLevelRequired = true;
+            }
             switch (selector) {
                 case '_each_':
-                    var tt: TParse = <TParse>t[selector];
                     nodes.each(function (index: number, element: CheerioElement) {
-                        parser.tParse($, $(element), tt, data);
+                        parser.tParse($, $(element), t._each_, data);
                     });
+                    break;
+                case '_entry_':
+                    parser.handleEntry(nodes, t._entry_, data);
                     break;
                 case '_data_':
                     var scopeData = {};
@@ -38,7 +87,7 @@ class HtmlParser {
                             case '_append_':
                                 var dataKey = <string>dataDirective[key];
                                 var dataKeyParts = dataKey.split('.');
-                                parser.getDataObject(data, dataKeyParts)[dataKeyParts[dataKeyParts.length - 1]].push(scopeData);
+                                parser.getEntryData(data, dataKey).push(scopeData);
                                 break;
                             default:
                                 var directive: string = <string>dataDirective[key];
@@ -55,7 +104,7 @@ class HtmlParser {
                     }
                     break;
                 default:
-                    this.tParse($, nodes.find(selector), <TParse>t[selector], data);
+                    this.tParse($, nodes.find(selector), <TParse>t[selectorKey], data, nextLevelRequired);
             }
         }
     }
@@ -69,18 +118,29 @@ class HtmlParser {
         return dict;
     }
 
+    private getEntryData(root:any, k:string):any {
+        var ks:string[] = k.split('.');
+        return this.getDataObject(root, ks)[ks[ks.length - 1]];
+    }
+
+    private setEntryValue(root:any, k:string, v:any):void {
+        var ks:string[] = k.split('.');
+        this.getDataObject(root, ks)[ks[ks.length - 1]] = v;
+    }
+
     private initData(): any {
         var root = {};
+        var _cthis = this;
         for (var key in this.config.dataInit) {
             var strValue: string = this.config.dataInit[key];
             var value: any = null;
             if (strValue === '[]') {
                 value = [];
+            } else if (strValue === '{}') {
+                value = {};
             }
 
-            var k: string[] = key.split('.');
-            var dict: any = this.getDataObject(root, k);
-            dict[k[k.length - 1]] = value;
+            _cthis.setEntryValue(root, key, value);
         }
         return root;
     }
