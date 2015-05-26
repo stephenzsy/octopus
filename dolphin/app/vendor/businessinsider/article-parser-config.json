@@ -75,10 +75,61 @@
               "_append_": "."
             }
           },
+          "em": {
+            "_data_": {
+              "em": "value:[]",
+              "_newScope_": "em",
+              "_append_": "."
+            }
+          },
+          "strong": {
+            "_data_": {
+              "strong": "value:[]",
+              "_newScope_": "strong",
+              "_append_": "."
+            }
+          },
+          "h3": {
+            "_data_": {
+              "h3": "value:[]",
+              "_newScope_": "h3",
+              "_append_": "."
+            }
+          },
+          "h4": {
+            "_data_": {
+              "h4": "value:[]",
+              "_newScope_": "h4",
+              "_append_": "."
+            }
+          },
           "a": {
             "_data_": {
               "link": "attr:href",
               "text": "text",
+              "_append_": "."
+            }
+          },
+          "span": {
+            "_data_": {
+              "class": "attr:class",
+              "span": "value:[]",
+              "_newScope_": "span",
+              "_append_": "."
+            }
+          },
+          "div": {
+            "_data_": {
+              "class": "attr:class",
+              "div": "value:[]",
+              "_newScope_": "div",
+              "_append_": "."
+            }
+          },
+          "image,img": {
+            "_data_": {
+              "image.src": "attr:src",
+              "image.alt": "attr:alt",
               "_append_": "."
             }
           }

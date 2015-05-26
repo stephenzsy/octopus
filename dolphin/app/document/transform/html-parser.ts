@@ -17,6 +17,7 @@ interface TParse {
 interface TData {
     [key:string] :string;
     _append_?: string;
+    _tag_?:string;
     _newScope_?: string;
 }
 
@@ -94,6 +95,9 @@ class HtmlParser {
     private handleTraverse($:CheerioStatic, nodes:Cheerio, tt:TTraverse, data:any) {
         var parser:HtmlParser = this;
         nodes.contents().each(function (index:number, element:CheerioElement) {
+            if(element.type === 'comment') {
+                return;// skip comment;
+            }
             var matched:boolean = false;
             for (var selectorMather in tt) {
                 var metaMatcher:RegExpMatchArray = selectorMather.match(/^_(\w+)_$/);
@@ -143,21 +147,21 @@ class HtmlParser {
                 var directive:string = td[key];
                 if (directive === 'text') {
                     if (plainText) {
-                        scopeData[key] = plainText;
+                        this.setEntryValue(scopeData, key, plainText);
                     } else {
-                        scopeData[key] = nodes.text();
+                        this.setEntryValue(scopeData, key, nodes.text());
                     }
                 } else {
                     var mm:RegExpMatchArray = directive.match(/^(\w+):(.*)$/);
                     if (mm) {
                         switch (mm[1]) {
                             case 'attr':
-                                scopeData[key] = nodes.attr(mm[2]);
+                                this.setEntryValue(scopeData, key, nodes.attr(mm[2]));
                                 break;
                             case 'value':
                                 switch (mm[2]) {
                                     case '[]':
-                                        scopeData[key] = [];
+                                        this.setEntryValue(scopeData, key, []);
                                         break;
                                 }
                                 break;
@@ -182,7 +186,8 @@ class HtmlParser {
 
     private tParse($:CheerioStatic, nodes:Cheerio, t:TParse, data:any, required?:boolean):void {
         if (nodes.length == 0 && required) {
-            throw 'Need developer';
+            console.log(t);
+            throw 'Required not present: Need developer';
         }
         var parser: HtmlParser = this;
         for (var selectorKey in t) {
