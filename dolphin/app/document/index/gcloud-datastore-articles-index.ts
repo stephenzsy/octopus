@@ -178,7 +178,7 @@ class GcloudDatastoreArticlesIndex implements ArticlesIndex {
     }
 
     private articleToEntity(article:Article):gcloud.Datastore.Entity {
-        return {
+        var entity = {
             key: this.dataset.key([GcloudDatastoreArticlesIndex.ARTICLES_KIND, article.uniqueId]),
             data: {
                 "ArticleSourceId": article.articleSourceId,
@@ -189,6 +189,13 @@ class GcloudDatastoreArticlesIndex implements ArticlesIndex {
                 "LastUpdated": moment().utc().toISOString()
             }
         };
+        if (article.timestamp) {
+            entity.data["ArticleTimestamp"] = article.timestamp;
+        }
+        if (article.title) {
+            entity.data["ArticleTitle"] = article.title;
+        }
+        return entity;
     }
 
     private entityToArticle(articleSource:ArticleSource, entity:gcloud.Datastore.Entity):Article {
@@ -200,6 +207,12 @@ class GcloudDatastoreArticlesIndex implements ArticlesIndex {
         article.indexLastUpdated = moment(data['LastUpdated']);
         article.status = data['Status'];
         article.uniqueId = entity.key.path[1];
+        if (data['ArticleTimestamp']) {
+            article.timestamp = data['ArticleTimestamp'];
+        }
+        if (data['ArticleTitle']) {
+            article.title = data['ArticleTitle'];
+        }
         return article;
     }
 
@@ -242,6 +255,14 @@ class GcloudDatastoreArticlesIndex implements ArticlesIndex {
                 }));
             });
     }
+
+    updateArticleStatus(article:Article, status:string):Q.Promise<Article> {
+        article.status = status;
+        return Q.ninvoke(this.dataset, 'update', this.articleToEntity(article)).then(function (r:any):Article {
+            return article;
+        });
+    }
+
 }
 
 export = GcloudDatastoreArticlesIndex;

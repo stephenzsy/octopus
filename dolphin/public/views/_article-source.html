@@ -4,6 +4,18 @@
     </div>
     <div class="col-lg-6 container">
         <div class="row">
+            <h2>Imported Articles</h2>
+
+            <div ng-repeat="article in importCompleteArticles">
+                <div>{{article.Title}}
+                    <small>( {{article.Timestamp | date : 'short'}} )</small>
+                </div>
+                <div><a class="btn btn-link" ng-href="{{article.SourceUrl}}">Link</a>
+                    <span class="btn btn-link" ng-click="importArticle(article.ArticleId)">Reimport</span></div>
+                <hr>
+            </div>
+        </div>
+        <div class="row">
             <h2>Unimported Articles</h2>
             <div ng-repeat="article in initArticles">
                 <div>ID: {{article.ArticleId}}</div>

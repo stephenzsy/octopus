@@ -10,6 +10,7 @@ module Dolphin.Controller {
         dailyIndicesMetadata: Client.Models.DailyIndexMetadata[];
         articleSourceId: string;
         initArticles: Client.Models.Article[];
+        importCompleteArticles:Client.Models.Article[];
         captureOriginal: (dailyIndexId: string) => void;
         indexStatus: Client.Models.ArticlesIndexStatusInterval[];
         importArticlesIndex: (endTs: string) => void;
@@ -35,6 +36,13 @@ angular.module('dolphin').controller('ArticleSourceController', ['$scope', 'Dolp
             Status:'Init'
         }).then(function (result:Dolphin.Client.Models.ListArticlesResult){
             $scope.initArticles = result.Articles;
+        });
+        client.ListArticles({
+            ArticleSourceId: articleSourceId,
+            Status: 'Import.Complete',
+            SortBy: 'Timestamp'
+        }).then(function (result:Dolphin.Client.Models.ListArticlesResult) {
+            $scope.importCompleteArticles = result.Articles;
         });
         $scope.captureOriginal = (dailyIndexId: string) => {
             client.CaptureDailyIndex({

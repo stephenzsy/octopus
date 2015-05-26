@@ -29,7 +29,7 @@ class ArticlesIndexDocument extends CapturedDocument {
         Unknown: 'Unknown',
         Partial: 'Partial',
         Complete: 'Complete'
-    }
+    };
 
     get documentType(): string {
         return CapturedDocument.DocumentType.IndexJson;

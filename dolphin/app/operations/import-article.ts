@@ -37,13 +37,13 @@ class ImportArticle implements Operation<ImportArticleRequest, ImportArticleResu
 
     enactAsync(req:ImportArticleRequest):Q.Promise<ImportArticleResult> {
         var _cthis = this;
-        var _article:Article;
-        return this.articlesIndex.getArticleAsync(req.articleSource, req.articleId).then(function (article:Article) {
-            _article = article;
+        return this.articlesIndex.getArticleAsync(req.articleSource, req.articleId).then(function (article:Article):Q.Promise<Article> {
             return _cthis.docImporter.importArticleAsync(article);
-        }).then(function (r:any):ImportArticleResult {
+        }).then(function (article:Article):Q.Promise<Article> {
+            return _cthis.articlesIndex.updateArticleStatus(article, Article.Status.ImportComplete);
+        }).then(function (article:Article):ImportArticleResult {
             var result:ImportArticleResult = new ImportArticleResult();
-            result.article = _article;
+            result.article = article;
             return result;
         });
     }

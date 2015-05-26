@@ -8,11 +8,18 @@ class ListArticlesResult implements Result<ListArticlesResult> {
     toJsonObject(): any {
         return {
             "Articles": this.articles.map(function(article:Article):any{
-                return {
+                var d = {
                     "ArticleId": article.articleId,
                     "Status": article.status,
                     "SourceUrl": article.sourceUrl
+                };
+                if (article.title) {
+                    d['Title'] = article.title;
                 }
+                if (article.timestamp) {
+                    d['Timestamp'] = article.timestamp;
+                }
+                return d;
             })
         }
     }

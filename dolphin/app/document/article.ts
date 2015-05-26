@@ -1,6 +1,11 @@
 ﻿import ArticleSource = require('../models/article-source');
 
 class Article {
+    static Status = {
+        Init: 'Init',
+        ImportComplete: 'Import.Complete'
+    };
+
     private _articleSource: ArticleSource;
     private _metadata: { [name: string]: string } = {};
 
